@@ -25,7 +25,7 @@ export default function NoteToViewer() {
               {" "}
               blockchain primitives{" "}
             </a>{" "}
-            into <em>runtime</em> an <em>node</em> logic that produce robust
+            into <em>runtime</em> and <em>node</em> logic to produce robust
             blockchains and parachains.
           </p>
           <p>
