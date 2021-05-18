@@ -10,29 +10,27 @@ export default function NoteToViewer() {
           <br /> <br /> <br />
           <h2>
             {" "}
-            🚧 Note: this is WIP. All content is housed in{" "}
-            <a href="https://github.com/sacha-l/substrate-how-to-guides">
-              this repo
-            </a>
-            .🚧
+            🚧 Note: This Site is a WIP! 🚧
           </h2>
-          <h3>Contributions and feedback welcome. Please submit an Issue or PR. 😃</h3>
+          <h3>Contributions and feedback welcome! Please submit an
+              <a href=" https://github.com/substrate-developer-hub/substrate-how-to-guides/">
+              {" "}
+              Issue or PR{" "}
+              </a>{" "}
+              😃
+          </h3>
           <p>
-            <strong>Prelude:</strong> Substrate is all about combining{" "}
+            <strong>Prelude:</strong> Substrate is fundamentally about composing the included{" "}
             <a href="https://substrate.dev/docs/en/knowledgebase/runtime/primitives">
               {" "}
-              bullet-proof primitives{" "}
+              blockchain primitives{" "}
             </a>{" "}
-            and building on them in ways that offer powerful and robust
-            programmable logic.
+            into <em>runtime</em> and <em>node</em> logic to produce robust
+            blockchains and parachains.
           </p>
           <p>
-            The <strong> Substrate how-to guide book</strong> intends to help
-            new and experienced Substrate developers to do just that. By
-            building things up from simple components, the purpose of this ressource
-            is to serve as a collection of "how-to" guides for developers looking to understand
-            integration techniques of both simple and more complex capabilities
-            that Substrate and FRAME offers.
+            The <strong>Substrate how-to guide book</strong> centers on rapidly integrating
+            and using capabilities <em>modularly</em> for Substrate based blockchains.
           </p>
         </div>
       </div>
