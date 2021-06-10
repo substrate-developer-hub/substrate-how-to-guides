@@ -23,7 +23,9 @@ receive the pooled funds if the goal is reached by the end time. If the fund is 
 retirement period when contributors can reclaim their pledged funds. Finally, an unsuccessful fund can be dissolved, 
 sending any remaining tokens to the user who dissolves it.
 
->**Note:** This guide assumes that developers know how to create their own `Errors` and `Events` according to the pallet logic they're creating. 
+:::note
+This guide assumes that developers know how to create their own `Errors` and `Events` according to the pallet logic they're creating. 
+:::
 
 To follow this guide from scratch, use the template pallet with importing the following dependencies
 which we'll be needing:

@@ -7,7 +7,9 @@ keywords: basics, beginner, runtime
 
 _ Get started with the simple things as a basis to learn more. _
 
-> **Note: 📣 ** this is a beginner recipe intended for novice Substrate developers looking to explore ways to create tokens in Substrate. This approach is not recommended best practice. Use this guide to learn how to improve upon your runtime logic's capabilities and code quality. See the [Examples](#examples) section for a practical implementations of this guide.
+:::info
+This is a beginner recipe intended for novice Substrate developers looking to explore ways to create tokens in Substrate. This approach is not recommended best practice. Use this guide to learn how to improve upon your runtime logic's capabilities and code quality. See the [Examples](#examples) section for a practical implementations of this guide.
+:::
 
 ## Goal
 

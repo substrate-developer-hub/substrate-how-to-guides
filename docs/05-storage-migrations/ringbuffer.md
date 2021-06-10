@@ -90,14 +90,14 @@ where
 }
 ```
 
-> **Note**: The `Query` type is specified to help with type inference (because the value returned can
-> be different from the stored representation).
-> The [`Codec`][codec-rustdocs] and
-> [`EncodeLike`][encodelike-rustdocs]
-> type constraints make sure that both items and indices can be stored in storage.
-> The [`PhantomData`][phantomdata-rustdocs] is needed in order
-> to "hold on to" the types during the lifetime of the transient object.
-
+:::note
+The `Query` type is specified to help with type inference (because the value returned can
+be different from the stored representation).
+The [`Codec`][codec-rustdocs] and [`EncodeLike`][encodelike-rustdocs]
+type constraints make sure that both items and indices can be stored in storage.
+The [`PhantomData`][phantomdata-rustdocs] is needed in order
+to "hold on to" the types during the lifetime of the transient object.
+:::
 #### Specifying type constraints for `Index`
 
 Specify the default type for `Index` as `u16`. In addition, add ``WrappingsOps` and `From<u8>`.
