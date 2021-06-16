@@ -3,9 +3,9 @@ sidebar_position: 7
 keywords: basics, runtime
 ---
 
-# Using Pallet Helper Functions
+# Using pallet helper functions
 
-_ _
+_Building up key components for adding functionality to your pallets._
 
 ## Goal
 
