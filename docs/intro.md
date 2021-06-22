@@ -34,6 +34,8 @@ The following points touch on the approach for building content for the Substrat
 - ⏹️ **Avoid repetition.** If there's something that needs to be included in one guide and can be abstracted to a completely separate guide, abstract it and link to it instead of repeating that content. This ties into the modularity aspect too.
 
 ### Template 
+Each guide needs to follow the following structure, taking into account the requirements from above.  
+
 :::note **Note: ** copy the markdown template file from [here](https://github.com/substrate-developer-hub/substrate-how-to-guides/blob/main/docs/contribute/how-to-template.md) to get started.
 
 ---
