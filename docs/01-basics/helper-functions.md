@@ -3,41 +3,51 @@ sidebar_position: 7
 keywords: basics, runtime
 ---
 
-# Using pallet helper functions
+# Using helper functions
 
 _Building up key components for adding functionality to your pallets._
 
 ## Goal
 
-Include helper functions inside a pallet.
+Use helper functions inside a pallet to improve code readability and reusability.
 
 ## Use cases
 
 Re-use helper functions to perform common "verify" checks across multiple pallets.
 
 ## Overview
+Sometimes a disptachable function inside a pallet reuse logic that's common to other dispatchables.
+In this case, it's useful to refactor this logic into its own separate function, private to the pallet.
+Other times, dispatchable functions get increasingly difficult to read as the amount of code increases 
+to perform various checks within the dispatchable. In both instances, using helper functions that cannot 
+be accessed from outside the pallet are a useful tool to optimize for code readability and reusability.
 
+In this guide, we'll step through how to create a adder helper that checks for arthimetic overflow
+and  can be reused in any dispatchable.
 ## Steps
 
 ### 1. Create your helper function
 
-We'll showcase including the following helper to your pallet:
-- `fn _adder`: Checks there is no overflow when adding two integers of type `u32`.
+The helper we'll refer to is called `fn _adder`: it checks that there is no overflow when adding two integers of type `u32`.
 
-Add it at the end of your pallet:
+It takes two `u32` integers, uses `checked_add` and `ok_or` to check that there is no overflow. If there is, it returns an error; otherwise
+it returns the result. 
+
+Here's what it looks like as a helper function. This would go at the bottom of your pallet:
 
 ```rust
-impl<T: Config> Module<T> {
+impl<T: Config> Pallet<T> {
     fn _adder(num1: u32, num2: u32) -> Result<u32, &'static str> {
         num1.checked_add(num2).ok_or("Overflow when adding")
     }
 } 
 ```
 
-### 2. Use it in your pallet
+### 2. Use it in your dispatchables
 
 Identify the places where you've needed to verify for overflow when performing an addition.
-Use the helper function instead, for example:
+Use the helper function instead of rewriting the same code. Below is a simple example of 
+a dispatchable that allows a signed extrinsic to add a value to the existing storage value:
 
 ```rust
     // Extrinsics callable from outside the runtime.
@@ -67,7 +77,8 @@ Use the helper function instead, for example:
 ```
 
 ## Examples
-
+- [example-offchain-worker](https://github.com/paritytech/substrate/blob/master/frame/example-offchain-worker/src/lib.rs): the `add_price` helper function used in this pallet's dispatchable.
 ## Resources
-
 #### Rust docs
+- [checked_add](https://docs.rs/num/0.2.0/num/trait.CheckedAdd.html#required-methods) 
+- [ok_or](https://doc.rust-lang.org/std/option/enum.Option.html#method.ok_or)
