@@ -16,6 +16,7 @@ Use helper functions inside a pallet to improve code readability and reusability
 Re-use helper functions to perform common "verify" checks across multiple pallets.
 
 ## Overview
+
 Sometimes a disptachable function inside a pallet reuse logic that's common to other dispatchables.
 In this case, it's useful to refactor this logic into its own separate function, private to the pallet.
 Other times, dispatchable functions get increasingly difficult to read as the amount of code increases 
@@ -24,6 +25,7 @@ be accessed from outside the pallet are a useful tool to optimize for code reada
 
 In this guide, we'll step through how to create an adder helper that checks for arthimetic overflow
 and  can be reused in any dispatchable.
+
 ## Steps
 
 ### 1. Create your helper function
@@ -37,6 +39,7 @@ Here's what it looks like as a helper function. This would go at the bottom of y
 
 ```rust
 impl<T: Config> Pallet<T> {
+
     fn _adder(num1: u32, num2: u32) -> Result<u32, &'static str> {
         num1.checked_add(num2).ok_or("Overflow when adding")
     }
