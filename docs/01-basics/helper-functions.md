@@ -22,7 +22,7 @@ Other times, dispatchable functions get increasingly difficult to read as the am
 to perform various checks within the dispatchable. In both instances, using helper functions that cannot 
 be accessed from outside the pallet are a useful tool to optimize for code readability and reusability.
 
-In this guide, we'll step through how to create an adder helper that checks for arthimetic overflow
+In this guide, we'll step through how to create an adder helper that checks for arithmetic overflow
 and  can be reused in any dispatchable.
 ## Steps
 
