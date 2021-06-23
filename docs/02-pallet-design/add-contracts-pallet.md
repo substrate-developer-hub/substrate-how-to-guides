@@ -26,6 +26,7 @@ If you haven't already done so, refer to [this tutorial][create-first-chain-tuto
 
 ## Steps
 
+
 ### 1. Import the dependencies
 
 Refer to this guide to properly include Contracts in your runtime.
@@ -123,9 +124,6 @@ We're now ready to implement the contracts
 runtime API. This happens in the 
 impl_runtime_apis! macro near the end of your 
 runtime.
-
-
-
 
 ## Examples
 
