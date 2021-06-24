@@ -174,3 +174,4 @@ In `node/src/rpc.rs`, add this line to the `where` clause in `create_full<C, P>`
 [bin-runtime-contracts-frame]: https://github.com/paritytech/substrate/blob/master/bin/node/runtime/src/lib.rs#L786
 [contracts-api-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/pallet_contracts_rpc_runtime_api/trait.ContractsApi.html
 [pallet-crates]: https://crates.io/search?q=pallet-contracts-rpc
+

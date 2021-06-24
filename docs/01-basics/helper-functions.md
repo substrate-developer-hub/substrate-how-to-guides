@@ -24,6 +24,7 @@ be accessed from outside the pallet are a useful tool to optimize for code reada
 
 In this guide, we'll step through how to create an adder helper that checks for arithmetic overflow
 and  can be reused in any dispatchable.
+
 ## Steps
 
 ### 1. Create your helper function
@@ -37,6 +38,7 @@ Here's what it looks like as a helper function. This would go at the bottom of y
 
 ```rust
 impl<T: Config> Pallet<T> {
+
     fn _adder(num1: u32, num2: u32) -> Result<u32, &'static str> {
         num1.checked_add(num2).ok_or("Overflow when adding")
     }
@@ -82,3 +84,4 @@ a dispatchable that allows a signed extrinsic to add a value to the existing sto
 #### Rust docs
 - [checked_add](https://docs.rs/num/0.2.0/num/trait.CheckedAdd.html#required-methods) 
 - [ok_or](https://doc.rust-lang.org/std/option/enum.Option.html#method.ok_or)
+
