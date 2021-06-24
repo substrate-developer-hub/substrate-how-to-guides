@@ -114,26 +114,63 @@ To achieve this, we'll use another pallet called `pallet-contracts-rpc-runtime-a
 #### Import dependencies 
 Just like in the first step of this guide, update `Cargo.toml` to add `pallet-contracts-rpc-runtime-api`.
 
-Now we can add the `ContractsApi` dependency required to implement the Contracts runtime API. 
+Now we can add the [`ContractsApi`][contracts-api-rustdocs] dependency required to implement the Contracts runtime API. 
 
 Add this with the other `use` statements.
 #### Implement the Contracts runtime API
 
 We're now ready to implement the contracts 
-runtime API. This happens in the 
-impl_runtime_apis! macro near the end of your 
+runtime API. 
+
+This happens in the 
+`impl_runtime_apis! `macro near the end of your 
 runtime.
 
+Make sure to add the following functions that the `ContractsApi` exposes:
+- **`call()`**: returns `pallet_contracts_primitives::ContractExecResult { Contracts::bare_call(origin, dest, value, gas_limit, input_data)}`
+- **`get_storage()`**: returns `pallet_contracts_primitives::GetStorageResult {Contracts::get_storage(address, key)}`
+- **`rent_projection()`**: returns `pallet_contracts_primitives::RentProjectionResult<BlockNumber> {Contracts::rent_projection(address)}`
 
+#### Add RPC API extension
 
+To be able to call the runtime API, we must add the RPC to the node's service.
 
+In `node/Cargo.toml`, add the dendencies for `pallet-contracts` and `pallet-contracts-rpc`.
+
+:::note Unsure what version to include? 
+
+Use the latest version as indicated on [crates.io][pallet-crates].
+:::
+
+This RPC does not contain access to the Contracts pallet by default. To interact with this pallet, we have to **extend the existing RPC and add the Contracts pallet** along with its API.
+
+In `node/src/rpc.rs`, add this line to the `where` clause in `create_full<C, P>`:
+
+```rust
+ C::Api: pallet_contracts_rpc::ContractsRuntimeApi<Block, AccountId, Balance, BlockNumber>,
+ ```
+
+ And add the contracts RPC API extension using:
+
+ ```rust
+  // Contracts RPC API extension
+    io.extend_with(
+        ContractsApi::to_delegate(Contracts::new(client.clone()))
+    );
+```
 ## Examples
+- `canvas-node` [runtime](https://github.com/paritytech/canvas-node/blob/master/runtime/src/lib.rs#L361)
+- `canvas-node` [rpc file](https://github.com/paritytech/canvas-node/blob/master/node/src/rpc.rs)
 
 ## Related material
 #### Rust docs
+- [`pallet_contracts` crate](https://substrate.dev/rustdocs/v3.0.0/pallet_contracts/index.html)
+- [`pallet_contracts_rpc` crate](https://substrate.dev/rustdocs/v3.0.0/pallet_contracts_rpc/index.html)
 
 [contracts-frame]: https://substrate.dev/rustdocs/v3.0.0/pallet_contracts/
 [create-first-chain-tutorial]: https://substrate.dev/docs/en/tutorials/create-your-first-substrate-chain/
 [contracts-config-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/pallet_contracts/trait.Config.html
 [contracts-frame]: https://github.com/paritytech/substrate/blob/master/frame/contracts/src/lib.rs#L144
 [bin-runtime-contracts-frame]: https://github.com/paritytech/substrate/blob/master/bin/node/runtime/src/lib.rs#L786
+[contracts-api-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/pallet_contracts_rpc_runtime_api/trait.ContractsApi.html
+[pallet-crates]: https://crates.io/search?q=pallet-contracts-rpc

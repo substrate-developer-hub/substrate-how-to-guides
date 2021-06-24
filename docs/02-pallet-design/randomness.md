@@ -4,7 +4,7 @@ keywords: pallet design, intermediate, runtime
 ---
 
 # Generating on-chain randomness
-_Useful in instances to generate unique values._
+_Useful in instances to generate unique values or select things without bias._
 
 ## Goal
 
@@ -16,7 +16,7 @@ Implement randomness for a pallet.
 
 ## Overview
 
-Randomness is useful in computer programs for everything from gaming applications to selecting block 
+[Randomness][randomness-kb] is useful in computer programs for everything from gaming applications to selecting block 
 authors. True randomness is hard to come by in deterministic computers. This is particularly true in the context 
 of a blockchain when all the nodes in the network must agree on the state of the chain. FRAME provides runtime engineers
 with a source of randomness, using the [Randomness trait][randomness-rustdocs].
@@ -127,6 +127,7 @@ impl my_pallet::Config for Runtime{
 
 - [Verifiable Random Functions](https://en.wikipedia.org/wiki/Verifiable_random_function)
 
+[randomness-kb]: https://substrate.dev/docs/en/knowledgebase/runtime/randomness
 [randomness-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/traits/trait.Randomness.html
 [h256-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/sp_core/struct.H256.html
 [encode-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/dispatch/trait.Encode.html#method.encode
