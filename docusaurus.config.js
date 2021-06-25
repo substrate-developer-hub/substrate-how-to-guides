@@ -40,6 +40,10 @@ module.exports = {
               label: "How-to Guides",
               to: "/docs/intro",
             },
+            {
+              label: "Tutorials",
+              to: "/docs/tutorials/kitties/overview",
+            },
           ],
         },
       ],

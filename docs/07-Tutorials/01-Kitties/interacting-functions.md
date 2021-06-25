@@ -213,7 +213,7 @@ your local. With that done, you can (and should!) run the following manual tests
 - Overspend on the cost of the Kitty and ensure that the balance is reduced appropriately
 - Breed a Kitty and check that the new DNA is a mix of the old and new
 - After all of these actions, confirm that all users have the right number of Kitties, the total Kitty count is correct, and any other storage variables are correctly represented
-### Next steps
+## Next steps
 - Connect your chain to the front-end template
 - Customize the template using PolkadotJS API
 - Interact with your chain 

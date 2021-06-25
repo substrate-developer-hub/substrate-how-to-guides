@@ -11,6 +11,7 @@ _Build the custom frontend for the Substrate Kitties workshop._
 - Connect your chain to the Substrate front-end template
 - Customize the template using PolkadotJS API
 - Interact with your chain 
+
 ## Overview
 Now that we have completed runtime development, it is time to build a user interface which can easily access and interact with our 
 custom storage items and functions. We'll be using the ---- clone and install it to be able to complete this part of the workshop.
@@ -49,6 +50,14 @@ we'll need to render and the buttons each card will contain:
 3. Buy Kitty
 4. Transfer Kitty
 
+
+Structure of the frontend project:
+
+```bash
+folder structure with what we care about
+and assets for kitty traits
+```
+
 ### 2. Using PolkadotJS API to query storage
 
 The Create Kitty card is simply an extrinsic and the frontend template already handles displaying events from our runtime.
@@ -60,9 +69,24 @@ Here's a break down of how PolkadotJS API helps us do this:
 - `api.query.substrateKitties.storageItem.map( (item) => item)`:to query a storage map, we must use `map` 
 - ...
 
+Make sure you think about the props your passign in. We've done it for you.
 
 ### 3. Rendering Kitties
+The most interesting part of our Kitties frontend is the logic behind rendering unique Kitties  based on our Kitty DNA values.
 
+How does think work?
+
+Essentially, each hex is split up into 6 segment where each segment corresponds to a physical Kitty trait.
+
+This all happens in the `KittyCards.js` file ....
+
+```js
+ const populateKitties = () => {
+```
+
+And KittyAvatar does all the linking of .png files to DNA segments.
+
+TODO.
 
 ## Next steps
 

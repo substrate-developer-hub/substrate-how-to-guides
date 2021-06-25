@@ -3,8 +3,8 @@ sidebar_position: 4
 keywords: pallet design, intermediate, runtime
 ---
 
-# Part III: Extrinsics and Events
-_Write the first dispatchable function that creates a Kitty using a private function and emits its associated Event._
+# Part III: Dispatchables and Events
+_Write a dispatchable function to create a Kitty using and emits its associated Event._
 
 ## Learning outcomes
 
@@ -15,7 +15,7 @@ _Write the first dispatchable function that creates a Kitty using a private func
 ## Overview
 In the previous section of this tutorial, we laid down the foundations geared to manage the ownership of our Kitties &mdash; when they
 come to existence! In this part of the tutorial, we'll be putting these foundations to use 
-by creating a Kitty on-chain, along with some error checking. This part can be broken down in the following way:
+by creating a Kitty on-chain, along with some error checking. This part can be broken down in the following sub-parts:
 - **writing `create_kitty`**: an extrinsic or publicly callable function allowing an account to mint a Kitty.
 - **writing `mint()`**: a helper function that updates our pallet's storage items and performs error checks, called by `create_kitty`.
 - **including `Events`**: using FRAME's `#[pallet::events]` macro.
@@ -29,7 +29,7 @@ At the end of this part, we'll check that everything compiles without error and 
 Before we dive right in, it's important to understand the design decisions we'll make around coding the minting and ownership management
 capabilities of our Kitty pallet.
 
-As developers, we want to make sure the code we write is efficient and elegant. Often, optimizing for one optimizes for the other.
+As developers, we want to make sure the code we write is efficient and elegant. Oftentimes, optimizing for one optimizes for the other.
 The way we're going to set up our pallet up to achieve elegance and efficiency will be to break-up the "heavy lifting" dispatchable 
 functions or extrinsics into private helper functions. This improves code readability and reusability too. We'll be using this design approach in the next section but for our immediate purposes, this entails using the public `create_kitty` dispatchable to:
 - check the origin is signed

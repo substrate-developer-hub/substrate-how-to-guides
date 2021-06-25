@@ -3,25 +3,29 @@ sidebar_position: 1
 keywords: pallet design, intermediate, runtime
 ---
 
-# Substrate Kitties Tutorial
-_This is a 5 part series workshop that steps you through building a fully functional NFT dapp for managing Substrate Kitties._
+# 😺 Substrate Kitties Workshop
+_This is a 5 part series workshop that steps you through building a dapp for managing Substrate Kitties._
 
 ## Learning outcomes
 
-:arrow_right: Write and integrate a custom FRAME pallet to your runtime
+:arrow_right: Write and integrate a custom FRAME pallet to your runtime.
 
-:arrow_right: Use structs in storage and how to create and update storage items
+:arrow_right: Use structs in storage and how to create and update storage items.
 
-:arrow_right: Write extrinsics and helper functions
+:arrow_right: Write extrinsics and helper functions.
 
-:arrow_right: Use PolkadotJS API to connect a Substrate node to custom a front-end
+:arrow_right: Use PolkadotJS API to connect a Substrate node to custom a front-end.
 
 ## Overview
 
-Welcome to the Substrate Kitties workshop. This is a 5 part series workshop that will teach you everything you need to know to build a fully functional NFT blockchain designed to handle the creation and ownership management of Substrate Kitties. Before jumping into the next section, let's have a look at what we'll be doing. You may find it useful to come back to this section
-as you progress through this workshop, just to keep track of the bigger picture.
+Welcome to the Substrate Kitties workshop. This 5 part series workshop will teach you everything you need to know to build a blockchain designed to handle the creation and ownership management of Substrate Kitties. Before jumping into the next section, let's have a look at what we'll be doing. 
 
-In this implementation of an NFT chain for Substrate Kitties, to keep things simple, Kitties really can only do the following things:
+:::note 
+You may find it useful to come back to this page
+as you progress through this workshop &mdash; just to keep track of the bigger picture.
+:::
+### What we're building
+In this tutorial, we'll intentionally keep things simple so that you can decide on how you'd like to improve your Substrate Kitties chain.  For the purposes of this workshop, Kitties really can only do the following things:
 
 :smiley_cat: be created either by some original source or by being bred using existing Kitties.
 
@@ -31,13 +35,18 @@ In this implementation of an NFT chain for Substrate Kitties, to keep things sim
 
 ---
 Bringing things down to a more granular level, this translates to the following application design:
-1. we'll need to spin up a Substrate node and create a custom pallet
-2. we'll need a total of 9 storage items in our pallet to keep track of the amount of Kitties; their index; their owners and their 
-owner account IDs
-3. we'll need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `buy_kitty` and `breed_kitty`
-4. we'll write 2 helper functions to handle randomness: `increment_nonce` and `random_hash`
-5. we'll write 2 helper functions for our dispatchable functions: `mint` and `transfer_from`
-6. we'll connect to a React front-end template and create the UI for each dispatchable call
+1. [**Basic setup**](basic-setup). We'll need to spin up a Substrate node and create a custom pallet
+
+2. [**Runtime storage**](basic-setup). We'll need a total of 9 storage items in our pallet to keep track of the amount of Kitties; their index; their owners and their 
+owner account IDs.
+
+3. [**Dispatchable functions**](extrinsics-and-events). We'll need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `buy_kitty` and `breed_kitty`
+
+4. [**Private functions**](create-kitties). We'll write 2 helper functions to handle randomness: `increment_nonce` and `random_hash`
+
+5. [**Helper functions**](interacting-functions).We'll write 2 helper functions for our dispatchable functions: `mint` and `transfer_from`.
+
+6. [**Rendering storage items**](kitties-frontend). We'll connect to a React front-end template and create the UI for each dispatchable call.
 
 :::tip
 Follow each step at your own pace &mdash; the goal is for you to learn and the best way to do that is to try it yourself!
@@ -45,7 +54,7 @@ Use the side panel to write your code as you follow along. Before moving on from
 builds without any error.
 :::
 
-## Steps
+<!-- ## Steps
 
 ### [1. Basic set-up](basic-setup) 
 
@@ -75,4 +84,4 @@ builds without any error.
 - Connect your chain to the Substrate front-end template
 - Use PolkadotJS API to customize the frontend
 - Interact with your chain 
-
+ -->
