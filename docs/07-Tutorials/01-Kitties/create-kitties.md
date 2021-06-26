@@ -4,21 +4,26 @@ keywords: pallet design, intermediate, runtime
 code: code/kitties-tutorial/02-create-kitties.rs
 ---
 
-# Part II: Implementing uniqueness and remaining storage items
+# Part II: Uniqueness, custom types and storage maps
 
 _In this part of the tutorial, we'll build out the components of our pallet
 needed to manage the creation and ownership of our Kitties._
 
 ## Learning outcomes
 
-:arrow_right: Writing a custom struct and using them in storage.
+:arrow_right: Writing a custom struct and using it in storage.
+
+:arrow_right: Creating a custom type and implementing it for your pallet's `Config` trait.
 
 :arrow_right: Using the Randomness trait in a helper function.
 
 :arrow_right: Adding and using `StorageMap` items to a pallet.
 
 ## Overview
-
+This part of the tutorial dives into some pillar concepts for developing pallets with FRAME. Ontop of learning 
+how to use existing types and traits, you'll learn how create your own (*FRAME doesn't have a concept of Gender!*). At the end
+of this part, you will have implemented all remaining storage items according to the logic outlined for the Substrate Kitty dApp
+[in the overview of this tutorial](/overview).
 ## Steps
 
 ### 1. Create the Kitty struct
@@ -59,7 +64,7 @@ We use the derive macro to include [various helper traits][prelude-traits-rustdo
 
 #### C. Adding the `Hash` dependency
 
-Looking at the items of our struct from step 1A, we can deduce the following types: **`Hash`** for `id` and `dna`; **`Balance`** for `price`; and **`Gender`** for `gender`.
+Looking at the items of our struct from [step 1A](/docs/Tutorials/Kitties/create-kitties#a-what-information-to-include), we can deduce the following types: **`Hash`** for `id` and `dna`; **`Balance`** for `price`; and **`Gender`** for `gender`.
 
 For `Gender`, we'll need to build out our own custom enum and helper functions. Similarly, `Balance`
 will be something we'll later define in our configuration trait. However, we can start by importing
@@ -74,7 +79,7 @@ the dependencies are declared:
 In doing so, you've given your pallet access to Substrate's [`Hash`][hash-rustdocs] type which will be the type for your Kitty ID and DNA.
 
 :::tip Your turn!
-Now that you know the different types your Kitty struct requires, start writing the `Kitty` struct.
+Now that you know the different types your `Kitty` struct will require, start writing it!
 
 **HINT**: it will take `Hash`, `Balance` and `Gender` as its types.
 Have a look at [this how-to guide](../../pallet-design/storage-value-struct) in case you get stuck.
@@ -82,17 +87,18 @@ Have a look at [this how-to guide](../../pallet-design/storage-value-struct) in 
 
 #### D. Adding the custom `Gender` dependency
 
-We know that our struct requires a custom type, called `Gender`. It requires the following two parts:
+We've just created a struct that requires a custom type called `Gender`. This type will handle an enum defining our Kitty's gender. To create it, you'll build out the following parts:
 
 1. **An enum declaration**, which specifies `Male` and `Female` values.
 2. **A function to configure a defaut value**, based on the enum.
 
-Setting up our `Gender` enum this way allows us to derive a Kitty's gender by the randomness
+:::info 
+Setting up our `Gender` enum using a function to configure its default  value will allow us to derive a Kitty's gender by passing in the randomness
 created by each Kitty's DNA.
-
+:::
 #### E. Enums
 
-Writing enums requires us to use the derive macro which must precede the enum declaration.
+Writing enums requires us to use the [derive macro][derive-macro-rust] which must precede the enum declaration.
 
 A typical enum would be structured as such:
 
@@ -115,7 +121,7 @@ This would look something like this:
 	}
 ```
 
-It's like saying: we're giving our enum a special trait that allows us to initialize it to a specific value.
+> 💡 **It's like saying:** let's give our enum a special trait that allows us to initialize it to a specific value.
 
 Great, we now know how to create a custom struct and specify its default value. But what about providing
 a way for a Kitty struct to be assigned a gender value? For that we need to learn one more thing.
@@ -125,7 +131,7 @@ a way for a Kitty struct to be assigned a gender value? For that we need to lear
 Configuring a struct is useful in order to pre-define a value in our struct. For example, if we want to
 set a value according to what another function returns. In our case we have a similar situation where
 we need to configure our Kitty struct in such a way that sets `Gender` according to a Kitty's DNA. We'll
-only be using this function when we're creating Kitties but let's first learn how to write it and get it out
+only be using this function when we get to creating Kitties but let's first learn how to write it and get it out
 of the way.
 
 When you're implementing the configuration trait for a struct inside a FRAME pallet, you're doing the
@@ -156,7 +162,7 @@ of `Gender` for our `Kitties` struct.
 **Hint**: reuse the logic in `special_function` &mdash; that's how we'll retrieve the gender of our Kitties!
 :::
 
-### 2. Create and use the Randomness trait
+### 2. Implementing Randomness
 
 If we want to be able to tell these Kitties apart, we need to start giving them unique properties!
 For our dApp, we need to generate a unique ID for each Kitty and some random DNA.
@@ -178,7 +184,7 @@ Here's what our random hashing function looks like:
 
 In order to implement the `Randomness` trait for our runtime, we must:
 
-**1. Specify it in our pallet's configuration trait**
+**1. Specify it in our pallet's configuration trait.**
 
 The `Randomness` trait from `frame_support` requires specifying it with a paramater to replace the `Output` generic.
 Take a look at the documentation and the source code implementation to understand how this works. For our purposes,
@@ -203,6 +209,10 @@ impl pallet_kitties::Config for Runtime {
 	type KittyRandomness = RandomCollectiveFlip;
 }
 ```
+:::tip 
+Check out this [how-to guide](/docs/pallet-design/randomness) on implementing randomness in case you get stuck.
+:::
+#### Nonce
 
 :::note why our random hashing function needs a nonce
 
@@ -211,8 +221,6 @@ Since `random_seed()` does not change for multiple transactions in the same
 block, and since it may not even generate a
 random seed for the first 80 blocks, we need to create a nonce for our pallet to manage and use in our private `random_hash` function.  
 :::
-
-#### Nonce
 
 We'll use the nonce provided by [`frame_system::AccountInfo`][nonce-rustdocs] and create a storage item to keep track of it as we modify it.
 
@@ -241,7 +249,7 @@ fn increment_nonce() -> DispatchResult {
 
 :::tip Your turn!
 
-Feel free to use the code snippets above in your pallet. Make sure to
+Feel free to use the code snippets above. Make sure to
 include the `Nonce` storage item among the section with your other storage items, and the
 `increment_nonce()` function in the helper function section.
 :::
@@ -253,50 +261,24 @@ for our storage items. This means that a single unique key will point to our Kit
 will point to that key.
 
 The ID on the Kitty object will serve that purpose, but we need to make sure that the ID for a new Kitty is always unique.
-We can do this with a new storage item Kitties which will be a mapping from ID (Hash) to the Kitty object.
+We can do this with a new storage item `Kitties` which will be a mapping from an ID (Hash) to the Kitty object.
 
 With this object, we can easily check for collisions by simply checking whether this storage item already contains a mapping
-using a particular ID. For example:
+using a particular ID. For example, from inside a dispatchable function we could check using:
 
 ```rust
 ensure!(!<Kitties<T>>::exists(new_id), "This new id already exists");
 ```
 
-:::tip Your turn!
-Update your pallet to include the helper functions to handle a Nonce update and a random generator. We will use that random data to create unique IDs which
-will be the basis for our NFT logic.
-:::
+You'll be implementing the `StorageMap` for `Kitties` in the next section. 
 
 ### 3. Include storage items
 
-There's a total of 9 storage items we'll be needing
+We'll be needing a total of 9 storage items
 for our Kitty pallet. We already included `Nonce` and we've already created the basis for
 our Kitty object &mdash; we just need to implement a way to keep track of them now!
 
-Every storage item declaration will follow a similar
-pattern as when we wrote the storage item for `Nonce`. The only difference is which data structure type each storage item requires.
-
-To create a storage instance for the Kitty struct,
-we'll be using `StorageMap` &mdash; a hash-map provided
-to us by FRAME. This differs from the storage instance we created for
-`Nonce` which, because we want it to keep track of a single `u64` value, we used `StorageValue`.
-
-Here's the basic pattern for declaring a storage map storage item, showing the storage for Kitty objects as an example:
-
-```rust
-	#[pallet::storage]
-    #[pallet::getter(fn kitty)]
-    pub(super) type Kitties<T: Config> =
-        StorageMap<_, Twox64Concat, T::Hash, Kitty<T::Hash, T::Balance>, ValueQuery>;
-```
-
-Breaking it down, we declare the storage type and assign a `StorageMap` to it whereby:
-
-- the [`Twox64Concat`][2x64-rustdocs] is the hashing algorithm used.
-- a key of type `T::Hash` is used.
-- a value of type `Kitty<T::Hash, T::Balance>` is used.
-
-Our pallet's logic can be understood
+Our pallet's logic can best be understood
 by examining the storage items we'll be using. In other words, the way we define the conditions
 for reading and writing to our runtime's storage
 help us breakdown the items we'll need to enable NFT capabilities. In our case, we care about state transitions and persistance around two main concepts our runtime needs to be made aware of:
@@ -329,26 +311,59 @@ This boils down to the following storage items (in addition to `Kitties` and `No
 - `<AllKittiesIndex<T>>`: Keeps track of all the Kitties.
 :::
 
-:::tip Your turn!
-Use the storage items declared above to write the remaining storage items for your pallet.
+#### Using a `StorageMap` 
 
-**HINT**: Remember to include a getter function for each storage item &mdash; except those handling indices (they'll only get written;)) .
+Every storage item declaration will follow a similar
+pattern as when we wrote the storage item for `Nonce`. The only difference is which data structure type each storage item requires.
+
+To create a storage instance for the Kitty struct,
+we'll be using `StorageMap` &mdash; a hash-map provided
+to us by FRAME. This differs from the storage instance we created for
+`Nonce` which, because we want it to keep track of a single `u64` value, we used `StorageValue`. Here, we need our storage to keep track
+of the mapping hash IDs and Kitty objects.
+
+Here's the basic pattern for declaring a storage map storage item, showing the storage for Kitty objects as an example:
+
+```rust
+	#[pallet::storage]
+    #[pallet::getter(fn kitty)]
+    pub(super) type Kitties<T: Config> =
+        StorageMap<_, Twox64Concat, T::Hash, Kitty<T::Hash, T::Balance>, ValueQuery>;
+```
+
+Breaking it down, we declare the storage type and assign a `StorageMap` that takes:
+
+- the [`Twox64Concat`][2x64-rustdocs] hashing algorithm 
+- a key of type `T::Hash`
+- a value of type `Kitty<T::Hash, T::Balance>`
+
+:::tip Your turn!
+Use the storage items outlined above to help you finish writing the remaining storage items. Follow the same pattern
+we used for `Nonce` and `Kitties` &mdash; just remember what type each item is meant to store!
+
+**HINT**: Remember to include a getter function for each storage item &mdash; except those handling indices) .
 :::
 
-Congratulations! If you've made it this far, you now have the foundations for your pallet to
-handle the creation and ownership of your Kitties!
-
-Now's a good time to run this command to check that your pallet compiles correctly:
+Assuming you've finished implementing all of your storage items, now's a good time to check that your pallet compiles correctly:
 
 ```rust
 cargo build -p pallet-kitties
 ```
-
+:::note Congratulations! 
+If you've made it this far, you now have the foundations for your pallet to
+handle the creation and ownership of your Kitties! In this part of the tutorial, we've learnt:
+- how to write a struct and use it in a `StorageMap`
+- how to implement a custom type 
+- how to set a default enum value for a custom type
+- how to create a function to set a value for that custom type
+- how to implement the Randomness trait to write a function that generates randomness using a nonce
+- how to write `StorageMap` storage items
+:::
 ## Next steps
 
 - Create a dispatchable function that mints a new Kitty
 - Create a helper function to handle storage updates
-- Create and use an event
+- Create and use Events
 
 [default-rustdocs]: https://doc.rust-lang.org/std/default/trait.Default.html
 [randomness-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/traits/trait.Randomness.html
@@ -358,3 +373,4 @@ cargo build -p pallet-kitties
 [nonce-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_system/struct.AccountInfo.html#structfield.nonce
 [2x64-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/struct.Twox64Concat.html
 [prelude-traits-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/sp_std/prelude/index.html#traits
+[derive-macro-rust]: https://doc.rust-lang.org/reference/procedural-macros.html#derive-macros
