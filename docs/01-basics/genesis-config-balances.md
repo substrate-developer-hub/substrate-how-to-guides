@@ -6,8 +6,10 @@ keywords: basics, beginner, runtime
 # Configuring genesis for Balances
 
 _All the power to you now that you're getting the hang of things&mdash;by no means anything to show-off about, but may as well start somewhere !_
-> **Note: 📣 ** This is intended for beginners just getting started and want to get familiar with customizing 
+:::info
+This is intended for beginners just getting started and want to get familiar with customizing 
 their chain. Not all configurations will follow the same approach&mdash;this in fact is the most basic approach. Learn more in the [related material section](#related-material).
+:::
 
 ## Goal
 
