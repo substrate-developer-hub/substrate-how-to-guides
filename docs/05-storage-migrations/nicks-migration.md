@@ -135,7 +135,9 @@ NameOf::<T>::translate::<(Vec<u8>, BalanceOf<T>), _>(
 		}
 	);
 ```
-> **Note:** remove `Option` wrapping to make sure decoding works properly.
+:::note
+remove `Option` wrapping to make sure decoding works properly.
+:::
 
 #### Return the consumed weight
 

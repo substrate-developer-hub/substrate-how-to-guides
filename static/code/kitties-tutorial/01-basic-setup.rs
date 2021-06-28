@@ -12,7 +12,7 @@ pub mod pallet {
 
     #[pallet::config]
 
-    // Write your storage item for `AllKittiesCount` here.
+    // ACTION: Write your storage item for `AllKittiesCount` here.
     // HINT: Always write #[pallet::storage] before you 
     // declare any storage item.
     

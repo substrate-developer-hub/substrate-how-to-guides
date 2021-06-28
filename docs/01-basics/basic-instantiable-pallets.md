@@ -7,7 +7,9 @@ keywords: basics, intermediate, runtime
 
 _ There's gotta be a better way than re-writing the same pallet twice..._
 
-> **Note**: this is based on FRAME v1 macros.
+:::note
+This guide is based on FRAME v1 macros.
+:::
 
 ## Goal
 

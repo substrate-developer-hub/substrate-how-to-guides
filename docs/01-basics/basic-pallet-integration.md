@@ -19,7 +19,7 @@ Including a pallet that implements an event and a call for runtime.
 
 ## Overview
 
-This guide is an extension to the ["Add a Pallet to Your Runtime" tutorial][add-a-pallet-tutorial], intended as a ressource 
+This guide is an extension to the ["Add a Pallet to Your Runtime" tutorial][add-a-pallet-tutorial], intended as a resource 
 for developers new to Substrate looking to quickly integrate a pallet to their runtime.
 
 ## Steps

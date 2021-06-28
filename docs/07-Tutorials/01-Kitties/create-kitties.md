@@ -162,7 +162,7 @@ of `Gender` for our `Kitties` struct.
 **Hint**: reuse the logic in `special_function` &mdash; that's how we'll retrieve the gender of our Kitties!
 :::
 
-### 2. Implementing Randomness
+### 2. Implement on-chain randomness
 
 If we want to be able to tell these Kitties apart, we need to start giving them unique properties!
 For our dApp, we need to generate a unique ID for each Kitty and some random DNA.
@@ -202,7 +202,7 @@ modify where it's used inside our pallet.
 
 To showcase this point, we're going to implement `KittyRandomness` by assigning it to an instance of [FRAME's `RandomnessCollectiveFlip`][randomness-collective-flip-frame].
 This requires you to integrate the `RandomnessCollectiveFlip` pallet to your runtime and implement it. Once you do that, inside your
-`runtime/src/lib.rs` file, include your `KittyRandomness` type for your runtime:
+`runtime/src/lib.rs` file, include the `KittyRandomness` type for your runtime:
 
 ```rust
 impl pallet_kitties::Config for Runtime {
@@ -224,9 +224,9 @@ random seed for the first 80 blocks, we need to create a nonce for our pallet to
 
 We'll use the nonce provided by [`frame_system::AccountInfo`][nonce-rustdocs] and create a storage item to keep track of it as we modify it.
 
-So we'll need to do a couple things:
+So we'll need to do a couple things.
 
-- First, create a storage item for the nonce value:
+First, create a storage item for the nonce value:
 
 ```rust
 	#[pallet::storage]
@@ -234,7 +234,7 @@ So we'll need to do a couple things:
     pub(super) type Nonce<T: Config> = StorageValue<_, u64, ValueQuery>;
 ```
 
-- Second, create a function that increments the nonce:
+Second, create a function that increments the nonce:
 
 ```rust
 fn increment_nonce() -> DispatchResult {
@@ -281,7 +281,7 @@ our Kitty object &mdash; we just need to implement a way to keep track of them n
 Our pallet's logic can best be understood
 by examining the storage items we'll be using. In other words, the way we define the conditions
 for reading and writing to our runtime's storage
-help us breakdown the items we'll need to enable NFT capabilities. In our case, we care about state transitions and persistance around two main concepts our runtime needs to be made aware of:
+helps us breakdown the items we'll need to enable NFT capabilities. In our case, we care about state transitions and persistance around two main concepts our runtime needs to be made aware of:
 
 1. unique assets, like currency or Kitties
 2. helper datastructures, like the nonce, counters or account maps
@@ -333,9 +333,9 @@ Here's the basic pattern for declaring a storage map storage item, showing the s
 
 Breaking it down, we declare the storage type and assign a `StorageMap` that takes:
 
-- the [`Twox64Concat`][2x64-rustdocs] hashing algorithm 
-- a key of type `T::Hash`
-- a value of type `Kitty<T::Hash, T::Balance>`
+- The [`Twox64Concat`][2x64-rustdocs] hashing algorithm.
+- A key of type `T::Hash`.
+- A value of type `Kitty<T::Hash, T::Balance>`.
 
 :::tip Your turn!
 Use the storage items outlined above to help you finish writing the remaining storage items. Follow the same pattern

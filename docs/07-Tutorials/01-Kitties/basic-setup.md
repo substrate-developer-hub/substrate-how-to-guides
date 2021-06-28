@@ -46,6 +46,11 @@ And update your **`runtime/Cargo.toml`** file accordingly:
 
 - Rename `node-template-runtime` to `kitties-runtime`.
 
+:::tip Use the side panel as a scratch pad! [**coming soon**]
+Each part will have incomplete code with comments to guide you on completing it. Make sure to only use it as a scratch-pad
+and copy it to your IDE &mdash; it doesn't save your work!
+:::
+
 #### Creating and integrating `pallet_kitties`
 
 Now that your node template is ready, we can proceed to creating our pallet.
@@ -91,7 +96,7 @@ read more about pallets in this [knowledgebase article][pallets-kb].
 
 Every FRAME pallet has:
 
-- a set of `frame_support` and `frame_system` dependencies
+- a set of `frame_support` and `frame_system` dependencies.
 - required [attribute macros][macros-kb] (i.e. configuration traits, storage items, hooks and function calls).
 
 :::note
