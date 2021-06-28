@@ -26,7 +26,7 @@ for developers new to Substrate looking to quickly integrate a pallet to their r
 
 ### 1. Import your pallet
 
-Assuming a pallet called `pallet_something` is created, the first step is to import it in `runtime/lib.rs`:
+Assuming a pallet called `pallet_something` is created, the first step is to import it in `runtime/src/lib.rs`:
 
 ```rust
 // Import your pallet.
