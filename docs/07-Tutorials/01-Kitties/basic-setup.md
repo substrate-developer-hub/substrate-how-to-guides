@@ -93,7 +93,7 @@ read more about pallets in this [knowledgebase article][pallets-kb].
 
 Every FRAME pallet has:
 
-- a set of `frame_support` and `frame_system` dependencies
+- a set of `frame_support` and `frame_system` dependencies.
 - required [attribute macros][macros-kb] (i.e. configuration traits, storage items, hooks and function calls).
 
 :::note

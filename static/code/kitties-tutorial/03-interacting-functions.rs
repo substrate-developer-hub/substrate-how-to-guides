@@ -50,7 +50,7 @@ pub mod pallet {
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 	
 		/// The type of Random we want to specify for runtime.
-		type Randomness: Randomness<H256>; 
+		type KittyRandomness: Randomness<H256>; 
 	}
 
 	// Errors.
