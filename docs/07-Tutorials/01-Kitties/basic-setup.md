@@ -7,7 +7,7 @@ code: code/kitties-tutorial/01-basic-setup.rs
 # Part I: Basic set-up
 
 :::note
-This workshop assumes that you have already installed the prerequisites for building with Substrate on your machine.
+This tutorial assumes that you have already installed the prerequisites for building with Substrate on your machine.
 If you haven't already, head over to our [installation guide][installation].
 :::
 
@@ -17,7 +17,7 @@ If you haven't already, head over to our [installation guide][installation].
 
 :arrow_right: How to repurpose the Substrate Node Template.
 
-:arrow_right: Create a single value storage item to keep track of a `u64` value.
+:arrow_right: How to create a storage item to keep track of a single `u64` value.
 
 ## Overview
 
@@ -86,6 +86,11 @@ be using `mock.rs` and `tests.rs` towards to end of this tutorial when we write 
 
 At this point, we're in a good place to lay out the basic structure of our pallet, after which we can check if our node builds without error. By structure, we're talking about outlining the parts inside the `lib.rs` file of our newly created `pallet_kitties`.
 
+:::info
+Refer to [this guide](./01-basics/basic-pallet-integration) to learn the basic pattern for integrating a new pallet to your runtime and
+read more about pallets in this [knowledgebase article][pallets-kb].  
+:::
+
 Every FRAME pallet has:
 
 - a set of `frame_support` and `frame_system` dependencies
@@ -115,11 +120,6 @@ pub mod pallet {
     impl<T: Config> Pallet<T> {}
 }
 ```
-
-:::info
-Refer to [this guide](./01-basics/basic-pallet-integration) to learn the basic pattern for integrating a new pallet to your runtime and
-read more about pallets in this [knowledgebase article][pallets-kb].  
-:::
 
 Now that we have a pallet called `pallet_kitties` we must implement it for our runtime. Since we haven't yet
 defined anything in our pallet, our `Config` implementation is pretty simple.
@@ -194,7 +194,7 @@ From the previous step, your pallet should contain a storage item called `AllKit
 single `u64` value. As part of the basic setup, we're doing great!
 
 :::info
-As mentioned in the [overview of this workshop](overview),
+As mentioned in the [overview of this tutorial series](overview),
 you'll be implementing a total of 9 storage items which you'll discover as you
 write out your pallet's logic in the next parts.
 :::
@@ -210,11 +210,11 @@ It should compile error-free. If not, go back and check that all the macros are 
 FRAME dependencies.
 
 :::note Congratulations!
- You've completed the first part of this workshop. At this stage, you've learnt the various patterns for:
+ You've completed the first part of this series. At this stage, you've learnt the various patterns for:
 
-- customizing the Substrate node template and including a custom pallet
-- building a Substrate chain and checking that a target pallet compiles
-- declaring and using a `u64` storage item
+- Customizing the Substrate node template and including a custom pallet.
+- Building a Substrate chain and checking that a target pallet compiles.
+- Declaring and using a `u64` storage item.
 :::
 
 ## Next steps

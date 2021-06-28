@@ -3,8 +3,8 @@ sidebar_position: 1
 keywords: pallet design, intermediate, runtime
 ---
 
-# 😺 Substrate Kitties Workshop
-_This is a 5 part series workshop that steps you through building a dapp for managing Substrate Kitties._
+# 😺 Substrate Kitties
+_This is a 5 part tutorial series that steps you through building a dApp for managing Substrate Kitties from scratch._
 
 ## Learning outcomes
 
@@ -18,20 +18,20 @@ _This is a 5 part series workshop that steps you through building a dapp for man
 
 ## Overview
 
-Welcome to the Substrate Kitties workshop. This 5 part series workshop will teach you everything you need to know to build a blockchain designed to handle the creation and ownership management of Substrate Kitties. Before jumping into the next section, let's have a look at what we'll be doing. 
+Welcome to the Substrate Kitties tutorial. This 5 part tutorial series will teach you everything you need to know to build a blockchain designed to handle the creation and ownership management of Substrate Kitties. Before jumping into the next section, let's have a look at what we'll be doing. 
 
 :::note 
 You may find it useful to come back to this page
-as you progress through this workshop &mdash; just to keep track of the bigger picture.
+as you progress through each part &mdash; just to keep track of the bigger picture.
 :::
 ### What we're building
-In this tutorial, we'll intentionally keep things simple so that you can decide on how you'd like to improve your Substrate Kitties chain.  For the purposes of this workshop, Kitties really can only do the following things:
+In this tutorial, we'll intentionally keep things simple so that you can decide on how you'd like to improve your Substrate Kitties chain.  For the purposes of what we're building, Kitties really can only do the following things:
 
-:smiley_cat: be created either by some original source or by being bred using existing Kitties.
+:smiley_cat: Be created either by some original source or by being bred using existing Kitties.
 
-:smirk_cat: be sold at a price set by their owner
+:smirk_cat: Be sold at a price set by their owner.
 
-:pouting_cat: be transferred from one owner to another
+:pouting_cat: Be transferred from one owner to another.
 
 ---
 Bringing things down to a more granular level, this translates to the following application design:

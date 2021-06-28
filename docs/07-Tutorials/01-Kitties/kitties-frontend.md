@@ -4,26 +4,28 @@ keywords: pallet design, intermediate, runtime
 ---
 
 # Part V: Kitties front-end
-_Build the custom frontend for the Substrate Kitties workshop._
+_[WIP] Build the custom frontend for our Substrate Kitties._
 
 ## Learning outcomes
 
-- Connect your chain to the Substrate front-end template
-- Customize the template using PolkadotJS API
-- Interact with your chain 
+:arrow_right: Connect your chain to the Substrate front-end template.
+
+:arrow_right: Use PolkadotJS API to customize template.
+
+:arrow_right: [WIP]
 
 ## Overview
 Now that we have completed runtime development, it is time to build a user interface which can easily access and interact with our 
-custom storage items and functions. We'll be using the ---- clone and install it to be able to complete this part of the workshop.
+custom storage items and functions. We'll be using the frontend template, a React app with some basic functionality. [Install it][substrate-frontend-template] to be able to complete this part of the workshop. 
 
 The Substrate frontend template comes with a number of prebuilt features, including:
 
-- A wallet to manage and create keys + accounts
-- An address book to get details about accounts
-- A transfer function to send funds between accounts
-- A runtime upgrade component to make easy updates to your runtime
-- A key/value storage modification UX
-- A custom transaction submitter
+- A wallet to manage and create keys + accounts.
+- An address book to get details about accounts.
+- A transfer function to send funds between accounts.
+- A runtime upgrade component to make easy updates to your runtime.
+- A key/value storage modification UX.
+- A custom transaction submitter.
 
 Since this course is primarily about runtime development, what you will learn in this section will not be as comprehensive as before, 
 however it should empower you with the tools needed to extend your own knowledge and abilities.
@@ -37,7 +39,7 @@ us to read our storage items, and pass in inputs to allows users to make extrins
 dispatchable functions.
 
 Let's sketch out what we'll want our Kitty frontend to look like, separating our node's capabilities by the React cards 
-we'll need to render and the buttons each card will contain:
+we'll need to render as well as the buttons each card will contain:
 
 **Cards**
 1. Create Kitty

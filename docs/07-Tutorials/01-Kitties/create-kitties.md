@@ -352,12 +352,12 @@ cargo build -p pallet-kitties
 :::note Congratulations! 
 If you've made it this far, you now have the foundations for your pallet to
 handle the creation and ownership of your Kitties! In this part of the tutorial, we've learnt:
-- how to write a struct and use it in a `StorageMap`
-- how to implement a custom type 
-- how to set a default enum value for a custom type
-- how to create a function to set a value for that custom type
-- how to implement the Randomness trait to write a function that generates randomness using a nonce
-- how to write `StorageMap` storage items
+- How to write a struct and use it in a `StorageMap`.
+- How to implement a custom type.
+- How to set a default enum value for a custom type.
+- How to create a function to set a value for that custom type.
+- How to implement the Randomness trait to write a function that generates randomness using a nonce.
+- How to write `StorageMap` storage items.
 :::
 ## Next steps
 
