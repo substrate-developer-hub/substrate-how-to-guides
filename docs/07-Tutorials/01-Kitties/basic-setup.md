@@ -37,20 +37,14 @@ our runtime logic. Start by cloning the node template:
 git clone git@github.com:substrate-developer-hub/substrate-node-template.git
 ```
 
-Using your IDE, go ahead and rename the template node by modifying the details in the **`/node/Cargo.toml`** file.
-For our purposes, what's important is to:
+Using your IDE, go ahead and rename the template node by modifying the details in the **`/node/Cargo.toml`** file:
 
-- rename `node-template` to `substratekitties`
-- rename `node-template-runtime` to `kitties-runtime`
+- Rename `node-template` to `substratekitties`.
+- Rename `node-template-runtime` to `kitties-runtime`.
 
 And update your **`runtime/Cargo.toml`** file accordingly:
 
-- rename `node-template-runtime` to `kitties-runtime`
-
-:::tip Use the side panel as a scratch pad! [**coming soon**]
-Each part will have incomplete code with comments to guide you on completing it. Make sure to only use it as a scratch-pad
-and copy it to your IDE &mdash; it doesn't save your work!
-:::
+- Rename `node-template-runtime` to `kitties-runtime`.
 
 #### Creating and integrating `pallet_kitties`
 
@@ -79,10 +73,14 @@ substratekitties
 |           +-- tests.rs   <-- *Remove* contents
 ```
 
-Go ahead and remove all the contents of `lib.rs` as well as `mock.rs` and `tests.rs`.
+Go ahead and remove all the contents of `lib.rs` as well as `mock.rs` and `tests.rs`. **We won't be learning about 
+using `mock.rs` and `tests.rs` in this tutorial. Have a look at [this how-to guide](/docs/testing/test-transfer) if
+you're curious to learn how testing works.** All of our pallet's logic will live inside `lib.rs`.
 
-All of our pallet's logic will live inside `lib.rs`. **We'll
-be using `mock.rs` and `tests.rs` towards to end of this tutorial when we write unit tests for our dApp.**
+:::tip Use the side panel as a scratch pad! [**coming soon**]
+Each part will have incomplete code with comments to guide you on completing it. Make sure to only use it as a scratch-pad
+and copy it to your IDE &mdash; it doesn't save your work!
+:::
 
 At this point, we're in a good place to lay out the basic structure of our pallet, after which we can check if our node builds without error. By structure, we're talking about outlining the parts inside the `lib.rs` file of our newly created `pallet_kitties`.
 
