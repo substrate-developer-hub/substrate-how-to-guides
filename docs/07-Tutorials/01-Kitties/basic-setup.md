@@ -87,7 +87,7 @@ be using `mock.rs` and `tests.rs` towards to end of this tutorial when we write 
 At this point, we're in a good place to lay out the basic structure of our pallet, after which we can check if our node builds without error. By structure, we're talking about outlining the parts inside the `lib.rs` file of our newly created `pallet_kitties`.
 
 :::info
-Refer to [this guide](./01-basics/basic-pallet-integration) to learn the basic pattern for integrating a new pallet to your runtime and
+Refer to [this guide](/docs/basics/basic-pallet-integration) to learn the basic pattern for integrating a new pallet to your runtime and
 read more about pallets in this [knowledgebase article][pallets-kb].  
 :::
 
@@ -124,7 +124,7 @@ pub mod pallet {
 Now that we have a pallet called `pallet_kitties` we must implement it for our runtime. Since we haven't yet
 defined anything in our pallet, our `Config` implementation is pretty simple.
 
-In `runtime/lib.rs` include this
+In `runtime/src/lib.rs` include this
 line after the other trait implementations:
 
 ```rust

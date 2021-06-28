@@ -202,7 +202,7 @@ modify where it's used inside our pallet.
 
 To showcase this point, we're going to implement `KittyRandomness` by assigning it to an instance of [FRAME's `RandomnessCollectiveFlip`][randomness-collective-flip-frame].
 This requires you to integrate the `RandomnessCollectiveFlip` pallet to your runtime and implement it. Once you do that, inside your
-`runtime/lib.rs` file, include your `KittyRandomness` type for your runtime:
+`runtime/src/lib.rs` file, include your `KittyRandomness` type for your runtime:
 
 ```rust
 impl pallet_kitties::Config for Runtime {

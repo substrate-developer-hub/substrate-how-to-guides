@@ -46,7 +46,7 @@ Add a generic type for `Instance` in the Config trait, Event type, and Store tra
 
 ### 2. Configure your runtime
 
-Include two instances of `mint_token` in `runtime/lib.rs`:
+Include two instances of `mint_token` in `runtime/src/lib.rs`:
 
 ```rust
 /* --snip-- */

@@ -42,7 +42,7 @@ For our purposes, what's important is to:
 - rename `node-template` to `substratekitties`
 - rename `node-template-runtime` to `kitties-runtime`
 
-And update your **`runtime/Cargo.toml`** file accordingly:
+And update your **`runtime/src/Cargo.toml`** file accordingly:
 
 - rename `node-template-runtime` to `kitties-runtime`
 

@@ -136,7 +136,7 @@ For this method, make sure to:
 
 ### 5. Supply the constant value for runtime
 
-In `runtime/lib.rs`, declare the values for your pallet's runtime implementation of `MaxAddend` and `ClearFrequency`:
+In `runtime/src/lib.rs`, declare the values for your pallet's runtime implementation of `MaxAddend` and `ClearFrequency`:
 
 ```rust
 parameter_types! {

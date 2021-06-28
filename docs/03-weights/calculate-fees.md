@@ -29,7 +29,7 @@ can be useful to modify the way fees are calculated to charge fees with more acc
 ## Steps
 
 ### 1. Write the `LinearWeightToFee` struct
-In `runtime/libs.rs`, create the struct called `LinearWeightToFee` that implements `WeightToFeePolynomial`. It must return
+In `runtime/src/libs.rs`, create the struct called `LinearWeightToFee` that implements `WeightToFeePolynomial`. It must return
 a smallvec of `WeightToFeeCoefficient` integers:
 
 ```rust
