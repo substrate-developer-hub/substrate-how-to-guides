@@ -1,4 +1,5 @@
 // pallets/kitties/lib.rs
+#![cfg_attr(not(feature = "std"), no_std)]
 
 pub use pallet::*;
 #[frame_support::pallet]
@@ -13,6 +14,7 @@ pub mod pallet {
     pub struct Pallet<T>(_);
 
     #[pallet::config]
+    pub trait Config: frame_system::Config {}
 
     // Stores the total amount of Kitties in existence.
 	#[pallet::storage]
@@ -27,7 +29,6 @@ pub mod pallet {
     // HINT: Take a look at what each one is responsible for
     // to understand which Storage types to use.
 
-    #[pallet::hooks]
 
     #[pallet::call]
     impl<T: Config> Pallet<T> {}

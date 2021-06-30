@@ -215,7 +215,7 @@ Assuming that you successfully built your chain, let's run it and use the Polkad
 In your chain's project directory, run:
 
 ```bash
-./target/release/substratekitties --tmp --dev
+./target/release/kitties-node --tmp --dev
 ```
 
 By doing this, we're specifying to run a temporary chain in developer mode, so as not to need to purge storage each time we want to start a fresh chain. 

@@ -1,4 +1,5 @@
 // pallets/kitties/lib.rs
+#![cfg_attr(not(feature = "std"), no_std)]
 
 pub use pallet::*;
 #[frame_support::pallet]
@@ -11,12 +12,11 @@ pub mod pallet {
     pub struct Pallet<T>(_);
 
     #[pallet::config]
+    pub trait Config: frame_system::Config {}
 
     // ACTION: Write your storage item for `AllKittiesCount` here.
     // HINT: Always write #[pallet::storage] before you 
     // declare any storage item.
-    
-    #[pallet::hooks]
 
     #[pallet::call]
     impl<T: Config> Pallet<T> {}

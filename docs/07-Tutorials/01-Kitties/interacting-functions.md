@@ -212,7 +212,7 @@ all geared up to run your chain and start interacting with all the new capabilit
 Build and run your chain using the following commands:
 ```bash
 cargo build --release 
-./target/release/substratekitties --dev
+./target/release/kitties-node --dev
 ```
 
 Now check your work using the Polkadot-JS Apps UI just like [we did in the previous part](/docs/Tutorials/Kitties/dispatchables-and-events#5-testing-with-polkadotjs-apps). Once your chain is running and connected to the PolkadotJS Apps UI, perform these manual checks:
