@@ -18,8 +18,9 @@ function HomepageHeader() {
             className="button button--secondary button--lg"
             to="/docs/basics/basic-pallet-integration"
           >
-            Get Started    
+            Learn   
           </Link>
+          &nbsp; &nbsp;
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro"
