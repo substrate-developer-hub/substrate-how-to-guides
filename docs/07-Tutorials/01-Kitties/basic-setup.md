@@ -25,7 +25,7 @@ Before we can start making Kitties, we first need to do a little groundwork. Thi
 
 ## Steps
 
-### 1. Getting started with the node template
+### 1. Get started with the node template
 
 The [Substrate Node Template][substrate-node-template] provides us with an "out-of-the-box" blockchain node. Our biggest advantage
 in using it are that both networking and consensus layers are already built and all we need to focus on is building out
@@ -93,7 +93,7 @@ my-substratekitties
 > you're curious to learn how testing works.** 
 
 
-Follow step 1-3 as depicted in the folder structure above:
+Follow steps 1-3 as depicted in the folder structure above:
 1. Rename the `template` folder to `kitties`;
 2. Go to the `Cargo.toml` file of the same folder and replace `pallet-template` with `pallet-kitties`. This will be the name of
 the pallet as our runtime refers to it.
@@ -125,6 +125,19 @@ std = [
     /*--snip--*/
 ]
 ```
+Similarily, we need to update our project's `Cargo.toml` file (at the root of our project's directory):
+
+```rust
+[profile.release]
+panic = 'unwind'
+
+[workspace]
+members = [
+    'node',
+    'pallets/template',   // <-- Replace this with 'pallets/kitties', 
+    'runtime',
+]
+```
 
 :::info
 Refer to [this guide](/docs/basics/basic-pallet-integration) to help your learn these basic patterns. You can also read more about pallets in this [knowledgebase article][pallets-kb].  
@@ -141,7 +154,7 @@ of a node template and how things are wired up. To make sure things are clear le
 - **We've renamed *pallet-template* to *pallet-kitties*.** This is the name of our pallet as our runtime understands it. 
 :::
 
-### 2. Writing out the structure for `pallet_kitties`
+### 2. Write out the structure for `pallet_kitties`
 
 Now that your node template is ready, we can proceed to start writing our pallet.
 
