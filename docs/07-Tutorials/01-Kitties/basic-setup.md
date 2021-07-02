@@ -54,8 +54,9 @@ The easiest way to get this done is to use the "search and replace" functionalit
     - **In `/runtime/Cargo.toml`** in 1 place: the name under `[package]`.
 - **Replace all instances of `node_template_runtime` with `kitties_runtime`.** Specifically:
     - **In `chain_spec.rs` in 1 place.**
-    - **In `commands.rs` in 2 places.**
+    - **In `command.rs` in 2 places.**
     - **In `service.rs` in 3 places.** 
+    - **In `rpc.rs` in 1 place.**
 
 #### Renaming for our pallet
 The node template already comes with a template pallet and folder structure that we can re-use. Every pallet 
@@ -188,6 +189,10 @@ pub mod pallet {
 
     #[pallet::config]
     pub trait Config: frame_system::Config {}
+    
+    // ACTION (To-do at the end of this tutorial) : Write your storage item for `AllKittiesCount` here.
+    // HINT: Always write #[pallet::storage] before you 
+    // declare any storage item.
 
     #[pallet::call]
     impl<T: Config> Pallet<T> {}
@@ -254,7 +259,7 @@ properly configured. In the next steps we will start writing the storage items o
 
 ### 4. Include a storage item to track all Kitties
 
-Let's start by adding the most simple logic we can to our runtime: a function which stores a variable in runtime.
+Let's start by adding the most simple logic we can to our runtime: a function which stores a variable in runtime. 
 
 To do this we'll use [`StorageValue`][storagevalue-rustdocs] from Substrate's [storage API][storage-api-rustdocs] which is a trait that depends
 on the storage macro.
@@ -268,7 +273,7 @@ pub(super) type SomeStorageValue <T: Config> = StorageValue <
     _,
     u64,
     ValueQuery,
->
+>;
 ```
 
 With that declared, we can use the various functions from Substrate's storage API to read and write to
@@ -287,7 +292,7 @@ storage. For example, using `get()` and `put()` would look like:
 
 :::tip Your turn!
 Our Kitties dApp will need to keep track of a number of things. The first will be the number of Kitties.
-Write a storage item to keep track of all Kitties, call it `AllKittiesCount`.
+Write a storage item to keep track of all Kitties, call it `AllKittiesCount`. You need to write this code in `kitties/src/lib.rs`
 
 **Hint:** follow the same pattern as with the example storage value above, `SomeStorageValue`.
 :::
