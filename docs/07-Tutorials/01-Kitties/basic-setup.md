@@ -217,7 +217,7 @@ Remove `pub use pallet_template;` &mdash; it no longer exists at this point.
 ```rust
 impl pallet_kitties::Config for Runtime {}
 ```
-Be sure to remove `impl pallet_template::Config for Runtime {}` entirely as well.
+Be sure to remove the `impl pallet_template::Config for Runtime` clause entirely as well.
 
 > Since our Kitties pallet doesn't do anything yet, we don't have anything to implement for our runtime! Part II of this series 
 > will dive into adding traits to implement for our runtime.
@@ -289,7 +289,7 @@ storage. For example, using `get()` and `put()` would look like:
 Our Kitties dApp will need to keep track of a number of things. The first will be the number of Kitties.
 Write a storage item to keep track of all Kitties, call it `AllKittiesCount`.
 
-**Hint:** follow the same pattern as with `SomeStorageValue`.
+**Hint:** follow the same pattern as with the example storage value above, `SomeStorageValue`.
 :::
 
 ### 5. Build and check your pallet
