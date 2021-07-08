@@ -19,6 +19,7 @@ looking to take their Substrate chains to becoming a parachain.
 - [How to set-up your runtime and client](/docs/parachains/setup-runtime-and-client)
 
 ## 3. Parachain runtime upgrades
+- 
 - [How to use the schedular pallet for a small multi-block runtime migration](/docs/parachains/multiblock-runtime-migration)
 - [How to use versioned storage for a large runtime migration](/docs/parachains/large-storage-migration)
 
@@ -29,5 +30,5 @@ looking to take their Substrate chains to becoming a parachain.
 
 ## 5. Crowdloans
 
-- [How to create a crowdloan for a ParaID](/docs/parachains/crowdloan-paraid)
+- [How to create a crowdloan for a ParaID](https://wiki.polkadot.network/docs/learn-crowdloans)
 - [How to receive crowdloan contributions](/docs/parachains/crowdloan-contributions)

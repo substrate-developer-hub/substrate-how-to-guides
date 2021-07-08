@@ -54,15 +54,22 @@ benchmarking for additional information.
 // Change weights for each custom pallet - maybe this is its own separate HTG
 
 #### Set block weight limit 
+
+It is recommended to have a block weight limit (block production time) of 0,5 seconds in the beginning due to uncertainties in block execution time. As the execution time of the network stabilizes the weights limit can be increased to 2 seconds. 
+
 // TODO: Show what this means: "As the execution time of the network stabilizes the weights limit can be increased to 2 seconds. "
 
 ### 3. Runtime deployment
-When launching a parachain, it is important to use the compressed version of the runtime to lower the amount of data being transferred.
+ - When launching a parachain, it is important to use the __compressed version of the runtime__ to lower the amount of data being transferred.
 
-// TODO: What does this mean in terms of what the reader needs to look for in their projects?
-// Can we show how to check if the "changes are too big" ? Whats the threshold of combined runtimes past and current until its "too big" ?
+ - If the runtime is included in the state proof, ensure the PoV block (the set of extrinsics, including the new runtime, the PoV state proof, potentially the old runtime) fits within the PoVBlock size limit. If the runtime is not included in the state proof, the size limit of the new runtime will be much higher.
 
-// TODO: a step-through of what limiting the functionality with filters looks like.
+ - It is recommended to launch a parachain with limited functionality and gradually increase it with runtime upgrades. The reason behind that is that during a runtime upgrade both the previous runtime and the new runtime are included in the PoVBlock and therefore if the changes are large enough the block might be rejected by the Relay Chain due to PoVBlock size limits.
+
+- You can check the maximum PoVBlock size [here](https://github.com/paritytech/polkadot/blob/a620156c0cdb46991b8eae89b99d1941aa8d9e18/primitives/src/v1/mod.rs#L206) or in the polkadot-js apps UI (go to Developers -> ParachainsConfiguration ->  ActiveConfiguration)
+
+- Here you can see an example of how to [limit](https://github.com/paritytech/cumulus/blob/59cdbb6a56b1c49009413d66ba2232494563b57c/polkadot-parachains/statemine/src/lib.rs#L148) and [enable](https://github.com/paritytech/cumulus/pull/476/files#diff-09b95657e9aa1b646722afa7944a00ddc2541e8753254a86180b338d3376f93eL151) functionality with filters (Statemint)
+
 
 #### For large runtimes 
 
