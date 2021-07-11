@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 1
 keywords: parachains
 ---
 
@@ -58,7 +58,8 @@ Refer to [this guide](https://substrate.dev/cumulus-workshop/#/en/3-parachains/1
 Refer to [this instruction](https://substrate.dev/cumulus-workshop/#/en/3-parachains/4-more-nodes?id=start-the-second-collator) to add more collators.
 
 ## Examples
-- [Cumulus implementation of collator selection](https://github.com/paritytech/cumulus/blob/master/pallets/collator-selection/src/lib.rs)
+- [Cumulus implementation of collator selection](https://github.com/paritytech/cumulus/blob/master/pallets/collator-selection/src/lib.rs) with incentives using transaction fees
+- [Moonbeam implementation of collator selection](https://github.com/PureStake/moonbeam/blob/master/pallets/parachain-staking/src/lib.rs) using an inflationary monetary policy staking scheme. 
 ## Resources
 - [Parachain DevOps best practices](https://gist.github.com/lovelaced/cddc1c7234b883ee37e71cf4a1d63cac)
 - [DevOps for parachains office hour](https://drive.google.com/file/d/1-nQ_SI2XK6vxPQvORWuv68Yj0UDz5FrO/view) 
