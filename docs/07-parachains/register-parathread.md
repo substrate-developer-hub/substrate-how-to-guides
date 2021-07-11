@@ -7,7 +7,7 @@ keywords: parachains
 _ ... _
 
 ## Goal
-
+- Reserve a ParaID
 
 ## Use cases
 Launching a parachain.
