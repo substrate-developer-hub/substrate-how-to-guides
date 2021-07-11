@@ -289,7 +289,7 @@ storage. For example, using `get()` and `put()` would look like:
 Our Kitties dApp will need to keep track of a number of things. The first will be the number of Kitties.
 Write a storage item to keep track of all Kitties, call it `AllKittiesCount`.
 
-**Hint:** follow the same pattern as with `SomeStorageValue`.
+**Hint:** Follow the same pattern as with `SomeStorageValue`.
 :::
 
 ### 5. Build and check your pallet
