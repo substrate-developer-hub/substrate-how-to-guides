@@ -54,11 +54,11 @@ methods in`Currency`.
 ### 4. Write out the required functions
 
 Our pallet must contain the following key functions to ensure it handles the basic logical components for locking and
-unlocking a curency for a period of time. These are:
+unlocking a currency for a period of time. These are:
 
-- `fn lock_capital`: Locks the specified amount of tokens from the caller.
+- `fn set_lock`: Locks the specified amount of tokens from the caller.
 - `fn extend_lock`: Extends the lock period.
-- `fn unlock_all`: Releases all locked tokens.
+- `fn remove_lock`: Releases all locked tokens.
 
 #### `fn lock_capital`
 Call the `set_lock()` method from `Currency`:
