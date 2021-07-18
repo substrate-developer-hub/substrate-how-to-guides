@@ -222,7 +222,7 @@ Remove `pub use pallet_template;` &mdash; it no longer exists at this point.
 ```rust
 impl pallet_kitties::Config for Runtime {}
 ```
-Be sure to remove the `impl pallet_template::Config for Runtime` clause entirely as well.
+Be sure to remove `impl pallet_template::Config for Runtime {}` entirely as well.
 
 > Since our Kitties pallet doesn't do anything yet, we don't have anything to implement for our runtime! Part II of this series 
 > will dive into adding traits to implement for our runtime.
