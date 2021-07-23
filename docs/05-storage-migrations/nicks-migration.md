@@ -1,12 +1,12 @@
 ---
 sidebar_position: 1
-keywords: 
-    - storage migration
-    - runtime 
+keywords: storage migration, runtime
 ---
 
 # Basic storage migration
+
 _A simple migration guide using the Nicks pallet as a reference._
+
 ## Goal
 
 Write a storage migration for a pallet that adds an additional `Vec<u8>` storage item to runtime storage.
@@ -17,12 +17,13 @@ A pallet that adds a single storage item and needs to be included in a runtime u
 
 ## Overview
 
-This guide will step through a storage migration on [FRAME's Nick's pallet][nicks-frame]. It shows how to modify a storage map to 
+This guide will step through a storage migration on [FRAME's Nick's pallet][nicks-frame]. It shows how to modify a storage map to
 provide an optional field that includes a last name, and how to write the migration function ready to be triggered upon a runtime upgrade. This guide can equally be used in other contexts which require a simple storage migration that modifies a storage map in a runtime.
 
 ## Steps
 
 ### 1. Create a storage struct and utility type
+
 Write a struct to manage the previous and new storage items, first and last:
 
 ```rust
@@ -41,9 +42,10 @@ pub enum StorageVersion {
 	V2Struct,
 }
 ```
-### 2. Update your storage items 
 
-The Nicks pallet only keeps track of a lookup table in storage, but we also need to add `PalletVersion` to 
+### 2. Update your storage items
+
+The Nicks pallet only keeps track of a lookup table in storage, but we also need to add `PalletVersion` to
 declare the current version in storage. To update these items, use the `Nickname` struct in the `NameOf` item and add the new storage item `PalletVersion`:
 
 ```rust
@@ -58,26 +60,29 @@ decl_storage! {
 ```
 
 ### 3. Update all functions
+
 All of the Nicks pallet functions need to account for the new `last: Option<Vec<u8>>` storage item. Update each function by adding it as a parameter, for example:
 
 ```rust
 //--snip
-fn force_name(origin, 
-    target: <T::Lookup as StaticLookup>::Source, 
-    first: Vec<u8>, 
-    last: Option<Vec<u8>>) {  
-//--snip 
+fn force_name(origin,
+    target: <T::Lookup as StaticLookup>::Source,
+    first: Vec<u8>,
+    last: Option<Vec<u8>>) {
+//--snip
     }
 ```
+
 In addition, update all storage writes with the `Nickname` struct:
 
-```rust 
+```rust
 <NameOf<T>>::insert(&sender, (Nickname { first, last }, deposit));
 ```
 
 ### 4. Declare a migration module
 
-The migration module should contain two parts: 
+The migration module should contain two parts:
+
 1. A module indicating the deprecated storage to migrate from.
 2. The migration function which returns a weight.
 
@@ -94,6 +99,7 @@ pub mod migration {
 ```
 
 ### 5. Write `migrate_to_v2`
+
 Here's an overview of what this function needs to do:
 
 - Check the storage version to make sure a migration is needed (good practice)
@@ -108,17 +114,18 @@ Construct the `migrate_to_v2` logic around the check. If the storage migration d
 ```rust
 if PalletVersion::get() == StorageVersion::V1Bytes {
 
-    // migrate to v2 
+    // migrate to v2
 
 } else {
     frame_support::debug::info!(" >>> Unused migration!");
     0
 }
 ```
+
 #### Transform storage values
 
 Using the [`translate storage method`][translate-storage-rustdocs],
-transform the storage values to the new format. Since the existing `nick` value in storage can be made of a string separated by a 
+transform the storage values to the new format. Since the existing `nick` value in storage can be made of a string separated by a
 space, split it at the `' '` and place anything after that into the new `last` storage item. If it isn't, `last` takes the `None` value:
 
 ```rust
@@ -135,6 +142,7 @@ NameOf::<T>::translate::<(Vec<u8>, BalanceOf<T>), _>(
 		}
 	);
 ```
+
 :::note
 remove `Option` wrapping to make sure decoding works properly.
 :::
@@ -152,13 +160,14 @@ T::DbWeight::get().reads_writes(count as Weight + 1, count as Weight + 1)
 
 Go back to the pallet's functions and specify the `migrate_to_v2` function in `on_runtime_upgrade`:
 
-```rust 
+```rust
 fn on_runtime_upgrade() -> frame_support::weights::Weight {
 			migration::migrate_to_v2::<T>()
 		}
 	}
 }
 ```
+
 ### 6. Create a `types.json` file
 
 Put the new storage types in a `types.json` which you will need to trigger the migration using a UI. Our new types in JSON are:
@@ -183,10 +192,13 @@ Put the new storage types in a `types.json` which you will need to trigger the m
 - [Migrating the Nicks pallet][nicks-migration-htg-diff]
 
 ## Resources
+
 #### How-to guides
+
 - [Trigger Migration using Polkadot JS](./migration-steps): learn how to trigger the migration on a live chain
 
 #### Rust docs
+
 - Rust docs for the [`Option` enum](https://doc.rust-lang.org/std/option/)
 - [`frame_support::storage::migration`](https://crates.parity.io/frame_support/storage/migration/index.html) utility docs
 

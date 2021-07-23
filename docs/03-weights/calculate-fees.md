@@ -23,12 +23,13 @@ Fees are broken down into three components:
 - **Weight fee** - A fee calculated from the transaction's weight. Weights quantify the time spent executing the transaction. Learn more in the recipe on weights. The conversion doesn't need to be linear, although it often is. The same conversion function is applied across all transactions from all pallets in the runtime.
 - **Fee Multiplier** - A multiplier for the computed fee, that can change as the chain progresses.
 
-FRAME provides the [transaction payment pallet][transaction-frame] for calculating and collecting fees for executing transactions. It 
-can be useful to modify the way fees are calculated to charge fees with more accuracy to your users. This guides steps through the process of customizing `WeightToFee` for your runtime's implementation of `pallet_transaction_payment`. 
+FRAME provides the [transaction payment pallet][transaction-frame] for calculating and collecting fees for executing transactions. It
+can be useful to modify the way fees are calculated to charge fees with more accuracy to your users. This guides steps through the process of customizing `WeightToFee` for your runtime's implementation of `pallet_transaction_payment`.
 
 ## Steps
 
 ### 1. Write the `LinearWeightToFee` struct
+
 In `runtime/src/libs.rs`, create the struct called `LinearWeightToFee` that implements `WeightToFeePolynomial`. It must return
 a smallvec of `WeightToFeeCoefficient` integers:
 
@@ -68,7 +69,7 @@ parameter_types! {
 }
 
 impl pallet_transaction_payment::Config for Runtime {
-	type OnChargeTransaction = CurrencyAdapter<Balances, ()>; 
+	type OnChargeTransaction = CurrencyAdapter<Balances, ()>;
 	type TransactionByteFee = TransactionByteFee;
 
 	// Convert dispatch weight to a chargeable fee.
@@ -84,7 +85,9 @@ impl pallet_transaction_payment::Config for Runtime {
 - pallet-weights
 
 ## Related material
+
 #### How-to guides
+
 - [Conditional weighting struct](./conditional-weight-struct)
 - [Linear weighting struct](./linear-weight-struct)
 - [Quadratic weighting struct](./quadratic-weight-struct)
@@ -92,6 +95,7 @@ impl pallet_transaction_payment::Config for Runtime {
 #### Knowledgebase
 
 #### Rust docs
+
 - [`WeightToFeeCoefficients`](https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/type.WeightToFeeCoefficients.html)
 
 - [`WeightToFeeCoefficient`](https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/type.WeightToFeeCoefficient.html)

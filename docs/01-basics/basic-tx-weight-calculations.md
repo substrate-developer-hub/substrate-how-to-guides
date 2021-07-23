@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-keywords: basics, weights, runtime, FRAME V1 
+keywords: basics, weights, runtime, FRAME V1
 ---
 
 # Calculating transaction weights
@@ -23,8 +23,8 @@ Understand how to calculate transaction weights for a basic dispatch function.
 
 Weights are an important part of Substrate development as they provide information about what the maximum cost a function can be in terms of the block size it will take up. This way, the [weighting system][weights-kb] checks what the cost will be before a function is executed. As runtime engineers, we care a lot about weights. Not only do they help add security checks around the functions we create, but they also force us to think about the computational ressources consumed by a transaction. From that, we can figure out [what fees to charge][fees-kb] users.
 
-This guide will cover how to calculate the maximum weight for a dispatch call; calculate the actual weight after execution; and 
-reimburse the difference. 
+This guide will cover how to calculate the maximum weight for a dispatch call; calculate the actual weight after execution; and
+reimburse the difference.
 
 Here's an overview of the traits we'll be implementing:
 
@@ -78,6 +78,7 @@ return Ok(Some(check_logic_weight).into())
 //Remove fee assoicated to weight
 Ok(Pays::Yes.into())
 ```
+
 ## Examples
 
 - [Feeless transaction use case](https://github.com/shawntabrizi/substrate-feeless-token-factory#user-story)
@@ -85,14 +86,17 @@ Ok(Pays::Yes.into())
 ## Related material
 
 #### Knowledgebase
+
 - [Transaction Weights](https://substrate.dev/docs/en/knowledgebase/learn-substrate/weight)
 - [Transaction Fees Knowledgebase](https://substrate.dev/docs/en/knowledgebase/runtime/fees)
 
 #### Rust docs
+
 - [`ClassifyDispatch`](https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/trait.ClassifyDispatch.html)
 - [`WeightData`](https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/trait.WeighData.html)
 
 #### Other
+
 - [Polkadot's Transaction Fees](https://wiki.polkadot.network/docs/en/learn-transaction-fees)
 
 [weights-kb]: https://substrate.dev/docs/en/knowledgebase/learn-substrate/weight

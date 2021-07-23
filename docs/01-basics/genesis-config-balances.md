@@ -7,20 +7,21 @@ keywords: basics, beginner, runtime
 
 _All the power to you now that you're getting the hang of things&mdash;by no means anything to show-off about, but may as well start somewhere !_
 :::info
-This is intended for beginners just getting started and want to get familiar with customizing 
+This is intended for beginners just getting started and want to get familiar with customizing
 their chain. Not all configurations will follow the same approach&mdash;this in fact is the most basic approach. Learn more in the [related material section](#related-material).
 :::
 
 ## Goal
 
 Learn how to customize a chain's genesis configuration for the [balances pallet][balances-frame].
+
 ## Use cases
 
 Initialize balances for endowed accounts.
 
 ## Overview
 
-Genesis configuration is a useful tool for testing chain behaviour by defining an initial state for things such as accounts, balances, genesis for custom pallets, and more. Here is a simple guide on how to configure custom intial balances for a runtime, by modifying [BalancesConfig][balances-config-rustdocs] in `chainspec.rs`. 
+Genesis configuration is a useful tool for testing chain behaviour by defining an initial state for things such as accounts, balances, genesis for custom pallets, and more. Here is a simple guide on how to configure custom intial balances for a runtime, by modifying [BalancesConfig][balances-config-rustdocs] in `chainspec.rs`.
 
 ## Steps
 
@@ -69,10 +70,13 @@ pallet_balances: Some(BalancesConfig {
 - [Node template 'chainspec.rs'][node-template-chainspec]
 
 ## Related material
+
 #### Tutorials
+
 - [`ContractsConfig`][genesis-contracts-tutorial] from the Add the Contracts Pallet tutorial.
 
 #### Rust docs
+
 - [`BalancesConfig`][balances-config-rustdocs]
 
 [balances-frame]: https://substrate.dev/docs/en/knowledgebase/runtime/frame#balances

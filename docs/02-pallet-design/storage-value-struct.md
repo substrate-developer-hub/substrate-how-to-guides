@@ -17,11 +17,12 @@ Keep track of different accounts and balances for testing a pallet.
 
 ## Overview
 
-Creating a struct of similarly grouped storage items is a neat way to keep track of them. 
-They can be easier to reference than keeping individual `StorageValue` items separate this way. 
-In addition, they can be used to ease testing and genesis configuration. 
+Creating a struct of similarly grouped storage items is a neat way to keep track of them.
+They can be easier to reference than keeping individual `StorageValue` items separate this way.
+In addition, they can be used to ease testing and genesis configuration.
 
 This guide steps through the procedure of creating a struct in storage which:
+
 - keeps track of an initial amount (`issuance`)
 - keeps track of the account that receives that amount (`minter`)
 - keeps track of an account that can burn some amount (`burner`)
@@ -29,9 +30,9 @@ This guide steps through the procedure of creating a struct in storage which:
 
 ## Steps
 
-### 1. Create a your struct 
+### 1. Create a your struct
 
-Call it `MetaData` and declare its different types: 
+Call it `MetaData` and declare its different types:
 
 ```rust
 #[derive(Clone, Encode, Decode, Eq, PartialEq, RuntimeDebug, Default)]
@@ -56,7 +57,7 @@ Use `StorageValue` to declare the struct as a new single item in storage:
 
 #### `GenesisConfig`
 
-Use `#[pallet::genesis_config]` to declare the admin account that you'll use in your to 
+Use `#[pallet::genesis_config]` to declare the admin account that you'll use in your to
 initialize values from your `MetaData` struct:
 
 ```rust
@@ -79,7 +80,7 @@ initialize values from your `MetaData` struct:
 #### `GenesisBuild`
 
 Use `#[pallet::genesis_build]` to initialize the values of your struct, using `admin` to initialize the values
-of type `T::AccountId`:   
+of type `T::AccountId`:
 
 ```rust
 #[pallet::genesis_build]
@@ -107,7 +108,7 @@ fn on_initialize(_n: T::BlockNumber) -> Weight {
 			Accounts::<T>::mutate(&meta.minter, |bal| {
 				*bal = bal.saturating_add(value);
 			});
-			
+
 		}
 ```
 
@@ -116,10 +117,13 @@ fn on_initialize(_n: T::BlockNumber) -> Weight {
 - [`reward-coin`](https://github.com/sacha-l/substrate-how-to-guides/blob/dc3e1d6c79198558f465fbbdbbda03a4237eacf3/how-to-substrate/example-code/template-node/pallets/reward-coin/src/lib.rs#L24-L28)
 
 ## Resources
+
 #### How-to guides
+
 - [Configure a runtime constant](../basics/configurable-constants)
 
 #### Rust docs
+
 - [`Default::default()`](https://substrate.dev/rustdocs/v3.0.0/sp_std/default/trait.Default.html)
 
 [storagevalue-rustdocs]: https://crates.parity.io/frame_support/storage/trait.StorageValue.html

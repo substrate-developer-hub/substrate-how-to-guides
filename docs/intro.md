@@ -4,20 +4,23 @@ sidebar_position: 0
 
 # Welcome
 
-_This is work in progress. It's a staging of what will become the official ressource with Substrate's developer hub. 
+_This is work in progress. It's a staging of what will become the official ressource with Substrate's developer hub.
 Please read the contribution guidelines to help improve the on existing content, propose new content or make a PR for brand new content. Learn about how the guide is structured below to better understand the general approach._
 
 **On this page**
+
 - [Contribution Guidelines](#contribution-guidelines)
-    - [Prelude](#prelude)
-    - [Requirements](#requirements)
-    - [Template](#template)
+  - [Prelude](#prelude)
+  - [Requirements](#requirements)
+  - [Template](#template)
 - [Content Structure](#content-structure)
-    - [Tags](#tags)
+  - [Tags](#tags)
 - [FAQ](#FAQ)
 
 ## Contribution Guidelines
+
 ### Prelude
+
 Each guide contains various links to [Knowledgebase](https://substrate.dev/docs/en/) key terms and other [Developer hub](https://substrate.dev/en/) ressources. Most beginner guides link to other intermediate or advanced guides that use the foundations from the more basic guides they build on. In this way, this book aims to become a modular and extensible framework that:
 
 - Can expand overtime, by virtue of the ease for contributors to integrate new content that follows these linking guidelines and structure.
@@ -25,16 +28,18 @@ Each guide contains various links to [Knowledgebase](https://substrate.dev/docs/
 - Connects related resources from the developer hub, including documentation and knowledgebase article.
 
 ### Requirements
+
 The following points touch on the approach for building content for the Substrate How-to Guides ressource. Each is a point is requirement that must be taken into account for contributors creating new guides.
 
 - :black_medium_square: **Modularity**. Each piece needs to be a standalone guide that has a well-defined and useful focus. Anything external to that mustbe linked in a way that they can adapt to change. Why? They need to be able to handle changes to Substrate in a way that offers a path of least resistance when implementing those changes.
-- :link: **Linking**. How-to guides are meant to be focused and in-depth. Any background knowledge or additional references must link readers to other developer hub ressources. 
+- :link: **Linking**. How-to guides are meant to be focused and in-depth. Any background knowledge or additional references must link readers to other developer hub ressources.
 - ⏯️ **Examples**. This is the part for _"examples on how to actually put this guide to use or where can I see it put to use"_. Each example links to some existing codebase or pallet. If new code was created for the guide, this should be pushed to the `example-code` folder at the top of this directory.
 - :satellite: **References.** At the end of each recipe, developers can see a list of related ressources. Here is where all additional related Knowledgebase links go; Rust docs; as well as links to any other related guides.
 - ⏹️ **Avoid repetition.** If there's something that needs to be included in one guide and can be abstracted to a completely separate guide, abstract it and link to it instead of repeating that content. This ties into the modularity aspect too.
 
-### Template 
-Each guide needs to follow the following structure, taking into account the requirements from above.  
+### Template
+
+Each guide needs to follow the following structure, taking into account the requirements from above.
 
 :::note **Note: ** copy the markdown template file from [here](https://github.com/substrate-developer-hub/substrate-how-to-guides/blob/main/docs/contribute/how-to-template.md) to get started.
 
@@ -69,13 +74,13 @@ _Code-based examples that make use of this guide. This shows at least one refere
 
 _A bulleted list of links to similar guides; other devhub ressources; and related material. For example, other how-to guides; tutorials; knowledgebase articles; or Rust docs._
 :::
+
 ## Content structure
 
 The structure aims to group HTGs into categories by tagging each guide. For example:
 
-> **Simple crowdfund.** 
+> **Simple crowdfund.**
 > tags: runtime, intermediate, pallet design
-
 
 The current groupings are to help organize the repository of HTG content. They reflect the different
 areas of development within Substrate:
@@ -90,8 +95,8 @@ areas of development within Substrate:
 
 ### Tags
 
-_basics, beginner, intermediate, advanced, FRAME v1, runtime, pallet design, weights, fees, currency, testing, 
-storage migration, node, client, consensus, proof-of-work_ 
+_basics, beginner, intermediate, advanced, FRAME v1, runtime, pallet design, weights, fees, currency, testing,
+storage migration, node, client, consensus, proof-of-work_
 
 ## FAQ
 

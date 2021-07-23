@@ -3,7 +3,7 @@ sidebar_position: 7
 keywords: basics, testing, runtime
 ---
 
-# Setting up tests for your pallet 
+# Setting up tests for your pallet
 
 _Get into the habit of writing tests as you write your pallet &mdash; it's good practice!_
 
@@ -17,17 +17,16 @@ Writing and running unit tests for a pallet.
 
 ## Overview
 
-This guide steps through how to use `mock.rs` and `test.rs` as a basis for testing your pallet. We'll be 
-using the node template for the scaffolding of the `mock.rs` file and an arbitrary pallet &mdash; called `pallet-testing` 
-&mdash; to give this guide some context. This pallet will contain a single function called `add_value`, that takes an origin and 
-a `u32` and returns `Ok(())` if the value is less than or equal to a constant called `MaxValue` that we specify in the mock runtime. 
- 
+This guide steps through how to use `mock.rs` and `test.rs` as a basis for testing your pallet. We'll be
+using the node template for the scaffolding of the `mock.rs` file and an arbitrary pallet &mdash; called `pallet-testing`
+&mdash; to give this guide some context. This pallet will contain a single function called `add_value`, that takes an origin and
+a `u32` and returns `Ok(())` if the value is less than or equal to a constant called `MaxValue` that we specify in the mock runtime.
 
 ## Steps
 
 ### 1. Use the template node as boilerplate
 
-Inside `pallet-testing/src`, the first thing we need to do is create two empty files: `mock.rs` and `tests.rs`. 
+Inside `pallet-testing/src`, the first thing we need to do is create two empty files: `mock.rs` and `tests.rs`.
 
 Paste in the contents from [`template/src/mock.rs`][template-node-mock-rs]. We'll use this as boilerpate
 which we'll customize for our `pallet-testing` pallet.
@@ -36,8 +35,7 @@ which we'll customize for our `pallet-testing` pallet.
 
 Start by modifying `pallet-testing/src/mock.rs` to include the `pallet-testing` pallet. This involves changes in the following code sections:
 
-
-#### Dependencies 
+#### Dependencies
 
 Replace the first line with the name of the pallet, in our case `pallet_testing`:
 
@@ -59,8 +57,8 @@ case `pallet_testing`:
 
 #### Implement your pallet for the mock runtime
 
-Replace `impl pallet_template::Config for Test {...}` with the your configuration types and any 
-constant values your pallet requires: 
+Replace `impl pallet_template::Config for Test {...}` with the your configuration types and any
+constant values your pallet requires:
 
 ```rust
 parameter_types! {
@@ -72,6 +70,7 @@ impl pallet_testing::Config for Test {
 	type MaxValue = MaxValue;
 }
 ```
+
 To put the mock runtime to use, we need to set up our `tests.rs` file for the `pallet-testing` pallet.
 
 ### 3. Setup and create tests
@@ -86,7 +85,7 @@ use super::*;
 
 This will test whether the error works as intended:
 
-```rust 
+```rust
 #[test]
 fn error_works(){
 	new_test_ext().execute_with(|| {
@@ -94,7 +93,7 @@ fn error_works(){
 			TestingPallet::add_value(Origin::signed(1), 51),
 			"value must be <= maximum add amount constant"
 		);
-	})		
+	})
 }
 
 ```
@@ -145,17 +144,18 @@ cargo test
 ## Related material
 
 #### Guides
+
 - [Testing a transfer function](./test-transfer)
 - [Migration tests](../storage-migrations/migration-tests)
 
 #### Knowledgebase
 
-- [Mock runtime][mock-runtime] 
+- [Mock runtime][mock-runtime]
 
 #### Rust docs
+
 - [`assert_ok!`](https://substrate.dev/rustdocs/v3.0.0/frame_support/macro.assert_ok.html)
 - [`assert_err!`](https://substrate.dev/rustdocs/v3.0.0/frame_support/macro.assert_err.html)
-
 
 [template-node-mock-rs]: https://github.com/substrate-developer-hub/substrate-node-template/blob/467927bda05a56dfe57690aec93ff504a6009daa/pallets/template/src/mock.rs#L1-L61
 [template-node-mock-rs]: https://github.com/substrate-developer-hub/substrate-node-template/blob/467927bda05a56dfe57690aec93ff504a6009daa/pallets/template/src/tests.rs#L1-L23

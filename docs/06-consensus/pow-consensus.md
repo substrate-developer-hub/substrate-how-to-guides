@@ -1,10 +1,10 @@
 ---
 sidebar_position: 4
-keywords: 
-    - node
-    - client
-    - consensus
-    - proof-of-work
+keywords:
+  - node
+  - client
+  - consensus
+  - proof-of-work
 ---
 
 # Configure a chain to POW consensus
@@ -13,6 +13,7 @@ _When you want to experiment with different consensus engines out there and wann
 _WIP_
 
 [![Try on playground](https://img.shields.io/badge/Playground-Node_Template-brightgreen?logo=Parity%20Substrate)][pow-playground]
+
 ## Goal
 
 To understand how link a POW consensus engine to a service client.
@@ -56,7 +57,7 @@ let import_queue = sc_consensus_pow::import_queue(
 
 See the [Rust docs][powblockimport-new-rustdocs] on to configure the `pow_block_import` function.
 
-### 2. Create import queue 
+### 2. Create import queue
 
 Define your node's [inherents][inherents-kb] by using [`InherentDataProviders`][inherents-rustdocs] in a function that defines the providers of your POW system:
 
@@ -116,15 +117,18 @@ The construction of the [light client][lightclient-parity] service is quite simi
 
 ## Examples
 
-- Basic POW node 
+- Basic POW node
 
 ## Resources
+
 #### Rust docs
+
 - [`PowBlockimport`][powblockimport-rustdocs]
 - [POW Algorithm][pow-rustdocs] trait
-#### Knowledgebase 
-- Knowledgebase article on [inherents][inherents-kb]
 
+#### Knowledgebase
+
+- Knowledgebase article on [inherents][inherents-kb]
 
 [pow-playground]: https://playground.substrate.dev/?deploy=node-template
 [partialcomponents-rustdocs]: https://crates.parity.io/sc_service/struct.PartialComponents.html
@@ -133,4 +137,4 @@ The construction of the [light client][lightclient-parity] service is quite simi
 [inherents-kb]: https://substrate.dev/docs/en/knowledgebase/learn-substrate/extrinsics#inherents
 [inherents-rustdocs]: https://crates.parity.io/sp_inherents/struct.InherentDataProviders.html
 [lightclient-parity]: https://www.parity.io/what-is-a-light-client/
-[pow-rustdocs]: https://crates.parity.io/sc_consensus_pow/trait.PowAlgorithm.html 
+[pow-rustdocs]: https://crates.parity.io/sc_consensus_pow/trait.PowAlgorithm.html

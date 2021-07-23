@@ -37,34 +37,39 @@ git clone https://github.com/substrate-developer-hub/substrate-node-template.git
 
 Rename the project's parent directory to `my-substratekitties` (previously called `substrate-node-template`)
 and open `my-substratekitties` in your favorite code editor. Among the folders in the template, the ones we care about are:
+
 - **`/node/`** - This contains all the logic that allows your node to interact with your runtime and RPC clients.
 - **`/pallets/`** - Here's where all your custom pallets live.
-- **`/runtime/`** - This is where all pallets (both custom "internal" and "external" ones) are aggregated and implemented for the chain's runtime. 
+- **`/runtime/`** - This is where all pallets (both custom "internal" and "external" ones) are aggregated and implemented for the chain's runtime.
 
 #### Renaming for our node and runtime
-Before we start writing any code, let's modify our node template to rename our node and runtime to what we'd like to call it. 
 
-The easiest way to get this done is to use the "search and replace" functionality of your IDE. 
+Before we start writing any code, let's modify our node template to rename our node and runtime to what we'd like to call it.
+
+The easiest way to get this done is to use the "search and replace" functionality of your IDE.
 
 - **Replace the 2 instances of `node-template` with `kitties-node`.** Specifically:
-    - **In `/node/Cargo.toml`**: the name for `[[bin]]`; and the name for `[package]`.
+
+  - **In `/node/Cargo.toml`**: the name for `[[bin]]`; and the name for `[package]`.
 
 - **Replace all instances of `node-template-runtime` with `kitties-runtime`.** Specifically:
-    - **In `/node/Cargo.toml`** in 2 places: (1) the path for `runtime-benchmarks` and (2) the dependency name for `path = '../runtime'`.
-    - **In `/runtime/Cargo.toml`** in 1 place: the name under `[package]`.
+  - **In `/node/Cargo.toml`** in 2 places: (1) the path for `runtime-benchmarks` and (2) the dependency name for `path = '../runtime'`.
+  - **In `/runtime/Cargo.toml`** in 1 place: the name under `[package]`.
 - **Replace all instances of `node_template_runtime` with `kitties_runtime`.** Specifically:
-    - **In `chain_spec.rs` in 1 place.**
-    - **In `commands.rs` in 2 places.**
-    - **In `service.rs` in 3 places.** 
+  - **In `chain_spec.rs` in 1 place.**
+  - **In `command.rs` in 2 places.**
+  - **In `service.rs` in 3 places.**
+  - **In `rpc.rs` in 1 place.**
 
 #### Renaming for our pallet
-The node template already comes with a template pallet and folder structure that we can re-use. Every pallet 
-is contained in a folder, typically named after the pallet, which contains a `Cargo.toml` and a `src` folder. The `src` folder 
-is typically made up of a `lib.rs` file and any additional helper 
-files. All of the pallet's logic lives in its corresponding `lib.rs` file. 
 
-We're going to need to update information about our pallet too. Here's a glance at the folder structure we're working with to help 
-visualize what we'll need to do: 
+The node template already comes with a template pallet and folder structure that we can re-use. Every pallet
+is contained in a folder, typically named after the pallet, which contains a `Cargo.toml` and a `src` folder. The `src` folder
+is typically made up of a `lib.rs` file and any additional helper
+files. All of the pallet's logic lives in its corresponding `lib.rs` file.
+
+We're going to need to update information about our pallet too. Here's a glance at the folder structure we're working with to help
+visualize what we'll need to do:
 
 ```bash
 my-substratekitties
@@ -90,18 +95,18 @@ my-substratekitties
 
 > You can go ahead and remove `mock.rs` and `tests.rs`. **We won't be learning about
 > using these in this tutorial. Have a look at [this how-to guide](/docs/testing/test-transfer) if
-> you're curious to learn how testing works.** 
-
+> you're curious to learn how testing works.**
 
 Follow steps 1-3 as depicted in the folder structure above:
+
 1. Rename the `template` folder to `kitties`;
 2. Go to the `Cargo.toml` file of the same folder and replace `pallet-template` with `pallet-kitties`. This will be the name of
-the pallet as our runtime refers to it.
+   the pallet as our runtime refers to it.
 3. Remove the contents of `lib.rs` and delete `mock.rs` and `tests.rs`.
 4. Search are replace `'pallets/template'` to ` 'pallets/kitties'`. This tells our workspace about where to find our Kitties pallet.
 
-We now need to make sure our Kitties node is properly wired up to use the `pallet-kitties` by updating 
-`/runtime/Cargo.toml`. 
+We now need to make sure our Kitties node is properly wired up to use the `pallet-kitties` by updating
+`/runtime/Cargo.toml`.
 
 Search and replace all instances of `pallet-template` to `pallet-kitties` and update the path to the kitties pallet:
 
@@ -125,6 +130,7 @@ std = [
     /*--snip--*/
 ]
 ```
+
 Similarily, we need to update our project's `Cargo.toml` file (at the root of our project's directory):
 
 ```rust
@@ -134,7 +140,7 @@ panic = 'unwind'
 [workspace]
 members = [
     'node',
-    'pallets/template',   // <-- Replace this with 'pallets/kitties', 
+    'pallets/template',   // <-- Replace this with 'pallets/kitties',
     'runtime',
 ]
 ```
@@ -144,15 +150,15 @@ Refer to [this guide](/docs/basics/basic-pallet-integration) to help your learn 
 :::
 
 :::note
-All this renaming stuff can get confusing, but it's a good excercise to familiarize yourself with the structure 
+All this renaming stuff can get confusing, but it's a good excercise to familiarize yourself with the structure
 of a node template and how things are wired up. To make sure things are clear let's recap what we've done:
 
-- **We've renamed our *project* to `my-substratekitties`.** This only helps keep folders on your local machine organized.
-- **We've renamed our *runtime* to `kitties-runtime`.** This is what our node is using to reference the runtime it needs to build &mdash;hence why it's first *named* in `/runtime/Cargo.toml` and then *referenced* as a dependency in `/node/Cargo.toml`. We also renamed how other modules refer to our runtime, which is the same as our runtime's name except with an underscore instead of a hyphen, i.e. `kitties_runtime`.
-- **We've renamed our *node* to `kitties-node`.** This is what we'll need to refer to in order to run our chain.
-- **We've renamed the `pallets/template` folder to *kitties*.** This only affects the path to link `pallet-kitties` to our runtime in `/runtime/Cargo.toml`. Note that this **not** the name of our pallet &mdash; just the name of the folder where our pallet lives. 
-- **We've renamed *pallet-template* to *pallet-kitties*.** This is the name of our pallet as our runtime understands it. 
-:::
+- **We've renamed our _project_ to `my-substratekitties`.** This only helps keep folders on your local machine organized.
+- **We've renamed our _runtime_ to `kitties-runtime`.** This is what our node is using to reference the runtime it needs to build &mdash;hence why it's first _named_ in `/runtime/Cargo.toml` and then _referenced_ as a dependency in `/node/Cargo.toml`. We also renamed how other modules refer to our runtime, which is the same as our runtime's name except with an underscore instead of a hyphen, i.e. `kitties_runtime`.
+- **We've renamed our _node_ to `kitties-node`.** This is what we'll need to refer to in order to run our chain.
+- **We've renamed the `pallets/template` folder to _kitties_.** This only affects the path to link `pallet-kitties` to our runtime in `/runtime/Cargo.toml`. Note that this **not** the name of our pallet &mdash; just the name of the folder where our pallet lives.
+- **We've renamed _pallet-template_ to _pallet-kitties_.** This is the name of our pallet as our runtime understands it.
+  :::
 
 ### 2. Write out the structure for `pallet_kitties`
 
@@ -189,14 +195,19 @@ pub mod pallet {
     #[pallet::config]
     pub trait Config: frame_system::Config {}
 
+    // ACTION (To-do at the end of this tutorial) : Write your storage item for `AllKittiesCount` here.
+    // HINT: Always write #[pallet::storage] before you
+    // declare any storage item.
+
     #[pallet::call]
     impl<T: Config> Pallet<T> {}
 }
 ```
+
 :::tip Your turn!
 Copy over the bare-bones of the pallet into `kitties/src/lib.rs`.
 
-**Hint:** Each part of this tutorial has a file with incomplete code containing comments to guide you to complete it. 
+**Hint:** Each part of this tutorial has a file with incomplete code containing comments to guide you to complete it.
 Download the [template code here][template-code] locally and use it to help you progress through each step!
 :::
 
@@ -210,20 +221,21 @@ Now that we have a pallet called `pallet-kitties` we must implement it for our r
 pub use pallet_kitties;
 ```
 
-Remove `pub use pallet_template;` &mdash; it no longer exists at this point. 
+Remove `pub use pallet_template;` &mdash; it no longer exists at this point.
 
 - Then, include this line after the other trait implementations:
 
 ```rust
 impl pallet_kitties::Config for Runtime {}
 ```
-Be sure to remove the `impl pallet_template::Config for Runtime` clause entirely as well.
 
-> Since our Kitties pallet doesn't do anything yet, we don't have anything to implement for our runtime! Part II of this series 
+Be sure to remove `impl pallet_template::Config for Runtime {}` entirely as well.
+
+> Since our Kitties pallet doesn't do anything yet, we don't have anything to implement for our runtime! Part II of this series
 > will dive into adding traits to implement for our runtime.
 
-Before we can test whether our node is set-up correctly, let's specify our Kitties pallet inside `construct_runtime!` by simply 
-replacing the line corresponding to `pallet_template`: 
+Before we can test whether our node is set-up correctly, let's specify our Kitties pallet inside `construct_runtime!` by simply
+replacing the line corresponding to `pallet_template`:
 
 ```rust
 /*--snip--*/
@@ -236,8 +248,9 @@ Run the following command to build and launch our chain. This can take a little 
 ```bash
 cargo build --release
 ```
-:::note 
-You'll notice the Rust compiler giving you warnings about unused imports. That's fine! Just ignore them &mdash; we're going to 
+
+:::note
+You'll notice the Rust compiler giving you warnings about unused imports. That's fine! Just ignore them &mdash; we're going to
 be using those imports in the later parts of the tutorial.
 :::
 
@@ -268,7 +281,7 @@ pub(super) type SomeStorageValue <T: Config> = StorageValue <
     _,
     u64,
     ValueQuery,
->
+>;
 ```
 
 With that declared, we can use the various functions from Substrate's storage API to read and write to
@@ -287,7 +300,7 @@ storage. For example, using `get()` and `put()` would look like:
 
 :::tip Your turn!
 Our Kitties dApp will need to keep track of a number of things. The first will be the number of Kitties.
-Write a storage item to keep track of all Kitties, call it `AllKittiesCount`.
+Write a storage item to keep track of all Kitties, call it `AllKittiesCount`. You need to write this code in `kitties/src/lib.rs`
 
 **Hint:** follow the same pattern as with the example storage value above, `SomeStorageValue`.
 :::
@@ -311,7 +324,7 @@ cargo build -p pallet-kitties
 ```
 
 Does your pallet compile without error? Well done if it does! If not, go back and check that all the macros are in place and that you've included the
-FRAME dependencies. 
+FRAME dependencies.
 
 :::note Congratulations!
 You've completed the first part of this series. At this stage, you've learnt the various patterns for:
@@ -319,7 +332,7 @@ You've completed the first part of this series. At this stage, you've learnt the
 - Customizing the Substrate node template and including a custom pallet.
 - Building a Substrate chain and checking that a target pallet compiles.
 - Declaring and using a `u64` storage item.
-:::
+  :::
 
 ## Next steps
 

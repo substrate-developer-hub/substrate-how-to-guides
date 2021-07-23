@@ -4,6 +4,7 @@ keywords: pallet design, intermediate, runtime
 ---
 
 # Part III: Dispatchables and Events
+
 _Write a dispatchable function that creates a Kitty capable of emitting its associated Event._
 
 ## Learning outcomes
@@ -17,9 +18,11 @@ _Write a dispatchable function that creates a Kitty capable of emitting its asso
 :arrow_right: Use PolkadotJS Apps UI to test pallet functionality.
 
 ## Overview
-In the previous section of this tutorial, we laid down the foundations geared to manage the ownership of our Kitties &mdash; even though they don't really exist yet! In this part of the tutorial, we'll be putting these foundations to use 
-by giving our pallet the ability to create a Kitty using the storage items we declared in the previous part 
+
+In the previous section of this tutorial, we laid down the foundations geared to manage the ownership of our Kitties &mdash; even though they don't really exist yet! In this part of the tutorial, we'll be putting these foundations to use
+by giving our pallet the ability to create a Kitty using the storage items we declared in the previous part
 of this tutorial. Breaking things down a little, we're going to:
+
 - **write `create_kitty`**: a dispatchable or publicly callable function allowing an account to mint a Kitty.
 - **write `mint()`**: a helper function that updates our pallet's storage items and performs error checks, called by `create_kitty`.
 - **include `Events`**: using FRAME's `#[pallet::events]` macro.
@@ -34,43 +37,46 @@ Before we dive right in, it's important to understand the pallet design decision
 capabilities.
 
 As developers, we want to make sure the code we write is efficient and elegant. Oftentimes, optimizing for one optimizes for the other.
-The way we're going to set up our pallet up to achieve elegance and efficiency will be to break-up the "heavy lifting" dispatchable 
+The way we're going to set up our pallet up to achieve elegance and efficiency will be to break-up the "heavy lifting" dispatchable
 functions or extrinsics into private helper functions. This improves code readability and reusability too. As we'll see, we can
 create private functions which can be called by multiple dispatchable functions without compromizing on security.
 
-:::info 
+:::info
 Check out [this how-to guide](docs/basics/basic-pallet-integration/) about writing and using helper functions to learn more.
 :::
 
 In the next section, we'll go over what implementing this approach looks like. For our immediate purposes, let's paint the big picture of what this means for the logical flow of our pallet:
 
-**`create_kitty`** 
+**`create_kitty`**
+
 - check the origin is signed
-- generate a random hash with the signing account 
+- generate a random hash with the signing account
 - create a new Kitty object using the random hash
 - call a private `mint()` function
 - increment the nonce using `increment_nonce()` from the previous part
 
 **`mint`**
+
 - check that the Kitty doesn't already exist
 - update storage with the new Kitty ID (for all Kitties and for the owner's account)
 - update the new total Kitty count for storage and the new owner's account
 - deposit an Event to signal that a Kitty has succesfully been created
 
-### 2. Write the `create_kitty` dispatchable 
+### 2. Write the `create_kitty` dispatchable
 
-A dispatchable in FRAME always follows the same structure. All pallet dispatchables live under the `#[pallet::call]` macro which requires declaring the dispatchables section with `    impl<T: Config> Pallet<T> {}`. Read the 
+A dispatchable in FRAME always follows the same structure. All pallet dispatchables live under the `#[pallet::call]` macro which requires declaring the dispatchables section with ` impl<T: Config> Pallet<T> {}`. Read the
 [documentation][frame-macros-kb] on these FRAME macros to learn how they work. All we need to know here is that they're a useful feature of FRAME that minimizes the code required to write for pallets to be properly integrated in a Substrate chain's runtime.
 
 #### Weights
+
 As per the requirement for `#[pallet::call]` described in the its documentation, every dispatchable function must have an associated weight to it. Weights are
-an important part of developing with Substrate as they provide safe-guards around the amount of computation to fit in a block at execution time. 
-[Substrate's weighting system][weights-kb] forces developers to think about the computational complexity each extrinsic carries before it is called so that 
+an important part of developing with Substrate as they provide safe-guards around the amount of computation to fit in a block at execution time.
+[Substrate's weighting system][weights-kb] forces developers to think about the computational complexity each extrinsic carries before it is called so that
 a node will account for it's worst case, avoiding a lagging the network with extrinsics that take longer than a single block time. Also, weights are intimately linked to the fee system for a signed extrinsic. Learn more about this [here][txn-fees-kb].
 
 :::tip Your turn!
 Use the template code for this section to
-help you write the `create_kitty` dispatchable. 
+help you write the `create_kitty` dispatchable.
 No need to worry about the `mint` function, we'll be going over that in the next section.
 :::
 
@@ -83,8 +89,8 @@ cargo build -p pallet-kitties
 
 ### 3. Write the `mint()` function
 
-As seen when we wrote `create_kitty` in the previous section, we'll need  `mint` for 
-writing our new unique Kitty object to the various  storage items declared in part II of this tutorial.
+As seen when we wrote `create_kitty` in the previous section, we'll need `mint` for
+writing our new unique Kitty object to the various storage items declared in part II of this tutorial.
 
 :::note A quick recap of our storage items
 
@@ -96,11 +102,12 @@ writing our new unique Kitty object to the various  storage items declared in pa
 - **`<OwnedKittiesArray<T>>`**: Keep track of who a Kitty is owned by.
 - **`<OwnedKittiesCount<T>>`**: Keeps track of the total amount of Kitties owned.
 - **`<OwnedKittiesIndex<T>>`**: Keeps track of all owned Kitties by index.
-:::
+  :::
 
 ---
 
 Let's get right to it. Our `mint()` function will take the following arguments:
+
 - **`to`**: of type `T::AccountId`
 - **`kitty_id`**: of type `T::Hash`
 - **`new_kitty`**: of type `Kitty<T::Hash, T::Balance>`
@@ -112,24 +119,25 @@ In `create_kitty` our return was of type `DispatchResultWithPostInfo`. Since `mi
 so we can use a return type of [`DispatchResult`][dispatchresult-rustdocs] &mdash; its unaugmented version.
 :::
 
-:::tip Your turn! 
-Write out the skeleton of the `mint()` function. 
+:::tip Your turn!
+Write out the skeleton of the `mint()` function.
 
-**HINT:** it will go towards the bottom of your pallet, under `impl<T: Config> Pallet<T> {}` 
+**HINT:** it will go towards the bottom of your pallet, under `impl<T: Config> Pallet<T> {}`
 :::
 
-Now that we have the skeleton of the `mint()` function, let's go over what to write inside it. 
+Now that we have the skeleton of the `mint()` function, let's go over what to write inside it.
 
 The first thing we'll need to do is to check that the Kitty being passed in doesn't already exist. To accomplish this, we can use the built-in `ensure!` macro that Rust provides us, along with
-a method provided by FRAME's `StorageMap` called `contains_key`. 
+a method provided by FRAME's `StorageMap` called `contains_key`.
 
->[`contains_key`][contains-key-rustdocs] will check if a key matches the Hash value in an existing Kitty object. And 
-`ensure!` will return an error if the storage map already
-contains the given Kitty ID. 
+> [`contains_key`][contains-key-rustdocs] will check if a key matches the Hash value in an existing Kitty object. And
+> `ensure!` will return an error if the storage map already
+> contains the given Kitty ID.
 
 The check can be written like this:
+
 ```rust
-ensure!( !<SomeStorageMapStruct<T>>::contains_key(some_key), 
+ensure!( !<SomeStorageMapStruct<T>>::contains_key(some_key),
 "SomeStorageMapStruct already contains_key");
 ```
 
@@ -141,7 +149,8 @@ the [`insert`][insert-rustdocs] method from our StorageMap API, using the follow
 ```
 
 Finally, we'll need to compute a few variables to update our storage items which keep track of:
-- the indices and count for all Kitties. 
+
+- the indices and count for all Kitties.
 - the indices and count of owned Kitties.
 
 All this requires us to do is add 1 to the current values held by `<AllKittiesCount<T>>` and `<OwnedKittiesCount<T>>`. We can use the same pattern as we did in the previous part when we created `increment_nonce`, using Rust's `checked_add` and `ok_or`:
@@ -151,7 +160,7 @@ let new_value = previous_value.checked_add(1).ok_or("Overflow error!");
 ```
 
 :::tip Your turn!
-Write the remaining "storage-write" operations 
+Write the remaining "storage-write" operations
 for the `mint()` function.
 
 **HINT:** There's 8 in total. And `StorageValue` has a different method than `StorageMap` to update its storage instance &mdash; have a glance at the [methods it exposes][storage-value-rustdocs] to learn more.
@@ -169,17 +178,19 @@ FRAME helps us easily manage and declare our pallet's events using the [`#[palle
 #[pallet::event]
 #[pallet::generate_deposit(pub(super) fn deposit_event)]
 pub enum Event<T: Config>{
-    /// A function succeeded. [time, day] 
+    /// A function succeeded. [time, day]
     Success(T::Time, T::Day),
 }
 ```
-As you can see in the above snippet, we use `#[pallet::generate_deposit(pub(super) fn deposit_event)]` which allows us to deposit a 
+
+As you can see in the above snippet, we use `#[pallet::generate_deposit(pub(super) fn deposit_event)]` which allows us to deposit a
 specifc event using pattern below:
 
 ```rust
-Self::deposit_event(Event::Success(var_time, var_day)); 
+Self::deposit_event(Event::Success(var_time, var_day));
 ```
-In order to use events inside our pallet, we need to add the `Event` type to our pallet's configuration trait, `Config`. Additionally &mdash; just as 
+
+In order to use events inside our pallet, we need to add the `Event` type to our pallet's configuration trait, `Config`. Additionally &mdash; just as
 when adding any type to our pallet's `Config` trait &mdash; we need to let our runtime know about it. This pattern is the same as when
 we added the `KittyRandomness` type in [part II of this tutorial](/docs/Tutorials/Kitties/create-kitties#2-implementing-randomness).
 
@@ -187,16 +198,16 @@ we added the `KittyRandomness` type in [part II of this tutorial](/docs/Tutorial
 Set your pallet up for handling events by adding the `Event` type to both your pallet's configuration trait and runtime implementation.
 Then, write an event for `mint()` with the appropriate return types.
 
-**HINT #1:** Once all storage updates have been made in `mint()`, we want to inform the external world which account 
+**HINT #1:** Once all storage updates have been made in `mint()`, we want to inform the external world which account
 has created the Kitty, as well as what that Kitty's ID is.
 
 **HINT #2:** The ubiquitous Event type is: `type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;`.
 
 :::
 
-:::note Notice that each event deposit is meant to be informative which is why it carries the various types associated with it. 
+:::note Notice that each event deposit is meant to be informative which is why it carries the various types associated with it.
 
-It's good practice to get in the habit of documenting your event declarations so that your code is easy to read. It is convention to document events as such: 
+It's good practice to get in the habit of documenting your event declarations so that your code is easy to read. It is convention to document events as such:
 
 `/// Description. [types]`
 
@@ -208,6 +219,7 @@ Now's a good time to see if your chain can compile. Instead of only checking if 
 ```rust
 cargo build --release
 ```
+
 ### 5. Testing with PolkadotJS Apps
 
 Assuming that you successfully built your chain, let's run it and use the PolkadotJS Apps UI to interact with it.
@@ -218,15 +230,15 @@ In your chain's project directory, run:
 ./target/release/kitties-node --tmp --dev
 ```
 
-By doing this, we're specifying to run a temporary chain in developer mode, so as not to need to purge storage each time we want to start a fresh chain. 
+By doing this, we're specifying to run a temporary chain in developer mode, so as not to need to purge storage each time we want to start a fresh chain.
 
-Assuming that blocks are being finalized (which you should be able to see from your terminal in which you ran the above command), head over to [Poladot.js Apps][polkadotjsapps]. 
+Assuming that blocks are being finalized (which you should be able to see from your terminal in which you ran the above command), head over to [Poladot.js Apps][polkadotjsapps].
 
 **Follow these steps:**
 
 1. Check that you're connected to Local Node, under "Development".
-2. Tell the UI about your custom types. This requires you to paste them into the "*Settings*" -> "*Developers*" section. 
-2. Go to "*Developer*" -> "*Extrinsics*". Paste this in the JSON code editor:
+2. Tell the UI about your custom types. This requires you to paste them into the "_Settings_" -> "_Developers_" section.
+3. Go to "_Developer_" -> "_Extrinsics_". Paste this in the JSON code editor:
 
 ```json
 {
@@ -239,10 +251,7 @@ Assuming that blocks are being finalized (which you should be able to see from y
   "Address": "MultiAddress",
   "LookupSource": "AccountId",
   "Gender": {
-    "_enum": [
-      "male",
-      "female"
-    ]
+    "_enum": ["male", "female"]
   },
   "Kitty": {
     "id": "H256",
@@ -255,9 +264,9 @@ Assuming that blocks are being finalized (which you should be able to see from y
 
 The reason we need this is because we created types that PolkadotJS Apps isn't designed to read. By adding them, it's capable to properly decode each of our storage items that use custom types.
 
-3. Submit a signed extrinsic using *substrateKitties* by calling the `createKitty()` dispatchable.
-4. Check for the associated event by going to "*Network*" -> "*Explorer*". You should be able to see the event emitted and query its block details.
-5. Check your newly created Kitty's details by going to "*Developer*" -> "*Chain State*". Select the *substrateKitties* pallet and query `Kitties(Hash): Kitty`.
+3. Submit a signed extrinsic using _substrateKitties_ by calling the `createKitty()` dispatchable.
+4. Check for the associated event by going to "_Network_" -> "_Explorer_". You should be able to see the event emitted and query its block details.
+5. Check your newly created Kitty's details by going to "_Developer_" -> "_Chain State_". Select the _substrateKitties_ pallet and query `Kitties(Hash): Kitty`.
 
 You should be able to see your newly minted Kitty (or at least what it's made of!):
 
@@ -275,21 +284,24 @@ substrateKitties.kitties: Kitty
     }
   ],
 ```
-5. Check that other storage items correctly reflect the creation of  additional Kitties.
 
+5. Check that other storage items correctly reflect the creation of additional Kitties.
 
 :::note Congratulations!
-You're pretty much able to take it from here at this point! We've learnt how to implement the key parts of what powers a FRAME pallet and how to put them to use. All part IV of this tutorial covers is adding more capabilities to our pallet by taking what we've learnt in this part.  
+You're pretty much able to take it from here at this point! We've learnt how to implement the key parts of what powers a FRAME pallet and how to put them to use. All part IV of this tutorial covers is adding more capabilities to our pallet by taking what we've learnt in this part.
 
 To recap, in this part of the tutorial you've learnt how:
+
 - To distinguish between implementing a dispatchable function and a private helper function.
 - To use `#[pallet::call]` and `#[pallet::events]`.
 - To do basic error checking.
 - To update values in storage.
 - To implement events and use them in a function.
 - To query storage items and chain state using the PolkadotJS Apps UI.
-:::
+  :::
+
 ## Next steps
+
 - Create a dispatchable to buy a Kitty
 - Create a dispatchable to transfer a Kitty
 - Create a dispatchable to breed two Kitties

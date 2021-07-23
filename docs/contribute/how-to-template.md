@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # How-to Template
 
-This is the template for writing a Substrate how-to guide. 
+This is the template for writing a Substrate how-to guide.
 
 # Title
 
@@ -36,7 +36,11 @@ _Code-based examples that make use of this guide. This shows at least one refere
 _A bulleted list of links to similar guides; other devhub ressources; and related material. See options below._
 
 #### How-to guides
+
 #### Tutorials
+
 #### Knowledgebase
+
 #### Rust docs
+
 #### Other

@@ -16,8 +16,10 @@ Understand how to calculate transaction weights using a custom weighting struct 
 Calculate correct weight for a transaction involving a `u32`.
 
 ## Overview
-This guide goes over the components of a simple weighting struct designed for a single argument dispatch of type `u32`. 
-The ultimate weight of the transaction is the product of the transaction parameter and the field of this struct. 
+
+This guide goes over the components of a simple weighting struct designed for a single argument dispatch of type `u32`.
+The ultimate weight of the transaction is the product of the transaction parameter and the field of this struct.
+
 ## Steps
 
 ### 1. Write the `WeighData` struct
@@ -29,7 +31,7 @@ pub struct Linear(u32);
 
 impl WeighData<(&u32,)> for Linear {
 	fn weigh_data(&self, (x,): (&u32,)) -> Weight {
-		// Use saturation so that an extremely large 
+		// Use saturation so that an extremely large
 		// parameter value does not cause overflow
 		x.saturating_mul(self.0).into()
 	}
@@ -69,17 +71,21 @@ impl<T> PaysFee<T> for Linear {
 - pallet-weights
 
 ## Related material
+
 #### How-to guides
+
 - [Linear weighting struct](./linear-weight-struct)
 - [Quadratic weighting struct](../300/quadratic-weight-struct)
 
 #### Knowledgebase
+
 - [Transaction Weights](https://substrate.dev/docs/en/knowledgebase/learn-substrate/weight)
 - [Transaction Fees](https://substrate.dev/docs/en/knowledgebase/runtime/fees)
 
 #### Other
+
 - [Transaction fees in Polkadot](https://wiki.polkadot.network/docs/en/learn-transaction-fees)
 
 [impl-weighdata-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/trait.WeighData.html#impl-WeighData%3CT%3E-for-(Weight%2C%20DispatchClass%2C%20Pays
-[paysfee-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/trait.PaysFee.html 
-[classifydispatch-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/trait.ClassifyDispatch.html 
+[paysfee-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/trait.PaysFee.html
+[classifydispatch-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/trait.ClassifyDispatch.html

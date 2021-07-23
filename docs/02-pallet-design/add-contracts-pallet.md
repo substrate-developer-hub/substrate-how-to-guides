@@ -4,23 +4,27 @@ keywords: pallet design, intermediate, runtime
 ---
 
 # Use the Contracts pallet
+
 _Create the basis for building Wasm smart contracts using FRAME._
 
 ## Goal
+
 Add the Contracts pallet to your runtime to be able to use Wasm smart contracts in your blockchain.
 
 ## Use cases
+
 - Smart Contract develoment
 - On-chain execution of Wasm binaries
 
 ## Overview
-This guide will show you how you can add the [Contracts pallet][contracts-frame] to your runtime in order to allow your blockchain 
-to support Wasm smart contracts. You can follow similar patterns to add additional FRAME pallets to your runtime, 
-however you should note that each pallet is a little different in terms of the specific configuration settings 
+
+This guide will show you how you can add the [Contracts pallet][contracts-frame] to your runtime in order to allow your blockchain
+to support Wasm smart contracts. You can follow similar patterns to add additional FRAME pallets to your runtime,
+however you should note that each pallet is a little different in terms of the specific configuration settings
 needed to use it correctly.
 
-:::note 
-You should already have the latest version of the Substrate Node Template compiled on your computer to follow this guide. 
+:::note
+You should already have the latest version of the Substrate Node Template compiled on your computer to follow this guide.
 If you haven't already done so, refer to [this tutorial][create-first-chain-tutorial].
 :::
 
@@ -30,9 +34,7 @@ If you haven't already done so, refer to [this tutorial][create-first-chain-tuto
 
 Refer to this guide to properly include Contracts in your runtime.
 
-This includes **updating `runtime/Cargo.toml`** and **runtime/Cargo.toml` with:**
-    - `pallet-contracts`
-    - `pallet-contracts-primitives`
+This includes **updating `runtime/Cargo.toml`** and **runtime/Cargo.toml` with:** - `pallet-contracts` - `pallet-contracts-primitives`
 
 ### 2. Add the Contracts pallet to your runtime
 
@@ -41,7 +43,6 @@ Now you'll have to implement the Contract's pallet [configuration traits][contra
 #### Implement `pallet_contracts`
 
 Start by making sure you've included all of the types that `pallet_contracts` exposes. You can copy these from [FRAME's source code][contracts-frame] (assuming versioning is equivalent to the imported crate). Here's what you need to add inside `runtime/lib.rs` &mdash; only the first 4 types are shown:
-
 
 ```rust
 impl pallet_contracts::Config for Runtime {
@@ -53,6 +54,7 @@ impl pallet_contracts::Config for Runtime {
 ```
 
 #### Parameter types
+
 Some of these types require `parameter_types`. Have a look at their implementation in [this][bin-runtime-contracts-frame] runtime to make sure you include everything. We'll take `DeletionQueueDepth` as one example. Parameter types go right above `impl pallet_contracts::Config for Runtime` :
 
 ```rust
@@ -99,7 +101,7 @@ Ceate an instance of the Contracts pallet in `construct_macro!` inside `runtime/
 /* --snip-- */
  Contracts: pallet_contracts::{Module, Call, Config<T>, Storage, Event<T>},
  /* --snip-- */
- ```
+```
 
 ### 3. Add API dependencies
 
@@ -107,26 +109,29 @@ Ceate an instance of the Contracts pallet in `construct_macro!` inside `runtime/
 Some pallets, including the Contracts pallet, expose custom runtime APIs and RPC endpoints. In the case of the Contracts pallet, this enables reading contracts state from off chain.
 :::
 
-In this guide, we want to use the Contracts pallet to make calls to our node's storage without making a transaction. 
+In this guide, we want to use the Contracts pallet to make calls to our node's storage without making a transaction.
 
-To achieve this, we'll use another pallet called `pallet-contracts-rpc-runtime-api`. 
+To achieve this, we'll use another pallet called `pallet-contracts-rpc-runtime-api`.
 
-#### Import dependencies 
+#### Import dependencies
+
 Just like in the first step of this guide, update `Cargo.toml` to add `pallet-contracts-rpc-runtime-api`.
 
-Now we can add the [`ContractsApi`][contracts-api-rustdocs] dependency required to implement the Contracts runtime API. 
+Now we can add the [`ContractsApi`][contracts-api-rustdocs] dependency required to implement the Contracts runtime API.
 
 Add this with the other `use` statements.
+
 #### Implement the Contracts runtime API
 
-We're now ready to implement the contracts 
-runtime API. 
+We're now ready to implement the contracts
+runtime API.
 
-This happens in the 
-`impl_runtime_apis! `macro near the end of your 
+This happens in the
+`impl_runtime_apis! `macro near the end of your
 runtime.
 
 Make sure to add the following functions that the `ContractsApi` exposes:
+
 - **`call()`**: returns `pallet_contracts_primitives::ContractExecResult { Contracts::bare_call(origin, dest, value, gas_limit, input_data)}`
 - **`get_storage()`**: returns `pallet_contracts_primitives::GetStorageResult {Contracts::get_storage(address, key)}`
 - **`rent_projection()`**: returns `pallet_contracts_primitives::RentProjectionResult<BlockNumber> {Contracts::rent_projection(address)}`
@@ -137,7 +142,7 @@ To be able to call the runtime API, we must add the RPC to the node's service.
 
 In `node/Cargo.toml`, add the dendencies for `pallet-contracts` and `pallet-contracts-rpc`.
 
-:::note Unsure what version to include? 
+:::note Unsure what version to include?
 
 Use the latest version as indicated on [crates.io][pallet-crates].
 :::
@@ -148,22 +153,26 @@ In `node/src/rpc.rs`, add this line to the `where` clause in `create_full<C, P>`
 
 ```rust
  C::Api: pallet_contracts_rpc::ContractsRuntimeApi<Block, AccountId, Balance, BlockNumber>,
- ```
-
- And add the contracts RPC API extension using:
-
- ```rust
-  // Contracts RPC API extension
-    io.extend_with(
-        ContractsApi::to_delegate(Contracts::new(client.clone()))
-    );
 ```
+
+And add the contracts RPC API extension using:
+
+```rust
+ // Contracts RPC API extension
+   io.extend_with(
+       ContractsApi::to_delegate(Contracts::new(client.clone()))
+   );
+```
+
 ## Examples
+
 - `canvas-node` [runtime](https://github.com/paritytech/canvas-node/blob/master/runtime/src/lib.rs#L361)
 - `canvas-node` [rpc file](https://github.com/paritytech/canvas-node/blob/master/node/src/rpc.rs)
 
 ## Related material
+
 #### Rust docs
+
 - [`pallet_contracts` crate](https://substrate.dev/rustdocs/v3.0.0/pallet_contracts/index.html)
 - [`pallet_contracts_rpc` crate](https://substrate.dev/rustdocs/v3.0.0/pallet_contracts_rpc/index.html)
 
@@ -174,4 +183,3 @@ In `node/src/rpc.rs`, add this line to the `where` clause in `create_full<C, P>`
 [bin-runtime-contracts-frame]: https://github.com/paritytech/substrate/blob/master/bin/node/runtime/src/lib.rs#L786
 [contracts-api-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/pallet_contracts_rpc_runtime_api/trait.ContractsApi.html
 [pallet-crates]: https://crates.io/search?q=pallet-contracts-rpc
-

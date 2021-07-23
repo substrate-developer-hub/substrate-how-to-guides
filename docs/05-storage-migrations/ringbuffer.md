@@ -2,9 +2,9 @@
 sidebar_position: 3
 theme: codeview
 code: code/ringbuffer-pseudo.rs
-keywords: 
-    - storage migration
-    - runtime
+keywords:
+  - storage migration
+  - runtime
 ---
 
 # Ringbuffer queue
@@ -98,6 +98,7 @@ type constraints make sure that both items and indices can be stored in storage.
 The [`PhantomData`][phantomdata-rustdocs] is needed in order
 to "hold on to" the types during the lifetime of the transient object.
 :::
+
 #### Specifying type constraints for `Index`
 
 Specify the default type for `Index` as `u16`. In addition, add ``WrappingsOps` and `From<u8>`.
@@ -253,8 +254,11 @@ call to the using pallet.
 ## References
 
 #### How-to guides
+
 - [Basic storage migration](nicks-migration)
+
 #### Rust docs
+
 - [trait objects](https://doc.rust-lang.org/book/ch17-02-trait-objects.html#trait-objects-perform-dynamic-dispatch)
 
 [ringbuffer-wikipedia]: https://en.wikipedia.org/wiki/Circular_buffer

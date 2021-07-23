@@ -6,6 +6,7 @@ keywords: testing, runtime, beginner
 # Testing a transfer function
 
 _A basic overview to help you write out your checks and balances._
+
 ## Goal
 
 Learn how to write tests and improve the correctness of a `transfer` function.
@@ -23,7 +24,7 @@ steps you through best practices for writing test cases for a basic `transfer` f
 
 ### 1. Outline the `transfer` function
 
-A transfer function has two key elements: subtracting a balance from an account and adding that balance to another account. 
+A transfer function has two key elements: subtracting a balance from an account and adding that balance to another account.
 Here, we'll start by outlining this function:
 
 ```rust
@@ -68,7 +69,7 @@ fn transfer_works() {
 
 #### Configure error handling
 
-To implement some error check, replace `mutate` with `try_mutate` to use `ensure!`. 
+To implement some error check, replace `mutate` with `try_mutate` to use `ensure!`.
 This will check whether _bal is greater or equal to amount_ and throw an error message if not:
 
 ```rust
@@ -93,9 +94,9 @@ Use `#[transactional]` to generate a wrapper around both checks:
 /*--snip--*/
 ```
 
-### 5. Handle dust accounts 
+### 5. Handle dust accounts
 
-Make sure that sending and receiving accounts aren't dust accounts. Use `T::MinBalance::get()`: 
+Make sure that sending and receiving accounts aren't dust accounts. Use `T::MinBalance::get()`:
 
 ```rust
 /*--snip--*/
@@ -104,7 +105,6 @@ Make sure that sending and receiving accounts aren't dust accounts. Use `T::MinB
 /*--snip--*/
 ```
 
-
 ## Examples
 
 - [`reward-coin` tests](https://github.com/sacha-l/substrate-how-to-guides/blob/main/how-to-substrate/example-code/template-node/pallets/reward-coin/src/tests.rs#L20-L38)
@@ -112,6 +112,7 @@ Make sure that sending and receiving accounts aren't dust accounts. Use `T::MinB
 ## Resources
 
 #### Rust docs
+
 - [`assert_ok!`](https://substrate.dev/rustdocs/v3.0.0/frame_support/macro.assert_ok.html)
 - [`assert_noop!`](https://substrate.dev/rustdocs/v3.0.0/frame_support/macro.assert_noop.html)
 - [`ensure!`](https://substrate.dev/rustdocs/v3.0.0/frame_support/macro.ensure.html)

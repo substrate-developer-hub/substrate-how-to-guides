@@ -16,11 +16,12 @@ Calculate transaction weights for transactions with 3 or more parameters.
 Calculate correct weight based on data within a function, required to calculate transaction fees.
 
 ## Overview
+
 This is a more complex way scale to weight transactions. It computes weight according to the following formula:
 
 _a*x^2 + b*y + c_
 
-Where a, b, and c are fields in the struct, and x and y are transaction parameters. Have a look at the [examples][#Examples]
+Where a, b, and c are fields in the struct, and x and y are transaction parameters. Have a look at the [examples][#examples]
 section to see it implemented and used in context.
 
 ## Steps
@@ -76,14 +77,19 @@ impl<T> PaysFee<T> for Quadratic {
 - pallet-weights
 
 ## Related material
+
 #### How-to guides
 
 - [Linear weighting struct](./linear-weight-struct)
 - [Quadratic weighting struct](../300/quadratic-weight-struct)
+
 #### Knowledgebase
+
 - [Transaction Weights](https://substrate.dev/docs/en/knowledgebase/learn-substrate/weight)
 - [Transaction Fees](https://substrate.dev/docs/en/knowledgebase/runtime/fees)
+
 #### Other
+
 - [Transaction fees in Polkadot](https://wiki.polkadot.network/docs/en/learn-transaction-fees)
 
 [dispatchclass-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/weights/enum.DispatchClass.html
