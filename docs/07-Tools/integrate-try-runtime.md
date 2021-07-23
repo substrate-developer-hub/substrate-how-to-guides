@@ -1,18 +1,27 @@
 ---
 sidebar_position: 4
-keywords: storage migration, testing, runtime
+keywords: storage migration, testing, runtime, tooling
 ---
 
-# Include and use `try-runtime` in your runtime
+# Include `try-runtime` in your project
+_Learn how to integrate try-runtime in your chain._
 
 ## Goal
-Pinpoint some runtime state and scrape it, put it into `TestExternalities` and test it.
+
+Include `try-runtime` to use it in a Substrate node.
 
 ## Use cases
 
+Use `try-runtime` to test a storage migration.
+
 
 ## Overview
+The `try-runtime` tool is useful for running tests before launching a runtime to production. This is a simple guide 
+which steps through which dependencies to include and where to include them in order to use it inside a runtime. 
 
+:::warning
+Be sure to use the latest `monthly-*` tag when adding your dependencies.
+:::
 
 ## Steps
 
@@ -20,11 +29,14 @@ Pinpoint some runtime state and scrape it, put it into `TestExternalities` and t
 
 #### In `runtime/Cargo.toml`
 
-Add FRAME dependency:
+Add the FRAME dependency:
 
 ```rust
-frame-try-runtime = { version = "0.9.0", default-features = false, path = "../../../frame/try-runtime", optional = true }
-    /* --snip-- */
+[dependencies]
+frame-try-runtime = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-07', optional = true }
+try-runtime-cli = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-07', optional = true }    
+
+/* --snip-- */
     std = [
     /* --snip-- */
     "frame-try-runtime/std",
@@ -41,7 +53,7 @@ try-runtime = [
 ]
 ```
 
-#### In `runtime/src/lib.rs`, implement it for your Runtime:
+#### In `runtime/src/lib.rs`, implement it for your runtime:
 
 ```rust
     #[cfg(feature = "try-runtime")]
@@ -56,43 +68,27 @@ try-runtime = [
 
 ### 2. Adding `node` dependencies
 
-#### In `node/Cargo.toml`
+#### In `node/Cargo.toml` (always check for the latest version):
 
 ```rust
 [features]
 /* --snip-- */
-try-runtime = ['node-template-runtime/try-runtime']
-
-/* --snip-- */
-[dependencies.frame-try-runtime]
-default-features = false
-version = "0.9.0"
-git = 'https://github.com/paritytech/substrate.git'
-optional = true
-
-/* --snip-- */
-[dependencies.try-runtime-cli]
- git = 'https://github.com/paritytech/substrate/master'
- optional = true 
-/* --snip-- */
 cli = [
-    /* --snip-- */
-    "try-runtime-cli",
-    ]
-cli = [
-	/* --snip-- */
-	"try-runtime-cli",
+    'try-runtime-cli',
 ]
-/* --snip-- */
 try-runtime = [
-	"node-runtime/try-runtime",
-	"try-runtime-cli",
+    "node-template-runtime/try-runtime",
+    "try-runtime-cli",
 ]
 
 /* --snip-- */
+frame-try-runtime = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-07', optional = true }
+try-runtime-cli = { git = 'https://github.com/paritytech/substrate.git', tag = 'monthly-2021-07', optional = true }
+/* --snip-- */
+
 ```
 
-#### In `node/src/cli.rs` add the subcommands
+#### In `node/src/cli.rs` add the subcommands:
 
 ```rust
 /* --snip-- */
@@ -139,28 +135,16 @@ If you're using custom pallets in your workspace, make sure you included
 `try-runtime` in the dependencies inside the `pallets/pallet_name/Cargo.toml` file of your workspace.
 :::
 
-### How to import it in a custom chain:
+### 3. Using `try-runtime`
 
-Add it to the cli commands of your chain
-Implement runtime API in node/runtime/src/:
-
-```rust
-#[cfg(feature = “try-runtime”)]
-    impl frame_try_runtime::TryRRuntime<Block> for Runtime {
-    fn on_runtime_upgrade() -> Result<(Weight, Weight),         sp_runtime::RuntimeString> {
-        let weight = Executive::try_runtime_upgrade()?;
-        Ok((weight, RuntimeBlockWeights::get().max_block))
-        }
-    }
-```
-
-### Write remote tests
 Just like writing unit tests, to use `try-runtime` create an externalities instance and call `execute_with` on it. 
+
+Refer to [this guide](/todo) to learn more on how to do this.
 
 ## Examples
 
 ## Resources
-#### How-to guides
+#### Knowledgebase
 
 #### Other
 
