@@ -9,24 +9,24 @@ _Learn how to write into a storage map._
 
 ## Goal
 
-Usage of [`StorageMap`][storagemap-rustdocs] using Frame V2 syntax.
+Learn how to use a [`StorageMap`][storagemap-rustdocs] using FRAME V2's syntax.
 
 ## Use cases
 
-How to declare and insert into storage Map
+Declaring a Storage Map and using it in a pallet.
 
 ## Overview
 
 We will create 2 maps :
 
-- WhenLastSomethingDone : to store the lastest block number when a function is called
-- CallsCounterBySender : to store a counter by sender address for a function called
+- `WhenLastSomethingDone` : to store the lastest block number when a function is called
+- `CallsCounterBySender` : to store a counter by sender address for a function called
 
 ## Steps
 
-### 1. Define StorageMap
+### 1. Define a StorageMap instance
 
-Use `StorageMap` to declare the struct as a new single item in storage:
+Use FRAME's `StorageMap` to declare the struct as a new single item in storage:
 
 ```rust
 #[pallet::storage]
@@ -39,9 +39,9 @@ pub type CallsCounterBySender<T: Config> = StorageMap<_, Twox64Concat, T::Accoun
 
 ```
 
-### 2. Insert into StorageMap WhenLastSomethingDone
+### 2. Write to the `WhenLastSomethingDone` storage item
 
-Exemple of WhenLastSomethingDone StorageMap usage in a function :
+Example of using `WhenLastSomethingDone` inside a function using `insert` :
 
 ```rust
 let who = ensure_signed(origin)?;
@@ -49,9 +49,9 @@ let now = frame_system::Pallet::<T>::block_number();
 <WhenLastSomethingDone<T>>::insert(&who, now);
 ```
 
-### 3. Insert into StorageMap CallsCounterBySender
+### 3. Write to the `CallsCounterBySender` storage item
 
-Exemple of CallsCounterBySender StorageMap usage in a function:
+Example of the `CallsCounterBySender` StorageMap being used inside a function:
 
 ```rust
 let who = ensure_signed(origin)?;
@@ -65,10 +65,12 @@ let counter = <CallsCounterBySender<T>>::get(&who).saturating_add(1);
 
 ## Examples
 
-- [`archipel project example`](https://github.com/luguslabs/archipel/blob/upgrade-substrate-3.0.0/chain/pallets/archipel/src/lib.rs#L39-L75)
+- Inside FRAME's [`pallet-balances`](https://github.com/paritytech/substrate/blob/37d4bce3f478cab6903401a9089449a27eb24a38/frame/balances/src/lib.rs#L485-L497)
+- StorageMaps in the [`archipel project`](https://github.com/luguslabs/archipel/blob/upgrade-substrate-3.0.0/chain/pallets/archipel/src/lib.rs#L39-L75)
 
 ## Resources
 
 #### Rust docs
+- [StorageMap][storagemap-rustdocs]
 
 [storagemap-rustdocs]: https://crates.parity.io/frame_support/storage/trait.StorageMap.html
