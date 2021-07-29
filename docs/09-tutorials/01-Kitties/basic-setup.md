@@ -13,11 +13,11 @@ If you haven't already, head over to our [installation guide][installation].
 
 ## Learning outcomes
 
-:arrow_right: How to rename the Substrate Node Template for a custom project.
+:arrow_right: Renaming a Substrate Node Template for a custom project.
 
 :arrow_right: Basic patterns for building and running a Substrate node.
 
-:arrow_right: How to create a storage item to keep track of a single `u64` value.
+:arrow_right: Create a storage item to keep track of a single `u64` value.
 
 ## Overview
 
@@ -332,7 +332,7 @@ You've completed the first part of this series. At this stage, you've learnt the
 - Customizing the Substrate node template and including a custom pallet.
 - Building a Substrate chain and checking that a target pallet compiles.
 - Declaring and using a `u64` storage item.
-  :::
+:::
 
 ## Next steps
 

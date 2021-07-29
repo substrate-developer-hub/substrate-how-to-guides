@@ -298,7 +298,7 @@ To recap, in this part of the tutorial you've learnt how:
 - To update values in storage.
 - To implement events and use them in a function.
 - To query storage items and chain state using the PolkadotJS Apps UI.
-  :::
+:::
 
 ## Next steps
 

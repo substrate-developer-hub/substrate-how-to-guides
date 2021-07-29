@@ -44,9 +44,6 @@ for storage reads and writes. Let's first go over what information a single Kitt
   determined by its owner.
 - **`gender`**: an enum that can be either `Male` or `Female`.
 
-:::note You could add whichever additional pieces of information you want to your Kitty struct. In this tutorial, we're going to keep things simple.
-:::
-
 #### B. Writing out the struct
 
 Now that we know what to include in our Kitty struct, let's recap the basics of declaring a struct.
@@ -83,8 +80,9 @@ In doing so, you've given your pallet access to Substrate's [`Hash`][hash-rustdo
 :::tip Your turn!
 Now that you know the different types your `Kitty` struct will require, start writing it!
 
-**HINT**: it will take `Hash`, `Balance` and `Gender` as its types.
-Have a look at [this how-to guide](../../pallet-design/storage-value-struct) in case you get stuck.
+Your struct declaration will look like this: `pub struct Kitty<Hash, Balance> {}` and include the fields we went over in the previous section.
+
+**HINT**: Have a look at [this how-to guide](../../pallet-design/storage-value-struct) in case you get stuck.
 :::
 
 #### D. Adding the custom `Gender` dependency
@@ -187,7 +185,7 @@ Here's what our random hashing function looks like:
 
 In order to implement the `Randomness` trait for our runtime, we must:
 
-**1. Specify it in our pallet's configuration trait.**
+**A. Specify it in our pallet's configuration trait.**
 
 The `Randomness` trait from `frame_support` requires specifying it with a paramater to replace the `Output` generic.
 Take a look at the documentation and the source code implementation to understand how this works. For our purposes,
@@ -197,7 +195,7 @@ we want the output of functions using this trait to be [`H256`][h256-rustdocs]:
 type KittyRandomness: Randomness<H256>;
 ```
 
-**2. Specify it for our runtime.**
+**B. Specify it for our runtime.**
 
 Given that we're adding a new type for the configuration of our pallet, we need to tell our runtime about its implementation.
 This could come in handy if ever we wanted to change the algorithm that `KittyRandomness` is using, without needing to
@@ -365,7 +363,7 @@ handle the creation and ownership of your Kitties! In this part of the tutorial,
 - How to create a function to set a value for that custom type.
 - How to implement the Randomness trait to write a function that generates randomness using a nonce.
 - How to write `StorageMap` storage items.
-  :::
+:::
 
 ## Next steps
 
