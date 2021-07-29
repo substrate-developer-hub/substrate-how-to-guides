@@ -12,6 +12,7 @@ Find the winner of a completed parachain auction using `sidecar`.
 
 ## Use cases
 
+Interact with a Substrate blockchain node using a REST service.
 
 ## Overview
 
@@ -92,10 +93,12 @@ Comparing the `leasePeriods` that are available during the active auction to the
 
 ## Examples
 
-_Code-based examples that make use of this guide. This shows at least one reference of what this guide covers with a working example.This could be a reference to a Playground codebase instance, existing Substrate code or custom code that lives in the how-to guide repo._
+- More guides [here](https://github.com/paritytech/substrate-api-sidecar/tree/master/guides).
 
 ## Resources
 
-_A bulleted list of links to similar guides; other devhub ressources; and related material. See options below._
-#### Other
+- [Sidecar documentation][sidecar-gh]
+- Available [Substrate Sidecar API endpoints](https://paritytech.github.io/substrate-api-sidecar/dist/)
+
+
 [sidecar-gh]: https://github.com/paritytech/substrate-api-sidecar

@@ -2,9 +2,9 @@
 sidebar_position: 2
 ---
 
-# Title
+# Create a `txwrapper` for a chain
 
-Create a `txwrapper` for a chain.
+🍬
 
 ## Goal
 
@@ -12,7 +12,7 @@ Structure the public API of a chain's `txwrapper` package.
 
 ## Use cases
 
-For existing txwrapper users to easily integrate new txwrappers.
+For existing `txwrapper` users to easily integrate new txwrappers.
 
 ## Overview
 
@@ -21,7 +21,7 @@ conscious users who need to facilitate transaction signing, construction and/or 
 (but is not limited to) custodians, exchanges, and cold storage users.
 
 :::note
-Prior to building a `txwrapper` for your own chain, have a look at the [`txwrapper-examples`][txwrapper-examples-gh]. Make sure you understand at least the Polkadot example and take a look at the `txwrapper-core` methods an end user is expected to use (see decode, construct.{signingPayload, signedTx, txHash}). You package will be re-exporting these so take care to understand the public API you will create.
+Prior to building a `txwrapper` for your own chain, have a look at the [`txwrapper-examples`][txwrapper-examples-gh]. Make sure you understand the Polkadot example and take a look at the `txwrapper-core` methods an end user is expected to use (see `decode`, `construct.{signingPayload, signedTx, txHash}`). Your package will be re-exporting these so be sure to understand the public API you will create.
 :::
 
 ## Steps
@@ -58,17 +58,17 @@ Additionally, add the following field to give publishing permission:
   },
 ```
 
-## 3. Choose relevant methods to re-export
+### 3. Choose relevant methods to re-export
 
 You will need to choose what pallet methods you want your `txwrapper` to expose. It is recommended to choose methods that are likely to be
 signed by keys stored offline. 
 
 :::info 
-If you just need methods from Substrate or ORML pallets, checkout [`txwrapper-substrate`][txwrapper-substrate-gh] and 
-[`txwrapper-orml`][txwrapper-orml-gh] to see if the methods are already defined.
+If you just need methods from Substrate or ORML pallets, checkout [txwrapper-substrate][txwrapper-substrate-gh] and 
+[txwrapper-orml][txwrapper-orml-gh] to see if the methods are already defined.
 :::
 
-## 4. Create a `getRegistry` method
+### 4. Create a `getRegistry` method
 
  Your txwrapper will need to export a `getRegistry` method so users can get a Polkadot-js `TypeRegistry` with the most up-to-date types for your chain.
 
@@ -159,12 +159,12 @@ export * as methods from './methods';
 ### 5. Create a working example 
 
 :::info
-Create an end-to-end example so users have a clear understanding of the full flow for offline transaction generation for your chain. A good example can ease user friction and reduce workload for maintainers.
+A good example can ease user friction and reduce workload for maintainers. Create an end-to-end example so users have a clear understanding of the full flow for offline transaction generation for your chain. 
 :::
 
 1. Rename `template-example.ts` to something appropriate to your chain and update all the sections in the file marked TODO. 
 2. Update `examples/README.md` in the sections marked TODO.
-3. Make sure the example is fully runable using a development node for your chain.
+3. Make sure you can run the example using a development node for your chain.
 
 ### 6. Publish your package
 
@@ -173,21 +173,12 @@ refer to [this guide][npm-publish] to learn how publish your package to `NPM`.
 
 ## Examples
 
-_Code-based examples that make use of this guide. This shows at least one reference of what this guide covers with a working example.This could be a reference to a Playground codebase instance, existing Substrate code or custom code that lives in the how-to guide repo._
+- [Template example](https://github.com/paritytech/txwrapper-core/blob/main/packages/txwrapper-template/examples/template-example.ts)
 
 ## Resources
 
-_A bulleted list of links to similar guides; other devhub ressources; and related material. See options below._
-
-#### How-to guides
-
-#### Tutorials
-
-#### Knowledgebase
-
-#### Rust docs
-
-#### Other
+- How-to use [`tx-wrapper-polkadot`][txwrapper-examples-gh]
+- Serialization/deserialization [unit tests using `jest`](https://github.com/paritytech/txwrapper-core/blob/main/packages/txwrapper-orml/src/methods/currencies/transfer.spec.ts)
 
 [txwrapper-examples-gh]: https://github.com/paritytech/txwrapper-core/blob/main/packages/txwrapper-examples/README.md 
 [txwrapper-template-gh]: https://github.com/paritytech/txwrapper-core/blob/main/packages/txwrapper-template
