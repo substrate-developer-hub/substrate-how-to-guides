@@ -84,7 +84,7 @@ kitties-tutorial           <--  The name of our project directory
 |
 +-- pallets
 |   |
-|   +-- kitties           
+|   +-- mykitties           
 |       |
 |       +-- Cargo.toml     
 |       |
@@ -106,10 +106,10 @@ kitties-tutorial           <--  The name of our project directory
 [Pallets][pallets-kb] in Substrate are used to define runtime logic. In our case, we'll be creating a single pallet that manages all of the
 logic of our Substrate Kitties application.
 
-Let's lay out the basic structure of our pallet by outlining the parts inside the `pallets/kitties/src/lib.rs`. 
+Let's lay out the basic structure of our pallet by outlining the parts inside the `pallets/mykitties/src/lib.rs`. 
 
 :::note
-Our pallet's directory `pallets/kitties/` is not the same as our pallet's name. The name of our pallet as Cargo understands it is `pallet-kitties`.
+Our pallet's directory `pallets/mykitties/` is not the same as our pallet's name. The name of our pallet as Cargo understands it is `pallet-mykitties`.
 :::
 
 Every FRAME pallet has:
@@ -125,7 +125,7 @@ Here's the most bare-bones version of the Kitties pallet we will be building in 
 adding code for the next sections of this tutorial, with comments marked with "TODO" to indicate code we will be writing later, and 
 "ACTION" to indicate code that will be written in the current part of the tutorial.
 
-Paste the following code in `/pallets/kitties/src/lib.rs`: 
+Paste the following code in `/pallets/mykitties/src/lib.rs`: 
 
 ```rust
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -203,7 +203,7 @@ pub mod pallet {
 ```
 
 <!-- :::tip Your turn!
-Copy over the bare-bones of the Kitties pallet into `kitties/src/lib.rs`.
+Copy over the bare-bones of the Kitties pallet into `mykitties/src/lib.rs`.
 
 **Hint:** Each part of this tutorial has a file with code containing comments to guide you to complete each part.
 Download the [template code here][template-code] locally and use it to help you progress through each step!
@@ -216,7 +216,7 @@ cargo +nightly build --release
 ```
 
 Get an error about dependencies? That's normal! Our pallet structure is using FRAME's `pallet-balances` and `sp-io` 
-but these aren't part of the node template we used so we must specify them ourselves. In `pallets/kitties/Cargo.toml`, 
+but these aren't part of the node template we used so we must specify them ourselves. In `pallets/mykitties/Cargo.toml`, 
 add the following:
 
 ```TOML
@@ -251,7 +251,7 @@ on the storage macro.
 
 All that means for our purposes is that for any storage item we want to declare, we must include the `#[pallet::storage]`  macro beforehand. Learn more about declaring storage items [here](https://substrate.dev/docs/en/knowledgebase/runtime/storage#declaring-storage-items). 
 
-In `kitties/src/lib.rs`, replace the ACTION line with: 
+In `mykitties/src/lib.rs`, replace the ACTION line with: 
 
 ```rust
     #[pallet::storage]
@@ -277,7 +277,7 @@ Before we move on, let's make sure everything compiles. We don't need to rebuild
 Instead, we can use a command that only builds our pallet. From inside your pallet directory, run the following:
 
 ```bash
-cargo build -p pallet-kitties
+cargo build -p pallet-mykitties
 ```
 
 Does your pallet compile without error? Well done if it does! If not, go back and check that all the macros are in place and that 
