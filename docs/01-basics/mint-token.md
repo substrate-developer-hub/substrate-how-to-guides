@@ -153,8 +153,8 @@ Refer to [this guide](./basic-pallet-integration) if you’re not yet familiar w
 
 ## Examples
 
-- [mint-token pallet](https://github.com/sacha-l/substrate-how-to-guides/blob/main/how-to-substrate/example-code/template-node/pallets/mint-token/src/lib.rs#L1-L130)
-- [reward-coin pallet](https://github.com/sacha-l/substrate-how-to-guides/blob/main/how-to-substrate/example-code/template-node/pallets/reward-coin/src/lib.rs#L1-L249)
+- [mint-token pallet](https://github.com/sacha-l/substrate-how-to-guides/blob/main/example-code/template-node/pallets/mint-token/src/lib.rs#L1-L130)
+- [reward-coin pallet](https://github.com/sacha-l/substrate-how-to-guides/blob/main/example-code/template-node/pallets/reward-coin/src/lib.rs#L1-L249)
 
 ## Related material
 

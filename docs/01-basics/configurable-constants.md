@@ -155,7 +155,7 @@ impl constant_config::Config for Runtime {
 
 ## Examples
 
-- [`constant-config`](https://github.com/substrate-developer-hub/substrate-how-to-guides/blob/main/how-to-substrate/example-code/template-node/pallets/configurable-constant/src/lib.rs#L1)
+- [`constant-config`](https://github.com/substrate-developer-hub/substrate-how-to-guides/blob/main/example-code/template-node/pallets/configurable-constant/src/lib.rs#L1)
 
 ## Resources
 
