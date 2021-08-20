@@ -277,33 +277,44 @@ Self::deposit_event(Event::Created(to, kitty_id));
 If you're building your codebase from the previous part (and haven't been using the helper file for this part) you'll need to add `Ok(())` and properly close the `mint` function.
 :::
 
-Now's a good time to see if your chain can compile. Instead of only checking if your pallet compiles, run the following command to see if everything can build:
-
-```rust
-cargo +nightly build --release
-```
-
 ### 5. Error handling 
 
-In [Part II when we created the `increment_nonce`](/docs/tutorials/Kitties/create-kitties#nonce) function, we specified the error message "Overflow" using Rust's `ok_or` function. 
-FRAME provides us with an error handling system using `[#pallet::errors]` which allows us to specify errors for our pallet and use them across our pallet' functions. In this case, let's declare a single error for when checking for overflow in the `increment_nonce` function. 
+In [Part II when we created the `increment_nonce`](/docs/tutorials/Kitties/create-kitties#nonce) function, we specified the error message _"Overflow"_ using Rust's `ok_or` function. 
+FRAME provides us with an error handling system using [`[#pallet::errors]`][errors-kb] which allows us to specify errors for our pallet and use them across our pallet's functions. 
 
-First, declare the error using the provided FRAME macro (replace line ACTION #5a):
+In this case, let's declare a single error for when checking for overflow in the `increment_nonce` function. 
+
+First, declare the error using the provided FRAME macro under `#[pallet::error]` (replace line ACTION #5a):
 
 ```rust
-        /// Nonce has overflowed past u64 limits
-        NonceOverflow,
+/// Nonce has overflowed past u64 limits
+NonceOverflow,
 ```
 
-Then, use it on `ok_or` (replace line ACTION #5b):
+Then, use it on `ok_or` inside `increment_nonce` (replace line ACTION #5b):
 
 ```rust
 let next = nonce.checked_add(1).ok_or(Error::<T>::NonceOverflow)?;
 ```
 
+Now's a good time to see if your chain can compile. Instead of only checking if your pallet compiles, run the following command to see if everything can build:
+
+```rust
+cargo +nightly build --release
+```
+:::tip
+If you ran into errors, scroll to the first error message in your terminal, identify what line
+is giving an error and check whether you've 
+followed each step correctly. Sometimes a mismatch of curly brackets will unleash a whole bunch 
+of errors that are difficult to understand &mdash; double check your code!
+:::
+
+Did that build fine? Congratulations! That's the core functionality of our Kitties pallet. In the next step you'll be able to 
+see everything you've built so far in action.
+
 ### 6. Testing with PolkadotJS Apps
 
-Assuming that you successfully built your chain, let's run it and use the PolkadotJS Apps UI to interact with it.
+Assuming that you successfully built your chain, let's run it and use the [PolkadotJS Apps UI](https://polkadot.js.org/apps/#/explorer) to interact with it.
 
 In your chain's project directory, run:
 
@@ -317,8 +328,9 @@ Assuming that blocks are being finalized (which you should be able to see from y
 
 **Follow these steps:**
 
-1. Check that you're connected to Local Node, under "Development".
-2. Tell the UI about your custom types. This requires you to paste them into the "_Settings_" -> "_Developers_" section.
+1. Check that you're connected to Local Node, under "Development". Your node will default to `127.0.0.1.:9944`.
+2. Tell the UI about your custom types. 
+This requires you to paste them into the "_Settings_" -> "_Developers_" section.
 3. Go to "_Developer_" -> "_Extrinsics_". Paste this in the JSON code editor:
 
 ```json
@@ -346,11 +358,11 @@ Assuming that blocks are being finalized (which you should be able to see from y
 > The reason we need this is because we created types that PolkadotJS Apps isn't designed to read by default. By adding them, it can
 properly decode each of our storage items that rely on custom types.
 
-3. Submit a signed extrinsic using _substrateKitties_ by calling the `createKitty()` dispatchable.
-4. Check for the associated event by going to "_Network_" -> "_Explorer_". You should be able to see the event emitted and query its block details.
-5. Check your newly created Kitty's details by going to "_Developer_" -> "_Chain State_". Select the _substrateKitties_ pallet and query `Kitties(Hash): Kitty`.
+3. Now go to: _"Developer"_ -> _"Extrinsics"_ and submit a signed extrinsic using _substrateKitties_ by calling the `createKitty()` dispatchable. Make 3 different transactions from Alice, Bob and Charlie's accounts
+4. Check for the associated event _"Created"_ by going to "_Network_" -> "_Explorer_". You should be able to see the event emitted and query its block details.
+5. Check your newly created Kitty's details by going to "_Developer_" -> "_Chain State_". Select the _substrateKitties_ pallet and query `Kitties(Hash): Kitty`. **Note:** You'll notice that this is actually querying all of your pallet's storage items!
 
-You should be able to see the details of your newly minted Kitty in the following format:
+Be sure to uncheck the "include option" box and you should be able to see the details of your newly minted Kitty in the following format:
 
 ```json
 substrateKitties.kitties: Kitty
@@ -372,14 +384,14 @@ substrateKitties.kitties: Kitty
 :::note Congratulations!
 You're pretty much able to take it from here at this point! We've learnt how to implement the key parts of what powers a FRAME pallet and how to put them to use. All part IV of this tutorial covers is adding more capabilities to our pallet by taking what we've learnt in this part.
 
-To recap, in this part of the tutorial you've learnt how:
+To recap, in this part of the tutorial you've learnt how to:
 
-- To distinguish between implementing a dispatchable function and a private helper function.
-- To use `#[pallet::call]`, `#[pallet::events]` and `#[pallet::error]`.
-- To do basic error checking.
-- To update values in storage.
-- To implement events and use them in a function.
-- To query storage items and chain state using the PolkadotJS Apps UI.
+- Distinguish between implementing a dispatchable function and a private helper function.
+- Use `#[pallet::call]`, `#[pallet::events]` and `#[pallet::error]`.
+- Implement basic error checking with FRAME.
+- Update values in storage with safety checks.
+- Implement FRAME events and use them in a function.
+- Query storage items and chain state using the PolkadotJS Apps UI.
 :::
 
 ## Next steps
@@ -402,3 +414,4 @@ To recap, in this part of the tutorial you've learnt how:
 [dispatchable-kb]: https://substrate.dev/docs/en/knowledgebase/getting-started/glossary#dispatch
 [extrinsics-kb]:  https://substrate.dev/docs/en/knowledgebase/runtime/execution#executing-extrinsics
 [helper-code-pt3]: https://github.com/substrate-developer-hub/substrate-how-to-guides/blob/main/static/code/kitties-tutorial/03-dispatchables-and-events.rs
+[errors-kb]: https://substrate.dev/docs/en/knowledgebase/runtime/errors

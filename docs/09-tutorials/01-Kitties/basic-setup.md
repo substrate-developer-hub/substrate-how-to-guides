@@ -54,6 +54,22 @@ Open the `kitties` directory in your favorite code editor and rename it to `kitt
 - **`/runtime/`** - This is where all pallets (both custom "internal" and "external" ones) are aggregated and implemented for the chain's runtime.
 :::
 
+By default, you'll notice that the instance of our modified template pallet name remains `TemplateModule`. Change it to
+`SubstrateKitties` (in `runtime/src/lib.rs`):
+
+```rust
+construct_runtime!(
+    pub enum Runtime where
+    Block = Block,
+    NodeBlock = opaque::Block,
+    UncheckedExtrinsic = UncheckedExtrinsic
+    {
+        // --snip
+        SubstrateKitties: pallet_mykitties::{Pallet, Call, Storage, Event<T>},
+    }
+);
+```
+
 We can already build the node as is by navigating to directory `kitties` in terminal and running this command:
 
 ```bash
