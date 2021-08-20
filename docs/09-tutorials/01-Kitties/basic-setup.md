@@ -43,9 +43,9 @@ This command will clone a copy of the most recent Node Template and ask you woul
 - `kitties` - as the name of our node
 - `mykitties` - as the name of your pallet
 
-This will create a directory called `substrate-node-template` with a copy of the [Substrate Node Template][substrate-node-template] containing the name changes that correspond our template node, runtime and pallet.
+This will create a directory called `kitties` with a copy of the [Substrate Node Template][substrate-node-template] containing the name changes that correspond our template node, runtime and pallet.
 
-Open the `substrate-node-template` directory in your favorite code editor and rename it to `kitties-tutorial`. Renaming this directory will be helpful once you start creating other projects with the node template &mdash; it'll help keep things organized! 
+Open the `kitties` directory in your favorite code editor and rename it to `kitties-tutorial`. Renaming this directory will be helpful once you start creating other projects with the node template &mdash; it'll help keep things organized! 
 
 :::note Notice the directories that the `kickstart` command modified:
 
@@ -54,7 +54,7 @@ Open the `substrate-node-template` directory in your favorite code editor and re
 - **`/runtime/`** - This is where all pallets (both custom "internal" and "external" ones) are aggregated and implemented for the chain's runtime.
 :::
 
-We can already build the node as is by running this command:
+We can already build the node as is by navigating to directory `kitties` in terminal and running this command:
 
 ```bash
 cargo +nightly build --release
@@ -223,14 +223,14 @@ add the following:
 [dependencies.sp-core]
 default-features = false
 git = 'https://github.com/paritytech/substrate.git'
-tag = 'monthly-2021-07'
-version = '3.0.0'
+tag = 'monthly-2021-08'
+version = '4.0.0-dev'
 
 [dependencies.pallet-balances]
 default-features = false
 git = 'https://github.com/paritytech/substrate.git'
-tag = 'monthly-2021-07'
-version = '3.0.0'
+tag = 'monthly-2021-08'
+version = '4.0.0-dev'
 ```
 
 Now run `cargo +nightly build --release` again to make sure it builds without errors.
