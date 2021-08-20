@@ -29,9 +29,9 @@ application [in the overview of this tutorial](./overview).
 
 ### 1. Kitty struct scaffolding
 
-We added additional comments to the code from Part I to better assist you with the action items in this tutorial module By the end of Part I, you should have the code below in the file /pallets/mykitties/src/lib.rs:
+We added additional comments to the code from Part I (in the file /pallets/mykitties/src/lib.rs) to better assist you with the action items in this tutorial module.
 
- (Replace your code in your editor with the code below, if you like to)
+(Replace your code in your editor with the code below, if you like to)
 
 ```rust
 #![cfg_attr(not(feature = "std"), no_std)]
