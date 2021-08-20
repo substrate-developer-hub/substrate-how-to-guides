@@ -10,14 +10,19 @@ _Write a dispatchable function that creates a Kitty capable of emitting its asso
 ## Overview
 
 In the previous section of this tutorial, we laid down the foundations geared to manage the ownership of our Kitties &mdash; even though they don't really exist yet! In this part of the tutorial, we'll be putting these foundations to use
-by giving our pallet the ability to create a Kitty using the storage items we declared in the previous part
-of this tutorial. Breaking things down a little, we're going to:
+by giving our pallet the ability to create a Kitty using the storage items we declared in the previous part. Breaking things down a little, we're going to:
 
-- **write `create_kitty`**: a dispatchable or publicly callable function allowing an account to mint a Kitty.
-- **write `mint()`**: a helper function that updates our pallet's storage items and performs error checks, called by `create_kitty`.
-- **include `Events`**: using FRAME's `#[pallet::events]` macro.
+- **Write `create_kitty`**: a dispatchable or publicly callable function allowing an account to mint a Kitty.
+- **Write `mint()`**: a helper function that updates our pallet's storage items and performs error checks, called by `create_kitty`.
+- **Include `Events`**: using FRAME's `#[pallet::events]` macro.
 
 At the end of this part, we'll check that everything compiles without error and call our `create_kitty` extrinsic using the PolkadotJS Apps UI.
+
+:::note
+If you're feeling confident, you can continue building on your codebase from the previous part.
+If you prefer using the "ACTION" items as a way to assist you through each step, replace the code from the
+Part II with [this part's helper code][helper-code-pt3].
+:::
 
 ## Learning outcomes
 
@@ -37,25 +42,25 @@ Before we dive right in, it's important to understand the pallet design decision
 capabilities.
 
 As developers, we want to make sure the code we write is efficient and elegant. Oftentimes, optimizing for one optimizes for the other.
-The way we're going to set up our pallet up to achieve elegance and efficiency will be to break-up the "heavy lifting" dispatchable
+The way we're going to set up our pallet up to optimize for both will be to break-up the "heavy lifting" dispatchable
 functions into private helper functions. This improves code readability and reusability too. As we'll see, we can
-create private functions which can be called by multiple dispatchable functions without compromizing on security.
+create private functions which can be called by multiple dispatchable functions without compromizing on security. In fact, building this way can be considered an additive security feauture.
 
 :::info
 Check out [this how-to guide](docs/basics/basic-pallet-integration/) about writing and using helper functions to learn more.
 :::
 
-In the next section, we'll go over what implementing this approach looks like. For our immediate purposes, let's paint the big picture of what this means for the logical flow of our pallet:
+Before jumping into implementing this approach, let's first paint the big picture of what combining dispatchables and helper functions looks like:
 
-**`create_kitty`**
+**`create_kitty`** (dispatchable function)
 
 - check the origin is signed
 - generate a random hash with the signing account
 - create a new Kitty object using the random hash
 - call a private `mint()` function
-- increment the nonce using `increment_nonce()` from Part II
+- increment the nonce using `increment_nonce()` from [Part II](/create-kitties)
 
-**`mint`**
+**`mint`** (private helper function)
 
 - check that the Kitty doesn't already exist
 - update storage with the new Kitty ID (for all Kitties and for the owner's account)
@@ -79,23 +84,23 @@ For this simple application, we're going to default all weights to 100.
 Find ACTION #1 and replace it with the following code:
 
 ```rust
-        #[pallet::weight(100)]
-        pub fn create_kitty(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
-            let sender = ensure_signed(origin)?;
-            let random_hash = Self::random_hash(&sender);
+#[pallet::weight(100)]
+pub fn create_kitty(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
+    let sender = ensure_signed(origin)?;
+    let random_hash = Self::random_hash(&sender);
 
-            let new_kitty = Kitty {
-                id: random_hash,
-                dna: random_hash,
-                price: 0u8.into(),
-                gender: Kitty::<T, T>::gender(random_hash),
-            };
+    let new_kitty = Kitty {
+        id: random_hash,
+        dna: random_hash,
+        price: 0u8.into(),
+        gender: Kitty::<T, T>::gender(random_hash),
+    };
 
-            Self::mint(sender, random_hash, new_kitty)?;
-            Self::increment_nonce()?;
+    Self::mint(sender, random_hash, new_kitty)?;
+    Self::increment_nonce()?;
 
-            Ok(().into())
-        }
+    Ok(().into())
+}
 ```
 
 ### 3. Write the `mint()` function
@@ -116,33 +121,43 @@ In `create_kitty` our return was of type `DispatchResultWithPostInfo`. Since `mi
 so we can use a return type of [`DispatchResult`][dispatchresult-rustdocs] &mdash; its unaugmented version.
 :::
 
-Paste in the following code snippet to complete the `mint` function, replacing ACTION #2 in the working codebase:
+Paste in the following code snippet to write the beginning of the `mint` function, replacing ACTION #2 in the working codebase:
 
 ```rust
-            // Update total Kitty counts.
-            let owned_kitty_count = Self::owned_kitty_count(&to);
-            let new_owned_kitty_count = owned_kitty_count
-                .checked_add(1)
-                .ok_or("Overflow adding a new kitty to account balance")?;
+// Helper to mint a Kitty.
+fn mint(
+    to: T::AccountId,
+    kitty_id: T::Hash,
+    new_kitty: Kitty<T::Hash, T::Balance>,
+) -> DispatchResult {
+    ensure!(
+        !<KittyOwner<T>>::contains_key(kitty_id),
+        "Kitty already contains_key"
+    );
+    // Update total Kitty counts.
+    let owned_kitty_count = Self::owned_kitty_count(&to);
+    let new_owned_kitty_count = owned_kitty_count
+        .checked_add(1)
+        .ok_or("Overflow adding a new kitty to account balance")?;
 
-            let all_kitties_count = Self::all_kitties_count();
-            let new_all_kitties_count = all_kitties_count
-                .checked_add(1)
-                .ok_or("Overflow adding a new kitty to total supply")?;
+    let all_kitties_count = Self::all_kitties_count();
+    let new_all_kitties_count = all_kitties_count
+        .checked_add(1)
+        .ok_or("Overflow adding a new kitty to total supply")?;
 
-            // Update storage with new Kitty.
-            <Kitties<T>>::insert(kitty_id, new_kitty);
-            <KittyOwner<T>>::insert(kitty_id, Some(&to));
+    // Update storage with new Kitty.
+    <Kitties<T>>::insert(kitty_id, new_kitty);
+    <KittyOwner<T>>::insert(kitty_id, Some(&to));
 
-            // Write Kitty counting information to storage.
-            <AllKittiesArray<T>>::insert(new_all_kitties_count, kitty_id);
-            <AllKittiesCount<T>>::put(new_all_kitties_count);
-            <AllKittiesIndex<T>>::insert(kitty_id, new_all_kitties_count);
+    // Write Kitty counting information to storage.
+    <AllKittiesArray<T>>::insert(new_all_kitties_count, kitty_id);
+    <AllKittiesCount<T>>::put(new_all_kitties_count);
+    <AllKittiesIndex<T>>::insert(kitty_id, new_all_kitties_count);
 
-            // Write Kitty counting information to storage.
-            <OwnedKittiesArray<T>>::insert((to.clone(), new_owned_kitty_count), kitty_id);
-            <OwnedKittiesCount<T>>::insert(&to, new_owned_kitty_count);
-            <OwnedKittiesIndex<T>>::insert(kitty_id, new_owned_kitty_count);
+    // Write Kitty counting information to storage.
+    <OwnedKittiesArray<T>>::insert((to.clone(), new_owned_kitty_count), kitty_id);
+    <OwnedKittiesCount<T>>::insert(&to, new_owned_kitty_count);
+    <OwnedKittiesIndex<T>>::insert(kitty_id, new_owned_kitty_count);
 ```
 
 Let's go over what the above code is doing.
@@ -167,7 +182,7 @@ Finally, we compute a few variables to update our storage items that keep track 
 - The indices and count **for all** Kitties.
 - The indices and count **of owned** Kitties.
 
-All this requires us to do is add 1 to the current values held by `<AllKittiesCount<T>>` and `<OwnedKittiesCount<T>>`. We can use the same pattern as we did in the previous part when we created `increment_nonce`, using Rust's `checked_add` and `ok_or`. Generically, this looks like:
+All this requires us to do is add 1 to the current values held by `<AllKittiesCount<T>>` and `<OwnedKittiesCount<T>>`. We can use the same pattern as we did in the previous part [when we created `increment_nonce`](/create-kitties#nonce), using Rust's `checked_add` and `ok_or`. Generically, this looks like:
 
 ```rust
 let new_value = previous_value.checked_add(1).ok_or("Overflow error!");
@@ -207,15 +222,20 @@ pub enum Event<T: Config>{
 }
 ```
 
-As you can see in the above snippet, we use `#[pallet::generate_deposit(pub(super) fn deposit_event)]` which allows us to deposit a
-specifc event using the pattern below:
+As you can see in the above snippet, we use:
+
+`#[pallet::generate_deposit(pub(super) fn deposit_event)]` 
+
+This allows us to deposit a specifc event using the pattern below:
 
 ```rust
 Self::deposit_event(Event::Success(var_time, var_day));
 ```
 
 In order to use events inside our pallet, we need to have the `Event` type declared inside our pallet's configuration trait, `Config`. Additionally &mdash; just as
-when adding any type to our pallet's `Config` trait &mdash; we need to let our runtime know about it. This pattern is the same as when
+when adding any type to our pallet's `Config` trait &mdash; we need to let our runtime know about it. 
+
+This pattern is the same as when
 we added the `KittyRandomness` type in [Part II of this tutorial](/docs/Tutorials/Kitties/create-kitties#2-implementing-randomness) and has already been included from the initial scaffolding of our codebase: 
 
 ```rust
@@ -240,10 +260,10 @@ Learn more about events [here][events-kb].
 Declare your pallet events by replacing the ACTION #3 line with:
 
 ```rust
-        Created(T::AccountId, T::Hash),
-        PriceSet(T::AccountId, T::Hash, T::Balance),
-        Transferred(T::AccountId, T::AccountId, T::Hash),
-        Bought(T::AccountId, T::AccountId, T::Hash, T::Balance),
+Created(T::AccountId, T::Hash),
+PriceSet(T::AccountId, T::Hash, T::Balance),
+Transferred(T::AccountId, T::AccountId, T::Hash),
+Bought(T::AccountId, T::AccountId, T::Hash, T::Balance),
 ```
 
 We'll be using most of these events in Part IV of this tutorial. For now let's use the relevant event for our `mint` function.
@@ -253,6 +273,9 @@ In order to complete our `mint` function, replace the ACTION #4 line with:
 ```rust
 Self::deposit_event(Event::Created(to, kitty_id));
 ```
+:::note
+If you're building your codebase from the previous part (and haven't been using the helper file for this part) you'll need to add `Ok(())` and properly close the `mint` function.
+:::
 
 Now's a good time to see if your chain can compile. Instead of only checking if your pallet compiles, run the following command to see if everything can build:
 
@@ -378,3 +401,4 @@ To recap, in this part of the tutorial you've learnt how:
 [dispatchresult-rustdocs]: https://substrate.dev/rustdocs/latest/frame_support/dispatch/type.DispatchResult.html
 [dispatchable-kb]: https://substrate.dev/docs/en/knowledgebase/getting-started/glossary#dispatch
 [extrinsics-kb]:  https://substrate.dev/docs/en/knowledgebase/runtime/execution#executing-extrinsics
+[helper-code-pt3]: https://github.com/substrate-developer-hub/substrate-how-to-guides/blob/main/static/code/kitties-tutorial/03-dispatchables-and-events.rs

@@ -24,7 +24,7 @@ of a blockchain when all the nodes in the network must agree on the state of the
 with a source of randomness, using the [Randomness trait][randomness-rustdocs].
 
 This guide would step you through making use of FRAME's Randomness trait by using it's `random` method and a nonce as a subject.
-For additional entropy to the randomness value, the last step shows how to assign the `RandomCollectiveFlip` pallet
+For additional entropy to the randomness value, the last step shows how to assign the `RandomnessCollectiveFlip` pallet
 to the configuration trait of a pallet exposing some "random" type.
 
 ## Steps
@@ -111,13 +111,13 @@ randomness derived by the `Randomness` trait, by using the [Randomness Collectiv
 
 Using this pallet alongside the `Randomness` trait will significantly improve the entropy being processed by `random()`.
 
-In `runtime/lib.rs`, assuming `pallet_random_collective_flip` is instantiated at `RandomCollectiveFlip`, specify your exposed
+In `runtime/lib.rs`, assuming `pallet_random_collective_flip` is instantiated at `RandomnessCollectiveFlip`, specify your exposed
 type:
 
 ```rust
 impl my_pallet::Config for Runtime{
     type Event;
-    type MyRandomness = RandomCollectiveFlip;
+    type MyRandomness = RandomnessCollectiveFlip;
 }
 
 ```

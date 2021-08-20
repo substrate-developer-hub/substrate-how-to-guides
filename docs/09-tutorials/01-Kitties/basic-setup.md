@@ -16,7 +16,7 @@ Before we can start making Kitties, we first need to do a little groundwork. Thi
 
 ## Learning outcomes
 
-:arrow_right: Renaming a Substrate Node Template for a custom project.
+:arrow_right: Renaming a Substrate Node Template using the Kickstart tool.
 
 :arrow_right: Basic patterns for building and running a Substrate node.
 
@@ -233,6 +233,11 @@ tag = 'monthly-2021-08'
 version = '4.0.0-dev'
 ```
 
+:::warning 
+Check that you're using the correct `monthly-*` tag and version otherwise you will get a dependency error.
+Here, we're using the most up-to-date tag as of the writing of this tutorial.
+:::
+
 Now run `cargo +nightly build --release` again to make sure it builds without errors.
 
 :::note
@@ -247,7 +252,7 @@ In the next step we will include the first storage item our Kitty application wi
 Let's start by adding the most simple logic we can to our runtime: a function which stores a variable in runtime.
 
 To do this we'll use [`StorageValue`][storagevalue-rustdocs] from Substrate's [storage API][storage-api-rustdocs] which is a trait that depends
-on the storage macro.
+on the [storage macro][storage-macro-kb].
 
 All that means for our purposes is that for any storage item we want to declare, we must include the `#[pallet::storage]`  macro beforehand. Learn more about declaring storage items [here](https://substrate.dev/docs/en/knowledgebase/runtime/storage#declaring-storage-items). 
 
@@ -256,7 +261,11 @@ In `mykitties/src/lib.rs`, replace the ACTION line with:
 ```rust
     #[pallet::storage]
     #[pallet::getter(fn all_kitties_count)]
-    pub(super) type AllKittiesCount<T: Config> = StorageValue<_, u64, ValueQuery>;
+    pub(super) type AllKittiesCount<T: Config> = StorageValue<
+        _, 
+        u64, 
+        ValueQuery
+        >;
 ```
 
 This creates a storage item for our pallet to keep track of a counter that will correspond to the total amount of Kitties
@@ -306,3 +315,4 @@ You've completed the first part of this series. At this stage, you've learnt the
 [template-code]: https://github.com/substrate-developer-hub/substrate-how-to-guides/tree/main/static/code/kitties-tutorial
 [runtime-kb]: https://substrate.dev/docs/en/knowledgebase/runtime/
 [kickstart-tool]: https://github.com/Keats/kickstart
+[storage-macro-kb]: https://substrate.dev/docs/en/knowledgebase/runtime/macros#palletstorage

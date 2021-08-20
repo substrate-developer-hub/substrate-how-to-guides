@@ -157,17 +157,6 @@ pub mod pallet {
             T::Hashing::hash_of(&(seed, &sender, nonce))
         }
 
-		// Helper to mint a Kitty.
-        fn mint(
-            to: T::AccountId,
-            kitty_id: T::Hash,
-            new_kitty: Kitty<T::Hash, T::Balance>,
-        ) -> DispatchResult {
-            ensure!(
-                !<KittyOwner<T>>::contains_key(kitty_id),
-                "Kitty already contains_key"
-            );
-
 		// ACTION #2: Write mint function
 
 		// ACTION #4: Write `mint` event
