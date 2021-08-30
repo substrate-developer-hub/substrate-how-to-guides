@@ -17,18 +17,19 @@ Create a simple token mint pallet.
 
 ## Use cases
 
-Give any account the ability to create a token supply in exchange for native token fee.
+- Give any account the ability to create a token supply.
+- Create a currency that's native to your application.
 
 ## Overview
 
 This guide will step you through an effective way to mint a token by leveraging the primitive capabilities that
-[StorageMap][storagemap-rustdocs] gives us. To achieve this, this "primitive" approach uses the [blake2_128_concat][blake2-128-concat-rustdocs] `hasher` to map balances to account IDs, similar to how the [Balances][balances-frame] pallet makes use of it to store and keep track of account balances.
+[StorageMap][storagemap-rustdocs] gives us. To achieve this, this "primitive" approach uses the [blake2_128_concat][blake2-128-concat-rustdocs] `hasher` to map balances to account IDs, similar to how the [Balances][balances-frame] pallet makes use of it to keep track of account balances in storage.
 
 ## Steps
 
 ### 1. Setup your pallet's `Config` trait
 
-Using the Node Template as a starting point, specify the types your pallet depends on and the [`Events`][events-kb] it emits:
+Using the [Node Template](https://github.com/substrate-developer-hub/substrate-node-template) as a starting point, specify the types your pallet depends on as well as the [`Events`][events-kb] it will emit:
 
 ```rust
 // The configuration trait
@@ -45,7 +46,7 @@ pub enum Event<T: Config> {
 
 ### 2. Declare your storage item `StorageMap`
 
-This pallet only keeps track of the balance to account ID mapping. Call it `BalanceToAccount`:
+This pallet only keeps track of a balance-to-account mapping. Call it `BalanceToAccount`:
 
 ```rust
 /* --snip-- */
@@ -63,14 +64,14 @@ This pallet only keeps track of the balance to account ID mapping. Call it `Bala
 
 ### 3. Create your pallet’s functions
 
-We can now bring our attention to creating the intended capabilities of our pallet with the following functions:
+We can now bring our attention to creating the intended capabilities of our pallet by creating the following functions:
 
 (i) `mint()`: to issue a token supply from any origin.
 
 ```rust
 /* --snip-- */
 #[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
-pub(super) fn mint(
+pub fn mint(
 	origin: OriginFor<T>,
 	#[pallet::compact] amount: T::Balance
 ) -> DispatchResultWithPostInfo {
@@ -93,11 +94,11 @@ pub(super) fn mint(
 
 #### Define transfer variables
 
-Start with writing out the variables, using `get_balance` to reference to `StorageMap` of balances previously
+Start with writing out the variables, using `get_balance` to access the `StorageMap` of balances previously
 declared in storage:
 
 ```rust
-pub(super) fn transfer(
+pub fn transfer(
 			origin: OriginFor<T>,
 			to: T::AccountId,
 			#[pallet::compact] amount: T::Balance,

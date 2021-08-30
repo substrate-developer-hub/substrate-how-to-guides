@@ -54,8 +54,8 @@ pub mod pallet {
 	pub enum Event<T: Config> {
 		/// New token supply was minted.
 		MintedNewSupply(T::AccountId),
-		/// Tokens were successfully transferred between accounts.
-		Transferred(T::AccountId, T::AccountId, T::Balance), // (from, to, value)
+		/// Tokens were successfully transferred between accounts. [from, to, value]
+		Transferred(T::AccountId, T::AccountId, T::Balance),
 	}
 
 	#[pallet::hooks]
@@ -74,10 +74,10 @@ pub mod pallet {
 		///
 		/// Emits `MintedNewSupply` event when successful.
 		///
-		/// TODO: Add checks and set max issuance allowed.  
+		/// TODO: Add safety checks and set max issuance allowed.  
 		/// Weight: `O(1)`	
 		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
-		pub(super) fn mint(
+		pub fn mint(
 			origin: OriginFor<T>,
 			#[pallet::compact] amount: T::Balance
 		) -> DispatchResultWithPostInfo {
@@ -105,7 +105,7 @@ pub mod pallet {
 		/// TODO: Add checks on minimum balance required and maximum transferrable balance.  
 		/// Weight: `O(1)`	
 		#[pallet::weight(1_000)]
-		pub(super) fn transfer(
+		pub fn transfer(
 			origin: OriginFor<T>,
 			to: T::AccountId,
 			#[pallet::compact] amount: T::Balance,
@@ -120,7 +120,7 @@ pub mod pallet {
 
 			// Update both accounts storage.
 			<BalanceToAccount<T>>::insert(&sender, update_sender);
-			<BalanceToAccount<T>>::insert(&sender, update_to);
+			<BalanceToAccount<T>>::insert(&to, update_to);
 
 			// Emit event.
 			Self::deposit_event(Event::Transferred(sender, to, amount));

@@ -218,7 +218,7 @@ Configuring a struct is useful in order to pre-define a value in our struct. For
 a value in relation to what another function returns. In our case we have a similar situation where
 we need to configure our Kitty struct in such a way that sets `Gender` according to a Kitty's DNA. 
 
-We'll only be using this function when we get to [creating Kitties](/dispatchables-and-events#2-write-the-create_kitty-dispatchable). Regardless, learn how to write it now and get it out of the way.
+We'll only be using this function when we get to [creating Kitties](/docs/tutorials/Kitties/dispatchables-and-events#2-write-the-create_kitty-dispatchable). Regardless, learn how to write it now and get it out of the way.
 
 When you're implementing the configuration trait for a struct inside a FRAME pallet, you're doing the
 same type of thing as implementing some trait for an enum except you're implementing the generic

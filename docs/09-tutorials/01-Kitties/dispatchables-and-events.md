@@ -42,12 +42,12 @@ Before we dive right in, it's important to understand the pallet design decision
 capabilities.
 
 As developers, we want to make sure the code we write is efficient and elegant. Oftentimes, optimizing for one optimizes for the other.
-The way we're going to set up our pallet up to optimize for both will be to break-up the "heavy lifting" dispatchable
+The way we're going to set up our pallet to optimize for both will be to break-up the "heavy lifting" dispatchable
 functions into private helper functions. This improves code readability and reusability too. As we'll see, we can
 create private functions which can be called by multiple dispatchable functions without compromizing on security. In fact, building this way can be considered an additive security feauture.
 
 :::info
-Check out [this how-to guide](docs/basics/basic-pallet-integration/) about writing and using helper functions to learn more.
+Check out [this how-to guide](../../basics/helper-functions/) about writing and using helper functions to learn more.
 :::
 
 Before jumping into implementing this approach, let's first paint the big picture of what combining dispatchables and helper functions looks like:
@@ -58,7 +58,7 @@ Before jumping into implementing this approach, let's first paint the big pictur
 - generate a random hash with the signing account
 - create a new Kitty object using the random hash
 - call a private `mint()` function
-- increment the nonce using `increment_nonce()` from [Part II](/create-kitties)
+- increment the nonce using `increment_nonce()` from [Part II](/docs/tutorials/Kitties/create-kitties#nonce)
 
 **`mint`** (private helper function)
 
@@ -182,7 +182,7 @@ Finally, we compute a few variables to update our storage items that keep track 
 - The indices and count **for all** Kitties.
 - The indices and count **of owned** Kitties.
 
-All this requires us to do is add 1 to the current values held by `<AllKittiesCount<T>>` and `<OwnedKittiesCount<T>>`. We can use the same pattern as we did in the previous part [when we created `increment_nonce`](/create-kitties#nonce), using Rust's `checked_add` and `ok_or`. Generically, this looks like:
+All this requires us to do is add 1 to the current values held by `<AllKittiesCount<T>>` and `<OwnedKittiesCount<T>>`. We can use the same pattern as we did in the previous part [when we created `increment_nonce`](/docs/tutorials/Kitties/create-kitties#nonce), using Rust's `checked_add` and `ok_or`. Generically, this looks like:
 
 ```rust
 let new_value = previous_value.checked_add(1).ok_or("Overflow error!");
@@ -236,7 +236,7 @@ In order to use events inside our pallet, we need to have the `Event` type decla
 when adding any type to our pallet's `Config` trait &mdash; we need to let our runtime know about it. 
 
 This pattern is the same as when
-we added the `KittyRandomness` type in [Part II of this tutorial](/docs/Tutorials/Kitties/create-kitties#2-implementing-randomness) and has already been included from the initial scaffolding of our codebase: 
+we added the `KittyRandomness` type in [Part II of this tutorial](/docs/Tutorials/Kitties/create-kitties#3-implement-on-chain-randomness) and has already been included from the initial scaffolding of our codebase: 
 
 ```rust
   /// Configure the pallet by specifying the parameters and types it depends on.
