@@ -42,7 +42,7 @@ Now you'll have to include it in your pallet's configuration trait:
 ```rust
 #[pallet::config]
 	pub trait frame_system::Config {
-        type MyRandomness: Randomness<H256>;
+        type MyRandomness: Randomness<H256, u32>;
     }
 
 ```

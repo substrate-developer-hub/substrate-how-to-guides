@@ -163,7 +163,7 @@ pub mod pallet {
             Ok(().into())
         }
 
-        // ACTION #11: transfer
+        // ACTION #5: transfer
 
         // buy_kitty
         #[pallet::weight(100)]
@@ -300,7 +300,7 @@ pub mod pallet {
 			Ok(())
         }
 
-		// ACTION #10: Write transfer_from
+		// ACTION #6: Write transfer_from
         
     }
 }

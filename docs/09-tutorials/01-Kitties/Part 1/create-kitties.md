@@ -3,7 +3,7 @@ sidebar_position: 3
 keywords: pallet design, intermediate, runtime
 ---
 
-# Part II: Uniqueness, custom types and storage maps
+# Uniqueness, custom types and storage maps
 
 _In this part of the tutorial, we'll build out the components of our pallet
 needed to manage the creation and ownership of our Kitties._

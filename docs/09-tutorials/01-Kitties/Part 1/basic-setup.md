@@ -3,7 +3,7 @@ sidebar_position: 2
 keywords: pallet design, intermediate, runtime
 ---
 
-# Part I: Basic set-up
+# Basic set-up
 
 :::note
 This tutorial assumes that you have already installed the prerequisites for building with Substrate on your machine.

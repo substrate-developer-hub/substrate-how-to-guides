@@ -3,7 +3,7 @@ sidebar_position: 6
 keywords: pallet design, intermediate, runtime
 ---
 
-# Part V: Kitties front-end
+# Kitties front-end
 
 _[WIP] Build the custom frontend for our Substrate Kitties._
 
@@ -31,6 +31,11 @@ The Substrate frontend template comes with a number of prebuilt features, includ
 
 Since this course is primarily about runtime development, what you will learn in this section will not be as comprehensive as before,
 however it should empower you with the tools needed to extend your own knowledge and abilities.
+
+
+TODO: Add steps:
+- adding types.json 
+
 
 ## Steps
 

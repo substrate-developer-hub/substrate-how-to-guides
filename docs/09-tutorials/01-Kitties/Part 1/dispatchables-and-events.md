@@ -3,7 +3,7 @@ sidebar_position: 4
 keywords: pallet design, intermediate, runtime
 ---
 
-# Part III: Dispatchables, Events and Errors
+# Dispatchables, Events and Errors
 
 _Write a dispatchable function that creates a Kitty capable of emitting its associated Event._
 
