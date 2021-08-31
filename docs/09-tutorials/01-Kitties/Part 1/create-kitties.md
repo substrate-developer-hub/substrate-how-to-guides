@@ -278,7 +278,7 @@ Conveniently, the Node Template already has an instance of the `RandomnessCollec
 All you need to do is **include the `KittyRandomness` type for your runtime inside `runtime/src/lib.rs`**:
 
 ```rust
-impl pallet_kitties::Config for Runtime {
+impl pallet_mykitties::Config for Runtime {
     type Event = Event;
 	type KittyRandomness = RandomnessCollectiveFlip; // <-- ACTION: add this line.
 }
@@ -445,7 +445,7 @@ about what each storage item is intended for.
 Assuming you've finished implementing all of your storage items, now's a good time to check that your pallet compiles correctly:
 
 ```rust
-cargo build -p pallet-kitties
+cargo build -p pallet-mykitties
 ```
 
 Running into difficulties? Check your solution against the [completed helper code](https://github.com/substrate-developer-hub/substrate-how-to-guides/blob/main/static/code/kitties-tutorial/03-dispatchables-and-events.rs) for this part of the tutorial.
