@@ -40,18 +40,18 @@ The following fall outside the scope of this tutorial:
 
 Bringing things down to a more granular level, this translates to the following application design:
 
-1. [**Basic setup**](/docs/Tutorials/Kitties/basic-setup). We'll need to spin up a Substrate node and create a custom pallet
+1. [**Basic setup**](/docs/Tutorials/Kitties/Part%201/basic-setup). We'll need to spin up a Substrate node and create a custom pallet
 
-2. [**Runtime storage**](/docs/Tutorials/Kitties/basic-setup). We'll need a total of 9 storage items in our pallet to keep track of the amount of Kitties; their index; their owners and their
+2. [**Runtime storage**](/docs/Tutorials/Kitties/Part%201/basic-setup). We'll need a total of 9 storage items in our pallet to keep track of the amount of Kitties; their index; their owners and their
    owner account IDs.
 
-3. [**Dispatchable functions**](/docs/Tutorials/Kitties/dispatchables-and-events). We'll need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `buy_kitty` and `breed_kitty`
+3. [**Dispatchable functions**](/docs/Tutorials/Kitties/Part%201/dispatchables-and-events).  We'll need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `buy_kitty` and `breed_kitty`
 
-4. [**Private functions**](/docs/Tutorials/Kitties/create-kitties). We'll write 2 helper functions to handle randomness: `increment_nonce` and `random_hash`
+4. [**Private functions**](/docs/Tutorials/Kitties/Part%201/create-kitties). We'll write 2 helper functions to handle randomness: `increment_nonce` and `random_hash`
 
-5. [**Helper functions**](/docs/Tutorials/Kitties/interacting-functions). We'll write 2 helper functions for our dispatchable functions: `mint` and `transfer_from`.
+5. [**Helper functions**](/docs/Tutorials/Kitties/Part%201/interacting-functions). We'll write 2 helper functions for our dispatchable functions: `mint` and `transfer_from`.
 
-6. [**Rendering storage items**](/docs/Tutorials/Kitties/kitties-frontend). We'll connect to a React front-end template and create the UI for each dispatchable call.
+6. [**Rendering storage items**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). We'll connect to a React front-end template and create the UI for each dispatchable call.
 
 :::tip
 Follow each step at your own pace &mdash; the goal is for you to learn and the best way to do that is to try it yourself!

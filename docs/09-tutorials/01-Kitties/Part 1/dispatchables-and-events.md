@@ -47,7 +47,7 @@ functions into private helper functions. This improves code readability and reus
 create private functions which can be called by multiple dispatchable functions without compromizing on security. In fact, building this way can be considered an additive security feauture.
 
 :::info
-Check out [this how-to guide](../../basics/helper-functions/) about writing and using helper functions to learn more.
+Check out [this how-to guide](/docs/basics/helper-functions/) about writing and using helper functions to learn more.
 :::
 
 Before jumping into implementing this approach, let's first paint the big picture of what combining dispatchables and helper functions looks like:
@@ -58,7 +58,7 @@ Before jumping into implementing this approach, let's first paint the big pictur
 - generate a random hash with the signing account
 - create a new Kitty object using the random hash
 - call a private `mint()` function
-- increment the nonce using `increment_nonce()` from [Part II](/docs/tutorials/Kitties/create-kitties#nonce)
+- increment the nonce using `increment_nonce()` from [Part II](/docs/tutorials/Kitties/Part%201/create-kitties#nonce)
 
 **`mint`** (private helper function)
 
@@ -182,7 +182,7 @@ Finally, we compute a few variables to update our storage items that keep track 
 - The indices and count **for all** Kitties.
 - The indices and count **of owned** Kitties.
 
-All this requires us to do is add 1 to the current values held by `<AllKittiesCount<T>>` and `<OwnedKittiesCount<T>>`. We can use the same pattern as we did in the previous part [when we created `increment_nonce`](/docs/tutorials/Kitties/create-kitties#nonce), using Rust's `checked_add` and `ok_or`. Generically, this looks like:
+All this requires us to do is add 1 to the current values held by `<AllKittiesCount<T>>` and `<OwnedKittiesCount<T>>`. We can use the same pattern as we did in the previous part [when we created `increment_nonce`](/docs/tutorials/Kitties/Part%201/create-kitties#nonce), using Rust's `checked_add` and `ok_or`. Generically, this looks like:
 
 ```rust
 let new_value = previous_value.checked_add(1).ok_or("Overflow error!");
@@ -236,7 +236,7 @@ In order to use events inside our pallet, we need to have the `Event` type decla
 when adding any type to our pallet's `Config` trait &mdash; we need to let our runtime know about it. 
 
 This pattern is the same as when
-we added the `KittyRandomness` type in [Part II of this tutorial](/docs/Tutorials/Kitties/create-kitties#3-implement-on-chain-randomness) and has already been included from the initial scaffolding of our codebase: 
+we added the `KittyRandomness` type in [Part II of this tutorial](/docs/Tutorials/Kitties/Part%201/create-kitties#3-implement-on-chain-randomness) and has already been included from the initial scaffolding of our codebase: 
 
 ```rust
   /// Configure the pallet by specifying the parameters and types it depends on.
@@ -279,7 +279,7 @@ If you're building your codebase from the previous part (and haven't been using 
 
 ### 5. Error handling 
 
-In [Part II when we created the `increment_nonce`](/docs/tutorials/Kitties/create-kitties#nonce) function, we specified the error message _"Overflow"_ using Rust's `ok_or` function. 
+In [Part II when we created the `increment_nonce`](/docs/tutorials/Kitties/Part%201/create-kitties#nonce) function, we specified the error message _"Overflow"_ using Rust's `ok_or` function. 
 FRAME provides us with an error handling system using [`[#pallet::errors]`][errors-kb] which allows us to specify errors for our pallet and use them across our pallet's functions. 
 
 In this case, let's declare a single error for when checking for overflow in the `increment_nonce` function. 
