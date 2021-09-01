@@ -1,7 +1,7 @@
 ---
 sidebar_position: 5
 keywords: pallet design, intermediate, runtime
-theme: codeview
+theme: 
 code: ../static/code/kitties-tutorial/04-interacting-functions.rs
 ---
 
@@ -187,7 +187,7 @@ All it needs to do is perform safety checks and update the following storage ite
 - `OwnedKittiesIndex`: to update the owned Kitty index for each owner.
 - `OwnedKittiesCount`: to update the amount of Kitties an account has.
 
-Copy the following to replace ACTION #5:
+Copy the following to replace ACTION #6:
 
 ```rust
 // Helper to handle transferring a Kitty from one account to another.
@@ -251,7 +251,7 @@ We'll need to ensure 2 things before we can allow the user of this function to p
 Kitty is for sale; and second, check whether the Kitty's current price is within the user's budget.
 
 We can use the `set_price()` function to check if the Kitty is for sale. Remember that we said a Kitty with the
-price of `0` means it's not for sale? Easy enough then: write these checks by simply using `ensure!()` &mdash; replacing line ACTION #6:
+price of `0` means it's not for sale? Easy enough then: write these checks by simply using `ensure!()` &mdash; replacing line ACTION #7:
 
 ```rust
 // Check if the Kitty is for sale.
@@ -317,7 +317,7 @@ Here's how you would write `buy_Kitty` from scratch.
 - update the price of the Kitty to the price it was sold at
 :::
 
-**Your turn!** Paste in the following code snippet, replacing ACTION #6:
+**Your turn!** Paste in the following code snippet, replacing ACTION #8:
 
 ```rust
 <pallet_balances::Pallet<T> as Currency<_>>::transfer(
@@ -330,7 +330,7 @@ Here's how you would write `buy_Kitty` from scratch.
 
 Now that that the `transfer` method from FRAME's Currency trait has been called, we can call a private helper function 
 called `transfer_from` (which we'll write later) to write the new changes in ownership to storage. Replace this with what's on 
-line ACTION #7:
+line ACTION #9:
 
 ```rust
 // Transfer ownership of Kitty.
@@ -353,7 +353,7 @@ kitty.price = ask_price.into();
 The logic behind breeding two Kitties is to multiply each corresponding DNA segment from two Kitties,
 which will produce a new DNA sequence. Then, that DNA is used when minting a new Kitty. 
 
-Paste in the following to complete the `breed_kitty` function, replacing line ACTION #8:
+Paste in the following to complete the `breed_kitty` function, replacing line ACTION #10:
 
 ```rust
     let random_hash = Self::random_hash(&sender);
@@ -375,7 +375,7 @@ Paste in the following to complete the `breed_kitty` function, replacing line AC
 ```
 
 Now that we've used the user inputs of Kitty IDs and combined them to create a new unique Kitty ID, we can
-use the `mint()` function to write that new Kitty to storage. Replace line ACTION #9:
+use the `mint()` function to write that new Kitty to storage. Replace line ACTION #11:
 
 ```rust
 let new_kitty = Kitty {
@@ -390,13 +390,12 @@ Self::increment_nonce()?;
 ```
 And of course, after calling the `mint` function, we call `increment_nonce()` to maintain maximum entropy as described in [Part II](/docs/tutorials/Kitties/Part%201/create-kitties#nonce).
 
-//TODO : Write relevant Errors 
 
 ### 5. Genesis configuration
 
 The final step before our pallet is ready to be used is to set the genesis state of our storage items. We'll make use of
 FRAME's `[pallet::genesis_config]` to do this. Essentially, we're declaring what the Kitties object in storage contains 
-in the genesis block. Copy the following code to replace ACTION #11: 
+in the genesis block. Copy the following code to replace ACTION #12: 
 
 ```rust
 // Our pallet's genesis configuration.
@@ -429,7 +428,7 @@ impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
     }
 }
 ```
-### 8. Update `runtime/lib.rs` and interact with your Kitties
+### 6. Update `runtime/lib.rs` and interact with your Kitties
 
 If you've completed all of the preceding parts and steps of this tutorial, you're
 all geared up to run your chain and start interacting with all the new capabilities of your Kitties pallet.

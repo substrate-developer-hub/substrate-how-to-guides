@@ -116,7 +116,7 @@ pub mod pallet {
     pub(super) type OwnedKittiesIndex<T: Config> =
         StorageMap<_, Twox64Concat, T::Hash, u64, ValueQuery>;
 
-    // ACTION #12: Our pallet's genesis configuration.
+    // ACTION 12: Our pallet's genesis configuration.
 
     #[pallet::call]
     impl<T: Config> Pallet<T> {
@@ -190,11 +190,11 @@ pub mod pallet {
             let mut kitty = Self::kitty(kitty_id);
             let kitty_price = kitty.price;
 
-            // ACTION #5: Check if the Kitty is for sale.
+            // ACTION #7: Check if the Kitty is for sale.
             
-            // ACTION #6: Update Balances using the Currency trait.
+            // ACTION #8: Update Balances using the Currency trait.
 
-            // ACTION #7: Transfer ownership of Kitty and set new price.
+            // ACTION #9: Transfer ownership of Kitty and set new price.
 
             Self::deposit_event(Event::Bought(sender, owner, kitty_id, kitty_price));
 
@@ -219,9 +219,9 @@ pub mod pallet {
                 "This cat 2 does not exist"
             );
 
-            // ACTION #8: Breed two Kitties using unique DNA
+            // ACTION #10: Breed two Kitties using unique DNA
 
-            // ACTION #9: Mint new Kitty using new DNA and increment nonce
+            // ACTION #11: Mint new Kitty using new DNA and increment nonce
 
             Ok(().into())
         }

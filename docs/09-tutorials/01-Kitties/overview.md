@@ -5,12 +5,16 @@ keywords: pallet design, intermediate, runtime
 
 # 😺 Substrate Kitties
 
-_This is a 5 part tutorial series that steps you through building a dApp for managing Substrate Kitties from scratch. Each part
-could take 30-60 minutes to complete depending on your level of experience._
+_This is a 2 part tutorial series that steps you through building a pallet for managing Substrate Kitties from scratch. Each part
+could take between 1.5 and 3 hours to complete depending on your level of experience with Substrate._
+
+![image](./kitties-tutorial.png)
 
 ## Introduction
 
-Welcome to the Substrate Kitties tutorial. This 5 part tutorial series will teach you everything you need to know to build a blockchain designed to handle the creation and ownership management of Substrate Kitties. Before jumping into the next section, let's have a look at what we'll be doing.
+Welcome to the Substrate Kitties tutorial. This 2 part tutorial designed to teach you everything you need to know to build a blockchain designed to handle the creation and ownership management of Substrate Kitties. Part 1 will cover how to build the Kitties pallet, including 
+the functionality to interact with the Kitties we create, such as transfering, buying and setting prices. Part II will cover developing
+the Front-end UI to interact with the blockchain we build in Part 1.
 
 :::note
 You may find it useful to come back to this page
@@ -19,7 +23,7 @@ as you progress through each part &mdash; just to keep track of the bigger pictu
 
 ### What we're building
 
-In this tutorial, we'll intentionally keep things simple so that you can decide on how you'd like to improve your Substrate Kitties chain. For the purposes of what we're building, Kitties really can only do the following things:
+In Part 1 of this tutorial, we'll intentionally keep things simple so that you can decide on how you'd like to improve your Substrate Kitties chain later on. For the purposes of what we're building, Kitties really can only do the following things:
 
 :smiley_cat: Be created either by some original source or by being bred using existing Kitties.
 
@@ -27,18 +31,7 @@ In this tutorial, we'll intentionally keep things simple so that you can decide 
 
 :pouting_cat: Be transferred from one owner to another.
 
-### What we won't cover
-
-The following fall outside the scope of this tutorial:
-
- - Writing tests for our pallet.
- - Declaring a configuration for the genesis of our chain.
-
- You can refer to the [how-to guides](/docs/intro) on how to do this once you've completed this tutorial series.
-
----
-
-Bringing things down to a more granular level, this translates to the following application design:
+This translates to the following application design:
 
 1. [**Basic setup**](/docs/Tutorials/Kitties/basic-setup). We'll need to spin up a Substrate node and create a custom pallet
 
@@ -51,7 +44,20 @@ Bringing things down to a more granular level, this translates to the following 
 
 5. [**Helper functions**](/docs/Tutorials/Kitties/interacting-functions). We'll write 2 helper functions for our dispatchable functions: `mint` and `transfer_from`.
 
-6. [**Rendering storage items**](/docs/Tutorials/Kitties/kitties-frontend). We'll connect to a React front-end template and create the UI for each dispatchable call.
+In Part 2, we will:
+
+1. [**Rendering storage items**](/docs/Tutorials/Kitties/kitties-frontend). We'll connect to a React front-end template and create the UI for each dispatchable call.
+
+### What we won't cover
+
+The following fall outside the scope of this tutorial:
+
+ - Writing tests for our pallet.
+ - Declaring a configuration for the genesis of our chain.
+
+ You can refer to the [how-to guides](/docs/intro) on how to do this once you've completed this tutorial series.
+
+---
 
 :::tip
 Follow each step at your own pace &mdash; the goal is for you to learn and the best way to do that is to try it yourself!
