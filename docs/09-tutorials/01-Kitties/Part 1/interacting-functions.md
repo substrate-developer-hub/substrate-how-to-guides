@@ -66,7 +66,7 @@ ensure!(owner == sender, "You do not own this cat");
 #### B. Updating the price of our Kitty object
 
 Every Kitty object has a price attribute that we've set to [`0u8`][rust-u8] as a default value inside the
-`create_kitty` function in [Part II](/docs/tutorials/Kitties/dispatchables-and-events#2-write-the-create_kitty-dispatchable):
+`create_kitty` function in [Part II](/docs/tutorials/Kitties/Part%201/dispatchables-and-events#2-write-the-create_kitty-dispatchable):
 
 ```rust
 let new_kitty = Kitty {
@@ -290,7 +290,7 @@ fn transfer(
 ```
 
 Now we can finally make use of the  `frame_support` imports &ndash; `Currency` and `ExistenceRequirement` &ndash; that we 
-[initially started with in Part I](/docs/tutorials/Kitties/basic-setup#2-write-out-pallet_kitties-scaffold).
+[initially started with in Part I](/docs/tutorials/Kitties/Part%201/basic-setup#2-write-out-pallet_kitties-scaffold).
 
 :::tip Feeling confident?
 
@@ -440,7 +440,7 @@ cargo build --release
 ./target/release/node-kitties --dev
 ```
 
-Now check your work using the Polkadot-JS Apps UI just like [we did in the previous part](/docs/Tutorials/Kitties/dispatchables-and-events#5-testing-with-polkadotjs-apps). Once your chain is running and connected to the PolkadotJS Apps UI, perform these manual checks:
+Now check your work using the Polkadot-JS Apps UI just like [we did in the previous part](/docs/Tutorials/Kitties/Part%201/dispatchables-and-events#5-testing-with-polkadotjs-apps). Once your chain is running and connected to the PolkadotJS Apps UI, perform these manual checks:
 
 - Fund multiple users with tokens so they can all participate
 - Have each user create multiple Kitties

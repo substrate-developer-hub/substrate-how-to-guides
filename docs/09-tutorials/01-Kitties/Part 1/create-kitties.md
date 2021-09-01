@@ -145,7 +145,7 @@ Let's first go over what information a single Kitty will carry:
 
 #### B. Sketching out the types held by our struct
 
-Looking at the items of our struct from [step 1A](/docs/Tutorials/Kitties/create-kitties#a-what-information-to-include), we can deduce the following types: 
+Looking at the items of our struct from [step 1A](/docs/Tutorials/Kitties/Part%201/create-kitties#a-what-information-to-include), we can deduce the following types: 
 
 - **`Hash`** for `id` and `dna` (this comes from the `use frame_support::sp_runtime::traits::Hash` import at the top of our pallet)
 - **`Balance`** for `price` (this comes from `pallet_balances::Config` we've exposed to our pallet's `Config` trait)
@@ -218,7 +218,7 @@ Configuring a struct is useful in order to pre-define a value in our struct. For
 a value in relation to what another function returns. In our case we have a similar situation where
 we need to configure our Kitty struct in such a way that sets `Gender` according to a Kitty's DNA. 
 
-We'll only be using this function when we get to [creating Kitties](/docs/tutorials/Kitties/dispatchables-and-events#2-write-the-create_kitty-dispatchable). Regardless, learn how to write it now and get it out of the way.
+We'll only be using this function when we get to [creating Kitties](/docs/tutorials/Kitties/Part%201/dispatchables-and-events#2-write-the-create_kitty-dispatchable). Regardless, learn how to write it now and get it out of the way.
 
 When you're implementing the configuration trait for a struct inside a FRAME pallet, you're doing the
 same type of thing as implementing some trait for an enum except you're implementing the generic
@@ -250,7 +250,7 @@ left is to _actually_ generate a unique ID and some random DNA for each Kitty.
 We'll be using the [Randomness trait][randomness-rustdocs] from `frame_support` to do this. It will generate a random seed which 
 we'll create new unique Kitties as well as breed new ones. We'll also need a nonce which we'll create as a separate 
 function and a hashing function which we'll get by using the [`Hash` trait][hash-rustdocs] that we imported in 
-[step 1C](/docs/Tutorials/Kitties/create-kitties#c-adding-the-hash-dependency).
+[step 1C](/docs/Tutorials/Kitties/Part%201/create-kitties#c-adding-the-hash-dependency).
 
 In order to implement the `Randomness` trait for our runtime, we must:
 
@@ -278,7 +278,7 @@ Conveniently, the Node Template already has an instance of the `RandomnessCollec
 All you need to do is **include the `KittyRandomness` type for your runtime inside `runtime/src/lib.rs`**:
 
 ```rust
-impl pallet_kitties::Config for Runtime {
+impl pallet_mykitties::Config for Runtime {
     type Event = Event;
 	type KittyRandomness = RandomnessCollectiveFlip; // <-- ACTION: add this line.
 }
@@ -445,7 +445,7 @@ about what each storage item is intended for.
 Assuming you've finished implementing all of your storage items, now's a good time to check that your pallet compiles correctly:
 
 ```rust
-cargo build -p pallet-kitties
+cargo build -p pallet-mykitties
 ```
 
 Running into difficulties? Check your solution against the [completed helper code](https://github.com/substrate-developer-hub/substrate-how-to-guides/blob/main/static/code/kitties-tutorial/03-dispatchables-and-events.rs) for this part of the tutorial.
