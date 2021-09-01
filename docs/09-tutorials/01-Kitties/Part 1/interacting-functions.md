@@ -437,7 +437,7 @@ Build and run your chain using the following commands:
 
 ```bash
 cargo build --release
-./target/release/node-kitties --dev
+./target/release/node-kitties --dev --tmp
 ```
 
 Now check your work using the Polkadot-JS Apps UI just like [we did in the previous part](/docs/Tutorials/Kitties/Part%201/dispatchables-and-events#5-testing-with-polkadotjs-apps). Once your chain is running and connected to the PolkadotJS Apps UI, perform these manual checks:

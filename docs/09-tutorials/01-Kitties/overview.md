@@ -31,7 +31,7 @@ In Part 1 of this tutorial, we'll intentionally keep things simple so that you c
 
 :pouting_cat: Be transferred from one owner to another.
 
-This translates to the following application design:
+**In Part 1, we'll go over:**
 
 1. [**Basic setup**](/docs/Tutorials/Kitties/Part%201/basic-setup). We'll need to spin up a Substrate node and create a custom pallet
 
@@ -44,9 +44,11 @@ This translates to the following application design:
 
 5. [**Helper functions**](/docs/Tutorials/Kitties/Part%201/interacting-functions). We'll write 2 helper functions for our dispatchable functions: `mint` and `transfer_from`.
 
-In Part 2, we will:
+**In Part 2, we will:**
 
-1. [**Rendering storage items**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). We'll connect to a React front-end template and create the UI for each dispatchable call.
+1. [**Create a UI for interacting with our pallet's storage items**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). We'll connect to a React front-end template and create the UI for each dispatchable call.
+
+2. [**Enhance our UX with Polkadot JS API**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). 
 
 ### What we won't cover
 
@@ -74,9 +76,9 @@ to help you complete each part.
 
 :arrow_right: Use structs in storage and how to create and update storage items.
 
-:arrow_right: Write extrinsics and helper functions.
+:arrow_right: Write pallet extrinsics and helper functions.
 
-:arrow_right: Use the PolkadotJS API to connect a Substrate node to custom a front-end.
+:arrow_right: Use the PolkadotJS API to connect a Substrate node to a custom a front-end.
 
 <!-- ## Steps
 
