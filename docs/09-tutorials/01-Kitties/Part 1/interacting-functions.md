@@ -130,7 +130,7 @@ This is already declared in the template helper code, but it's an important chec
 
 Once all checks are passed and the new price is written to storage, we can deposit an event 
 [just like we did in Part III](/docs/tutorials/Kitties/Part%201/dispatchables-and-events#4-implement-pallet-events). 
-Replace the line marked as ACTION #3x with:
+Replace the line marked as ACTION #3 with:
 
  ```rust
  Self::deposit_event(Event::PriceSet(sender, kitty_id, new_price));
@@ -151,7 +151,7 @@ the `buy_kitty` dispatchable we're creating in the next section.
 
 #### `transfer` 
 
-Paste in the following snippet to replace ACTION #5 in the template code:
+Paste in the following snippet to replace ACTION #4 in the template code:
 
 ```rust
 #[pallet::weight(100)]
@@ -317,7 +317,7 @@ Here's how you would write `buy_Kitty` from scratch.
 - update the price of the Kitty to the price it was sold at
 :::
 
-**Your turn!** Paste in the following code snippet, replacing ACTION #6:
+**Your turn!** Paste in the following code snippet, replacing ACTION #7:
 
 ```rust
 <pallet_balances::Pallet<T> as Currency<_>>::transfer(
@@ -330,7 +330,7 @@ Here's how you would write `buy_Kitty` from scratch.
 
 Now that that the `transfer` method from FRAME's Currency trait has been called, we can call a private helper function 
 called `transfer_from` (which we'll write later) to write the new changes in ownership to storage. Replace this with what's on 
-line ACTION #7:
+line ACTION #8:
 
 ```rust
 // Transfer ownership of Kitty.
@@ -353,7 +353,7 @@ kitty.price = ask_price.into();
 The logic behind breeding two Kitties is to multiply each corresponding DNA segment from two Kitties,
 which will produce a new DNA sequence. Then, that DNA is used when minting a new Kitty. 
 
-Paste in the following to complete the `breed_kitty` function, replacing line ACTION #8:
+Paste in the following to complete the `breed_kitty` function, replacing line ACTION #9:
 
 ```rust
     let random_hash = Self::random_hash(&sender);
@@ -375,7 +375,7 @@ Paste in the following to complete the `breed_kitty` function, replacing line AC
 ```
 
 Now that we've used the user inputs of Kitty IDs and combined them to create a new unique Kitty ID, we can
-use the `mint()` function to write that new Kitty to storage. Replace line ACTION #9:
+use the `mint()` function to write that new Kitty to storage. Replace line ACTION #10:
 
 ```rust
 let new_kitty = Kitty {
