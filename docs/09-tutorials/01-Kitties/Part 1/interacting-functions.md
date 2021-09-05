@@ -1,8 +1,6 @@
 ---
 sidebar_position: 5
 keywords: pallet design, intermediate, runtime
-theme: codeview
-code: ../static/code/kitties-tutorial/04-interacting-functions.rs
 ---
 
 # Interacting with your Kitties
