@@ -10,7 +10,7 @@ Implement storage migration logic using Substrate’s scheduler pallet for non-c
 ## Use cases
 
 - Removing old unused storage during a runtime upgrade
-- Migrating storage unrelated to the core logic of the chain
+- Migrating storage unrelated to the core logic of the chain (if the upgraded logic does not depend on the new storage format).
 
 ## Overview
 This guide outlines steps to schedule non-core storage or other runtime migrations using the scheduler pallet.
@@ -50,22 +50,25 @@ pub trait Config: frame_system::Config {
 impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
     fn on_runtime_upgrade() -> Weight {
     // Anything that needs to be executed after the runtime upgrade but before on_initialize().
-        if T::Scheduler::schedule_named(
+        match T::Scheduler::schedule_named(
             id,
 			DispatchTime::At(when),
 			maybe_periodic,
 			priority,
 			RawOrigin::Root.into()
             Call::example_run_migration().into(),
-        ).is_err()
+        )
         {
-            frame_support::print("LOGIC ERROR: on_runtime_upgrade/schedule_named failed");
-        }
+            Err(err) => frame_support::print(err),
+            _ => (),
+        };
+
+        0 // Calculate the weight of this function.
     }
 }
 
-
 ```
+
 :::tip
  Schedule the extrinsic  for the blocks after the migration executes. If it takes an unknown length of time to execute, set up a counter within the extrinsic to make sure that it stops once it hits a certain weight and then schedules itself again for the next block.
 :::
@@ -81,7 +84,7 @@ If you want to migrate storage manually:
  - Schedule changes for the blocks immediately after a ```system.setcode``` call is scheduled. 
  - Use ```system.set_storage``` and ```system.kill_storage``` calls.
  - Make sure that the scheduling fits within the PoV block size.
- - If the changes are very large, schedule them in advance over multiple blocks.
+ - Schedule the extrinsics in advance over multiple blocks.
 
 ## Examples
  - Calls scheduling in  the [democracy pallet](https://github.com/paritytech/substrate/blob/0f934e970501136c7370a3bbd234b96c81f59cba/frame/democracy/src/lib.rs#L1711)
