@@ -38,7 +38,7 @@ functionality to help you notify the relay chain about the upcoming upgrade by:
 With both these functions called, the relay chain will be notified that the new
 upgrade has been scheduled.
 
-## 2. Choose your upgrade approach
+### 2. Choose your upgrade approach
 
 If your existing Substrate chain has a very large state, which you are migrating
 between different storage formats, it might not be possible to run all of the
