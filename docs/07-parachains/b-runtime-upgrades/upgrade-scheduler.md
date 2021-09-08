@@ -3,6 +3,7 @@ sidebar_position: 3
 keywords: parachains
 ---
 # How to use scheduler pallet for storage migrations 
+🎯
 ## Goal
 
 Implement storage migration logic using Substrate’s scheduler pallet for non-core migrations.
@@ -74,22 +75,10 @@ impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
 :::
 
 
-
-### Manual storage migration
-
-If you want to migrate storage manually:
-
- - Ensure you have the scheduler pallet available on your chain.
- - Use the root origin to schedule any changes to state using ```scheduler.scheduleNamed``` in the Apps UI Extrinsics tab.
- - Schedule changes for the blocks immediately after a ```system.setcode``` call is scheduled. 
- - Use ```system.set_storage``` and ```system.kill_storage``` calls.
- - Make sure that the scheduling fits within the PoV block size.
- - Schedule the extrinsics in advance over multiple blocks.
-
 ## Examples
  - Calls scheduling in  the [democracy pallet](https://github.com/paritytech/substrate/blob/0f934e970501136c7370a3bbd234b96c81f59cba/frame/democracy/src/lib.rs#L1711)
 
 ## Resources
  - Scheduler pallet [implementation](https://github.com/paritytech/substrate/tree/0f934e970501136c7370a3bbd234b96c81f59cba/frame/scheduler)
-
+- [Manual storage migration](./runtime-upgrades#2-choose-your-upgrade-approach)
 

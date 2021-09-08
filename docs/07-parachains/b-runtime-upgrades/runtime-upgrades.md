@@ -48,7 +48,7 @@ use to remedy this problem:**
 1. If the amount of storage items to be migrated can feasibly be processed
    within two or three blocks you can run the migrations using the
    [Scheduler pallet](https://github.com/paritytech/substrate/tree/master/frame/scheduler)
-   to ensure they get executed regardless of the block producer.
+   to ensure they get executed regardless of the block producer. Refer to [this guide](./upgrade-scheduler) on how to do that.
 
 2. Use versioned storage and only execute migrations when storage values that
    haven't yet been upgraded are accessed. This can cause variance in
@@ -68,7 +68,14 @@ use to remedy this problem:**
      add and remove storage items via an origin with root
      permission (for example democracy). If you are limited in the number of
      transactions you can make, you can batch multiple transactions to occur
-     over time via the scheduler.
+     over time via the scheduler. Follow these steps:
+
+      - Ensure you have the scheduler pallet available on your chain.
+      - Use the root origin to schedule any changes to state using ```scheduler.scheduleNamed``` in the Apps UI Extrinsics tab.
+      - Schedule changes for the blocks immediately after a ```system.setcode``` call is scheduled. 
+      - Use ```system.set_storage``` and ```system.kill_storage``` calls.
+      - Make sure that the scheduling fits within the PoV block size.
+      - Schedule the extrinsics in advance over multiple blocks.
 
 ## Examples
 
