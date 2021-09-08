@@ -18,7 +18,7 @@ Launching a parachain.
 ## Overview
 
 This guide outlines two steps to consider before moving on to implementing
-runtime upgrades for a parachain launch.
+a runtime upgrade for a parachain launch.
 
 ## Steps
 
@@ -48,7 +48,7 @@ use to remedy this problem:**
 1. If the amount of storage items to be migrated can feasibly be processed
    within two or three blocks you can run the migrations using the
    [Scheduler pallet](https://github.com/paritytech/substrate/tree/master/frame/scheduler)
-   to ensure they get executed regardless of block producer.
+   to ensure they get executed regardless of the block producer.
 
 2. Use versioned storage and only execute migrations when storage values that
    haven't yet been upgraded are accessed. This can cause variance in
@@ -59,13 +59,13 @@ use to remedy this problem:**
 3. If you must split your migrations among multiple blocks you can do it either
    on-chain or off-chain:
 
-   - An on-chain multiblock migration will require custom pallet logic to be
+   - An on-chain multi-block migration will require custom pallet logic to be
      written which can either queue changes over time or use the Scheduler
      pallet to migrate chunks of storage at a time.
 
    - Instead of adding migration code to your runtime you can generate the
-     migration manually off-chain and use multiple system.`setStorage` calls to
-     add and remove storage items as necessary via an origin with root
+     migration manually off-chain by using multiple `system.setStorage` calls to
+     add and remove storage items via an origin with root
      permission (for example democracy). If you are limited in the number of
      transactions you can make, you can batch multiple transactions to occur
      over time via the scheduler.
