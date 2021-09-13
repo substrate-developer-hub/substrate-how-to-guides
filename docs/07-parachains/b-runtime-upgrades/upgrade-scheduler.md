@@ -44,7 +44,7 @@ pub trait Config: frame_system::Config {
     type Scheduler: ScheduleNamed<Self::BlockNumber, Self::ScheduledCall, Self::Origin>;
 }
 ```
-### 3. Schedule the calls within  the  ```on_runtime_upgrade``` hook  
+### 3. Schedule the calls within  the  `on_runtime_upgrade` hook  
 - use the [```schedule_named```](https://github.com/paritytech/substrate/blob/master/frame/scheduler/src/lib.rs#L404)  function.
 ```rust
 #[pallet::hooks]
