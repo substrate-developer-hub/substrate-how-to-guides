@@ -1,13 +1,8 @@
 ---
-title: Front-end Outline
+title: Outlining the Front End
 sidebar_position: 1
 keywords: pallet design, intermediate, runtime
 ---
-
-## Learning outcomes
-
-:arrow_right: Connect your chain to the Substrate front-end template.
-
 
 ## Overview
 
@@ -16,8 +11,14 @@ build a user interface which can access and interact with our
 custom storage items and functions. We'll be using the Front-end Template, a React app with some basic functionality, and the
 Polkadot JS API to make RPC's to our chain's runtime.
 
-You might be already wondering: what library will we use to actually render each unique Kitty? We'll be taking a closer 
-look at how that all works but the short answer is we'll be using [David Revoy's](https://framagit.org/Deevad) [library for generating Cat avatars](https://framagit.org/Deevad/cat-avatar-generator). 
+In Part 2, there will only be two main sections: the first focussing on setting up the Front-end Template and the second 
+focussing on building custom React components that can interact with our kitty-node.
+
+We'll be using a [library for generating Cat avatars](https://framagit.org/Deevad/cat-avatar-generator), licensed under [CC-By 4.0](https://creativecommons.org/licenses/by/4.0/) attribution. Thank you [David Revoy's](https://framagit.org/Deevad) for making this available.
+
+## Learning outcomes
+
+:arrow_right: Connect your chain to the Substrate front-end template.
 
 ## Steps
 
@@ -28,15 +29,9 @@ The first step of this tutorial is to familiarize yourself with the Substrate Fr
 Start by [installing the Front-end Template][substrate-frontend-template]:
 
 ```bash
-# Clone the repository
 git clone https://github.com/substrate-developer-hub/substrate-front-end-template.git
 cd substrate-front-end-template
 yarn install
-```
-First, clone and build the front-end template with the following command and open it up in your favorite code editor:
-
-```bash
-git clone substrate-front-end-template.git 
 ```
 
 You'll notice the following structure (we've only including the directories we care about for this tutorial):
@@ -50,13 +45,15 @@ substrate-front-end-template
 |   |
 |   +-- assets              <-- Kitty avatar PNG files
 |
-+-- src                     <-- our React components and helper folders
++-- src                     <-- our React components
 |   |
 |   +-- __tests__
 |   |
-|   +-- config
+|   +-- config              <-- where to specify our custom types
 |   |
-|   +-- substrate-lib       <-- wrapper around PolkadotJS API
+|   +-- substrate-lib       <-- lib to give access to PolkadotJS API 
+|   |   |
+|   |   +-- components      <-- contains TxButton, used throughout our application
 |   |
 |   AccountSelector.js
 |   App.js
@@ -90,18 +87,17 @@ yarn start
 
 You should see a tab open up with the front-end template displaying basic features of your chain.
 
-You'll notice it comes with a number of prebuilt features, including:
+Notice that it comes with a number of prebuilt features, each being rendered by the provided components of the Front-end Template.
 
-- A wallet to manage and create keys + accounts.
-- An address book to get details about accounts.
-- A transfer function to send funds between accounts.
-- A runtime upgrade component to make easy updates to your runtime.
-- A key/value storage modification UX.
-- A custom transaction submitter.
+### 2. Specifying Types
 
-### 3. Specifying Types
+An important starting point when setting up a custom front-end for a Substrate node is creating a JSON file with all
+of the node's custom types. These are types that we created in our pallet that the Polkadot JS API doesn't know about.
+Learn more about [Extending types](https://polkadot.js.org/docs/api/start/types.extend/) in the Polkadot JS API documentation.
 
-Our front-end needs to know the custom types our node exposes. To do this, we'll need to go into `src/config/types.json` and paste in the following lines:
+In our case, we have two custom types we'll need to add: the `Gender` enum and the `Kitty` struct.
+
+To do this, go into `src/config/types.json` and paste in the following lines:
 
 ```json
 {
@@ -117,45 +113,28 @@ Our front-end needs to know the custom types our node exposes. To do this, we'll
 }
 ```
 
-### 4. Sketching out our application components
+### 3. Sketching out our application components
 
 [Substrate Frontend Template][substrate-frontend-template] components use PolkadotJS Apps and an 
 RPC endpoint to communicate with a Substrate node. This allows us to use it
 to read storage items, and pass in inputs to allows users to make extrinsics by calling our pallet's
-dispatchable functions.
+dispatchable functions. Before we get to that, let's sketch out the different parts of our application.
 
-Let's sketch out what we'll want our UI to look like, using our node's capabilities to
-guide our application design.
+We'll be building out a total of 3 components:
 
-**Functionality overview**
-
-1. **Create Kitty**: accounts can create new Kitties.
-2. **View Kitties**: all Kitties are visible.
-3. **Identify Kitty owners**: all Kitty owners are visible.
-
-**Buttons**
-
-1. Create Kitty
-2. Set Kitty's price
-3. Breed a Kitty
-4. Buy Kitty
-5. Transfer Kitty
-
-We'll be building out 3 components to handle the functionality outlined above:
-
-1. `KittyCards.js`: this will render a React component containing the Kitty, its relevant information and buttons to interact with it.
-2. `KittyAvatar.js`: this will handle the logic to map Kitty DNA to the library of PNGs we're using create the graphical visual of each Kitty. 
+1. `KittyCards.js`: this will render a React card component containing a Kitty's relevant information, avatar and buttons to interact with it.
+2. `KittyAvatar.js`: this will handle the logic to map Kitty DNA to the library of PNGs we're using to create unique Kitty avatars.
 3. `Kitties.js`: this will be what we render to `App.js`.
 
-We've provide template code for each components to help you follow along in the next sections.
+### 4. Polkadot JS API basics
 
-#### Querying storage
+Before moving on to the next section, we reccommend you read a little Polkadot JS API documentation to understand the basics of 
+how we'll be querying storage and triggering transactions. Here are some good resources:
 
-Here's a break down of how PolkadotJS API helps us read our runtime's storage items:
-
-- `api.query.substrateKitties.{storageItem}`: we can use `api.query` to access our pallet instance as we've named it in our runtime.
-- `api.query.substrateKitties.storageItem.map( (item) => item)`:to query a storage map, we must use `map`
-
+- [Basics and Metadata](https://polkadot.js.org/docs/api/start/basics)
+- [RPC queries](https://polkadot.js.org/docs/api/start/api.rpc)
+- [Storage methods](https://polkadot.js.org/docs/substrate/storage) such as `api.query.<module>.<method>` to access a pallet instance in a runtime
+- [Extrinsics methods](https://polkadot.js.org/docs/substrate/extrinsics) such as `api.tx.<module>.<method>` to trigger a transaction.
 
 ## Next steps
 
