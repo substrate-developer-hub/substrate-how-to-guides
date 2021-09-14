@@ -1,7 +1,7 @@
 ---
-title: Outlining the Front End
+title: Kitty Front-end Outline
 sidebar_position: 1
-keywords: pallet design, intermediate, runtime
+keywords: polkadotjs api, frontend, intermediate, runtime
 ---
 
 ## Overview
