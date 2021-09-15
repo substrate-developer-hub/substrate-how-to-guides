@@ -81,27 +81,22 @@ a node will account for it's worst case, avoiding lagging the network with extri
 
 For this simple application, we're going to default all weights to 100.
 
-Find ACTION #1 and replace it with the following code:
+Find ACTION #1 and replace it with the following code (we'll be compling it in the following section):
 
 ```rust
-#[pallet::weight(100)]
-pub fn create_kitty(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
     let sender = ensure_signed(origin)?;
-    let random_hash = Self::random_hash(&sender);
 
-    let new_kitty = Kitty {
-        id: random_hash,
-        dna: random_hash,
-        price: 0u8.into(),
-        gender: Kitty::<T, T>::gender(random_hash),
-    };
+    let kitty_id = Self::mint(&sender, None, None)?;
 
-    Self::mint(sender, random_hash, new_kitty)?;
-    Self::increment_nonce()?;
-
-    Ok(().into())
+    // Logging to the console
+    log::info!("A kitty is born with ID: {:?}.", kitty_id);
 }
 ```
+
+:::note Why "DispatchResult" and not "DispatchResultWithPostInfo" ?
+In `create_kitty` our return was of type `DispatchResultWithPostInfo`. Since `mint()` is a helper for `create_kitty`, we don't need to overwrite `PostDispatchInfo`,
+so we can use a return type of [`DispatchResult`][dispatchresult-rustdocs] &mdash; its unaugmented version.
+:::
 
 ### 3. Write the `mint()` function
 
@@ -110,99 +105,60 @@ writing our new unique Kitty object to the various storage items declared in Par
 
 Let's get right to it. Our `mint()` function will take the following arguments:
 
-- **`to`**: of type `T::AccountId`
-- **`kitty_id`**: of type `T::Hash`
-- **`new_kitty`**: of type `Kitty<T::Hash, T::Balance>`
+- **`to`**: of type `&T::AccountId`
+- **`dna`**: of type `Option<[u8; 16]>`
+- **`gender`**: of type `Option<Gender>`
 
-And it will return `DispatchResult`.
+And it will return `Result<T::Hash, Error<T>>`.
 
-:::note Why "DispatchResult" and not "DispatchResultWithPostInfo" ?
-In `create_kitty` our return was of type `DispatchResultWithPostInfo`. Since `mint()` is a helper for `create_kitty`, we don't need to overwrite `PostDispatchInfo`,
-so we can use a return type of [`DispatchResult`][dispatchresult-rustdocs] &mdash; its unaugmented version.
-:::
-
-Paste in the following code snippet to write the beginning of the `mint` function, replacing ACTION #2 in the working codebase:
+Paste in the following code snippet to write the `mint` function, replacing ACTION #2 in the working codebase:
 
 ```rust
 // Helper to mint a Kitty.
-fn mint(
-    to: T::AccountId,
-    kitty_id: T::Hash,
-    new_kitty: Kitty<T::Hash, T::Balance>,
-) -> DispatchResult {
-    ensure!(
-        !<KittyOwner<T>>::contains_key(kitty_id),
-        "Kitty already contains_key"
-    );
-    // Update total Kitty counts.
-    let owned_kitty_count = Self::owned_kitty_count(&to);
-    let new_owned_kitty_count = owned_kitty_count
-        .checked_add(1)
-        .ok_or("Overflow adding a new kitty to account balance")?;
+pub fn mint(
+  owner: &T::AccountId,
+  dna: Option<[u8; 16]>,
+  gender: Option<Gender>,
+) -> Result<T::Hash, Error<T>> {
+  let kitty = Kitty::<T> {
+    dna: dna.unwrap_or_else(Self::gen_dna),
+    price: None,
+    gender: gender.unwrap_or_else(Self::gen_gender),
+    owner: owner.clone(),
+  };
 
-    let all_kitties_count = Self::all_kitties_count();
-    let new_all_kitties_count = all_kitties_count
-        .checked_add(1)
-        .ok_or("Overflow adding a new kitty to total supply")?;
+  let kitty_id = T::Hashing::hash_of(&kitty);
 
-    // Update storage with new Kitty.
-    <Kitties<T>>::insert(kitty_id, new_kitty);
-    <KittyOwner<T>>::insert(kitty_id, Some(&to));
+  // Performs this operation first as it may fail
+  let new_cnt = Self::kitty_cnt().checked_add(1)
+    .ok_or(<Error<T>>::KittyCntOverflow)?;
 
-    // Write Kitty counting information to storage.
-    <AllKittiesArray<T>>::insert(new_all_kitties_count, kitty_id);
-    <AllKittiesCount<T>>::put(new_all_kitties_count);
-    <AllKittiesIndex<T>>::insert(kitty_id, new_all_kitties_count);
+  // Performs this operation first because as it may fail
+  <KittiesOwned<T>>::try_mutate(&owner, |kitty_vec| {
+    kitty_vec.try_push(kitty_id)
+  }).map_err(|_| <Error<T>>::ExceedMaxKittyOwned)?;
 
-    // Write Kitty counting information to storage.
-    <OwnedKittiesArray<T>>::insert((to.clone(), new_owned_kitty_count), kitty_id);
-    <OwnedKittiesCount<T>>::insert(&to, new_owned_kitty_count);
-    <OwnedKittiesIndex<T>>::insert(kitty_id, new_owned_kitty_count);
+  <Kitties<T>>::insert(kitty_id, kitty);
+  <KittyCnt<T>>::put(new_cnt);
+  Ok(kitty_id)
+}
 ```
 
 Let's go over what the above code is doing.
 
-The first thing we're doing is to check whether the Kitty being passed in doesn't already exist. To accomplish this, we use the built-in `ensure!` macro that Rust provides us, along with
-a method provided by FRAME's `StorageMap` called `contains_key`.
+The first thing we're doing is creating new values for a Kitty object. Then, we create a unique `kitty_id` using a hashing funciton on the adress of our Kitty object.
 
-:::note
- [`contains_key`][contains-key-rustdocs] will check if a key matches the Hash value in an existing Kitty object. And `ensure!` will return an error if the storage map already
- contains the given Kitty ID.
-:::
+Next, we increment the `KittyCnt` using its gett function, checking for overflow.
 
-Once we've done the check, we proceed with updating our storage items with the Kitty object passed into our function call. To do this, we make use of
-the [`insert`][insert-rustdocs] method from our StorageMap API, using the following pattern:
+Once we've done the check, we proceed with updating our storage items, making use of
+the [`try_mutate`](https://substrate.dev/rustdocs/latest/frame_support/storage/trait.StorageMap.html#tymethod.try_mutate) and [`insert`][insert-rustdocs] methods from Substrate's StorageMap API and [`put`](https://substrate.dev/rustdocs/latest/frame_support/storage/trait.StorageValue.html#tymethod.put) from `StorageValue`.
 
-```rust
-<SomeStorageMapStruct<T>>::insert(some_key, new_key);
-```
-
-Finally, we compute a few variables to update our storage items that keep track of:
-
-- The indices and count **for all** Kitties.
-- The indices and count **of owned** Kitties.
-
-All this requires us to do is add 1 to the current values held by `<AllKittiesCount<T>>` and `<OwnedKittiesCount<T>>`. We can use the same pattern as we did in the previous part [when we created `increment_nonce`](/docs/tutorials/Kitties/Part%201/create-kitties#nonce), using Rust's `checked_add` and `ok_or`. Generically, this looks like:
-
-```rust
-let new_value = previous_value.checked_add(1).ok_or("Overflow error!");
-```
 
 :::note A quick recap of our storage items
 
 - **`<Kitties<T>>`**: Stores a Kitty's unique traits and price, by storing the Kitty object.
-- **`<KittyOwner<T>>`**: Keeps track of what accounts own what Kitty.
-- **`<AllKittiesArray<T>>`**: An index to track of all Kitties.
-- **`<AllKittiesCount<T>>`**: Stores the total amount of Kitties in existence.
-- **`<AllKittiesIndex<T>>`**: Keeps track of all the Kitties.
-- **`<OwnedKittiesArray<T>>`**: Keep track of who a Kitty is owned by.
-- **`<OwnedKittiesCount<T>>`**: Keeps track of the total amount of Kitties owned.
-- **`<OwnedKittiesIndex<T>>`**: Keeps track of all owned Kitties by index.
-:::
-
-:::note
-There's 8 storage items in total and each type of storage exposes a number of different methods. 
-Have a glance at the [methods `StorageValue`][storage-value-rustdocs] and [`StorageMap` expose][storagemap-rustdocs] to learn more.
+- **`<KittyOwned<T>>`**: Keeps track of what accounts own what Kitty.
+- **`<KittyCnt<T>>`**: A count of all Kitties in existence.
 :::
 
 ### 4. Implement pallet Events
@@ -241,7 +197,7 @@ we added the `KittyRandomness` type in [Part II of this tutorial](/docs/Tutorial
 ```rust
   /// Configure the pallet by specifying the parameters and types it depends on.
   #[pallet::config]
-  pub trait Config: pallet_balances::Config + frame_system::Config {
+  pub trait Config: frame_system::Config {
       /// Because this pallet emits events, it depends on the runtime's definition of an event.
       type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
       //--snip--//
@@ -260,42 +216,55 @@ Learn more about events [here][events-kb].
 Declare your pallet events by replacing the ACTION #3 line with:
 
 ```rust
-Created(T::AccountId, T::Hash),
-PriceSet(T::AccountId, T::Hash, T::Balance),
-Transferred(T::AccountId, T::AccountId, T::Hash),
-Bought(T::AccountId, T::AccountId, T::Hash, T::Balance),
+  /// A new Kitty was sucessfully created. \[sender, kitty_id\]
+  Created(T::AccountId, T::Hash),
+  /// Kitty price was sucessfully set. \[sender, kitty_id, new_price\]
+  PriceSet(T::AccountId, T::Hash, Option<BalanceOf<T>>),
+  /// A Kitty was sucessfully transferred. \[from, to, kitty_id\]
+  Transferred(T::AccountId, T::AccountId, T::Hash),
+  /// A Kitty was sucessfully bought. \[buyer, seller, kitty_id, bid_price\]
+  Bought(T::AccountId, T::AccountId, T::Hash, BalanceOf<T>),
 ```
 
-We'll be using most of these events in Part IV of this tutorial. For now let's use the relevant event for our `mint` function.
+We'll be using most of these events in Part IV of this tutorial. For now let's use the relevant event for our `create_kitty` dispatchable.
 
-In order to complete our `mint` function, replace the ACTION #4 line with:
+Complete it by replacing ACTION #4 with:
 
 ```rust
 Self::deposit_event(Event::Created(to, kitty_id));
 ```
 :::note
-If you're building your codebase from the previous part (and haven't been using the helper file for this part) you'll need to add `Ok(())` and properly close the `mint` function.
+If you're building your codebase from the previous part (and haven't been using the helper file for this part) you'll need to add `Ok(())` and properly close the `create_kitty` dispatchable.
 :::
 
 ### 5. Error handling 
 
-In [Part II when we created the `increment_nonce`](/docs/tutorials/Kitties/Part%201/create-kitties#nonce) function, we specified the error message _"Overflow"_ using Rust's `ok_or` function. 
 FRAME provides us with an error handling system using [`[#pallet::errors]`][errors-kb] which allows us to specify errors for our pallet and use them across our pallet's functions. 
 
-In this case, let's declare a single error for when checking for overflow in the `increment_nonce` function. 
-
-First, declare the error using the provided FRAME macro under `#[pallet::error]` (replace line ACTION #5a):
+Declare all possible errors using the provided FRAME macro under `#[pallet::error]` (replace line ACTION #5a):
 
 ```rust
-/// Nonce has overflowed past u64 limits
-NonceOverflow,
+		/// Handles arithemtic overflow when incrementing the Kitty counter.
+		KittyCntOverflow,
+		/// An account cannot own more Kitties than `MaxKittyCount`.
+		ExceedMaxKittyOwned,
+		/// Buyer cannot be the owner.
+		BuyerIsKittyOwner,
+		/// Cannot transfer a kitty to its owner.
+		TransferToSelf,
+		/// Handles checking whether the Kitty exists.
+		KittyNotExist,
+		/// Handles checking that the Kitty is owned by the account transferring, buying or setting a price for it.
+		NotKittyOwner,
+		/// Ensures the Kitty is for sale.
+		KittyNotForSale,
+		/// Ensures that the buying price is greater than the asking price.
+		KittyBidPriceTooLow,
+		/// Ensures that an account has enough funds to purchase a Kitty. 
+		NotEnoughBalance,
 ```
 
-Then, use it on `ok_or` inside `increment_nonce` (replace line ACTION #5b):
-
-```rust
-let next = nonce.checked_add(1).ok_or(Error::<T>::NonceOverflow)?;
-```
+We'll be using these errors once we write the interactive functions in the next section. Notice that we've already used `KittyCntOverflow` and `ExceedMaxKittyOwned` in our `mint` function.
 
 Now's a good time to see if your chain can compile. Instead of only checking if your pallet compiles, run the following command to see if everything can build:
 
@@ -335,28 +304,20 @@ This requires you to paste them into the "_Settings_" -> "_Developers_" section.
 
 ```json
 {
-  "AccountInfo": {
-    "nonce": "Index",
-    "consumers": "RefCount",
-    "providers": "RefCount",
-    "data": "AccountData"
-  },
-  "Address": "MultiAddress",
-  "LookupSource": "AccountId",
   "Gender": {
-    "_enum": ["male", "female"]
+    "_enum": [ "Male", "Female"]
   },
   "Kitty": {
-    "id": "H256",
-    "dna": "H256",
-    "price": "Balance",
-    "gender": "Gender"
+    "dna": "[u8; 16]",
+    "price": "Option<Balance>",
+    "gender": "Gender",
+    "ownder": "AccountId"
   }
 }
 ```
 
-> The reason we need this is because we created types that PolkadotJS Apps isn't designed to read by default. By adding them, it can
-properly decode each of our storage items that rely on custom types.
+> The reason we need this is because we created types that PolkadotJS Apps isn't designed to read custom types by default. By adding them, it can
+properly decode each of our storage items that rely on custom types. Add this in a file caleld `types.json` in your projects `runtime` folder.
 
 3. Now go to: _"Developer"_ -> _"Extrinsics"_ and submit a signed extrinsic using _substrateKitties_ by calling the `createKitty()` dispatchable. Make 3 different transactions from Alice, Bob and Charlie's accounts
 4. Check for the associated event _"Created"_ by going to "_Network_" -> "_Explorer_". You should be able to see the event emitted and query its block details.
@@ -365,18 +326,20 @@ properly decode each of our storage items that rely on custom types.
 Be sure to uncheck the "include option" box and you should be able to see the details of your newly minted Kitty in the following format:
 
 ```json
-substrateKitties.kitties: Kitty
+kitties.kitties: Option<Kitty>
 [
+  [
     [
-      0xf78c3e9c10498c350d639a10fa773cb878b85bf2c5989e38f8b1cd5c0bafb7ee
+      0x15cb95604033af239640125a30c45b671a282f3ef42c6fc48a78eb18464b30a9
     ],
     {
-      id: 0xf78c3e9c10498c350d639a10fa773cb878b85bf2c5989e38f8b1cd5c0bafb7ee,
-      dna: 0xf78c3e9c10498c350d639a10fa773cb878b85bf2c5989e38f8b1cd5c0bafb7ee,
-      price: 0,
-      gender: female
+      dna: 0xaf2f2b3f77e110a56933903a38cde1eb,
+      price: null,
+      gender: Female,
+      ownder: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
     }
-  ],
+  ]
+]
 ```
 
 5. Check that other storage items correctly reflect the creation of additional Kitties.

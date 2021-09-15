@@ -35,8 +35,7 @@ In Part 1 of this tutorial, we'll intentionally keep things simple so that you c
 
 1. [**Basic setup**](/docs/Tutorials/Kitties/Part%201/basic-setup). We'll need to spin up a Substrate node and create a custom pallet
 
-2. [**Runtime storage**](/docs/Tutorials/Kitties/Part%201/basic-setup). We'll need a total of 9 storage items in our pallet to keep track of the amount of Kitties; their index; their owners and their
-   owner account IDs.
+2. [**Runtime storage**](/docs/Tutorials/Kitties/Part%201/basic-setup). We'll need a total of 3 storage items in our pallet to keep track of the amount of Kitties; their owners and a Kitty object containing a single Kitty's information.
 
 3. [**Dispatchable functions**](/docs/Tutorials/Kitties/Part%201/dispatchables-and-events).  We'll need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `buy_kitty` and `breed_kitty`
 

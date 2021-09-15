@@ -4,12 +4,17 @@ pub use pallet::*;
 
 #[frame_support::pallet]
 pub mod pallet {
-    use frame_support::{sp_runtime::traits::{Hash, Zero},
-                        dispatch::{DispatchResultWithPostInfo, DispatchResult}, 
-                        traits::{Currency, ExistenceRequirement, Randomness},
-                        pallet_prelude::*};
-    use frame_system::pallet_prelude::*;
-    use sp_core::H256;
+    use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
+	use frame_support::{
+		sp_runtime::traits::Hash,
+		traits::{ Randomness, Currency, tokens::ExistenceRequirement },
+		transactional
+	};
+	use sp_io::hashing::blake2_128;
+
+	#[cfg(feature = "std")]
+	use serde::{Deserialize, Serialize};
 
     // TODO Part II: Struct for holding Kitty information.
 
@@ -27,7 +32,10 @@ pub mod pallet {
         /// Because this pallet emits events, it depends on the runtime's definition of an event.
         type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 
-        // TODO Part II: Specify the type of Random we want to specify for runtime.
+        /// The Currency handler for the Kitties pallet.
+		type Currency: Currency<Self::AccountId>;
+        
+        // TODO Part II: Specify the custom types for our runtime.
     }
 
     // Errors.
@@ -44,9 +52,7 @@ pub mod pallet {
         // TODO Part III
     }
 
-    // ACTION: Storage item to keep track of all Kitties.
-
-    // TODO Part II: Add Nonce storage item.
+    // ACTION: Storage item to keep a count of all existing Kitties.
 
     // TODO Part II: Remaining storage items.
 

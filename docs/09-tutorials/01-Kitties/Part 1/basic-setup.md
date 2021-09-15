@@ -171,7 +171,11 @@ pub mod pallet {
         /// Because this pallet emits events, it depends on the runtime's definition of an event.
         type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 
-        // TODO Part II: The type of Random we want to specify for runtime.
+        /// The Currency handler for the Kitties pallet.
+		type Currency: Currency<Self::AccountId>;
+        
+        // TODO Part II: Specify the custom types for our runtime.
+
     }
 
     // Errors.
@@ -187,7 +191,7 @@ pub mod pallet {
         // TODO Part III
     }
 
-    // ACTION: Storage item to keep track of all Kitties.
+    // ACTION: Storage item to keep a count of all existing Kitties.
 
     // TODO Part II: Remaining storage items.
 
@@ -218,31 +222,17 @@ pub mod pallet {
 }
 ```
 
-<!-- :::tip Your turn!
-Copy over the bare-bones of the Kitties pallet into `mykitties/src/lib.rs`.
-
-**Hint:** Each part of this tutorial has a file with code containing comments to guide you to complete each part.
-Download the [template code here][template-code] locally and use it to help you progress through each step!
-::: -->
-
 Now try running the following command to rebuild your chain:
 
 ```bash
 cargo +nightly build --release
 ```
 
-Get an error about dependencies? That's normal! Our pallet structure is using FRAME's `pallet-balances` and `sp-io` 
-but these aren't part of the node template we used so we must specify them ourselves. In `pallets/mykitties/Cargo.toml`, 
+Get an error about dependencies? That's normal! Our pallet is using `sp-io` which isn't part of the node template so we must specify it ourselves. In `pallets/mykitties/Cargo.toml`, 
 add the following:
 
 ```TOML
-[dependencies.sp-core]
-default-features = false
-git = 'https://github.com/paritytech/substrate.git'
-tag = 'monthly-2021-08'
-version = '4.0.0-dev'
-
-[dependencies.pallet-balances]
+[dependencies.sp-io]
 default-features = false
 git = 'https://github.com/paritytech/substrate.git'
 tag = 'monthly-2021-08'
@@ -276,25 +266,22 @@ In `mykitties/src/lib.rs`, replace the ACTION line with:
 
 ```rust
     #[pallet::storage]
-    #[pallet::getter(fn all_kitties_count)]
-    pub(super) type AllKittiesCount<T: Config> = StorageValue<
-        _, 
-        u64, 
-        ValueQuery
-        >;
+	#[pallet::getter(fn kitty_cnt)]
+	/// Keeps track of the number of Kitties in existence.
+	pub(super) type KittyCnt<T: Config> = StorageValue<_, u64, ValueQuery>;
 ```
 
-This creates a storage item for our pallet to keep track of a counter that will correspond to the total amount of Kitties
+This creates a storage item for our pallet to keep track of the total count of Kitties
 in existence.
 
 ### 4. Build pallet
 
-From the previous step, your pallet should contain a storage item called `AllKittiesCount` which keeps track of a
+From the previous step, your pallet should contain a storage item called `KittyCnt` which keeps track of a
 single `u64` value. As part of the basic setup, we're doing great!
 
 :::info
 As mentioned in the [overview of this tutorial series](./overview),
-you'll be implementing a total of 9 storage items which you'll discover as you
+you'll be implementing 3 storage items in total which you'll discover as you
 write out your pallet's logic in the next parts.
 :::
 
