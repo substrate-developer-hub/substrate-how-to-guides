@@ -128,24 +128,36 @@ pub mod pallet {
         }
     }
 
-    impl<T: Config> Pallet<T> {        
-        // Helper to increment nonce
-        fn increment_nonce() -> DispatchResult {
-            <Nonce<T>>::try_mutate(|nonce| {
-                let next = nonce.checked_add(1).ok_or("Overflow")?; // ACTION #5b: Add error handling
-                *nonce = next;
+    impl<T: Config> Pallet<T> {       
+        // Generate a random gender value
+        fn gen_gender() -> Gender {
+			let random = T::KittyRandomness::random(&b"gender"[..]).0;
+			match random.as_ref()[0] % 2 {
+				0 => Gender::Male,
+				_ => Gender::Female,
+			}
+		}
 
-                Ok(().into())
-            })
-        }
+        // Generate a random DNA value
+		fn gen_dna() -> [u8; 16] {
+			let payload = (
+				T::KittyRandomness::random(&b"dna"[..]).0,
+				<frame_system::Pallet<T>>::block_number(),
+			);
+			payload.using_encoded(blake2_128)
+		}
 
-        // Help to generate random value
-        fn random_hash(sender: &T::AccountId) -> T::Hash {
-            let nonce = <Nonce<T>>::get();
-            let seed = T::KittyRandomness::random_seed();
+        // Create new DNA with existing DNA
+		pub fn breed_dna(kid1: &T::Hash, kid2: &T::Hash) -> Result<[u8; 16], Error<T>> {
+			let dna1 = Self::kitties(kid1).ok_or(<Error<T>>::KittyNotExist)?.dna;
+			let dna2 = Self::kitties(kid2).ok_or(<Error<T>>::KittyNotExist)?.dna;
 
-            T::Hashing::hash_of(&(seed, &sender, nonce))
-        }
+			let mut new_dna = Self::gen_dna();
+			for i in 0..new_dna.len() {
+				new_dna[i] = (new_dna[i] & dna1[i]) | (!new_dna[i] & dna2[i]);
+			}
+			Ok(new_dna)
+		}
 
 		// ACTION #2: Write mint function
 
@@ -160,7 +172,7 @@ pub mod pallet {
 			}
 		}
 
-		// TODO Part IV: Write transfer_from	
+		// TODO Part IV: Write transfer_kitty_to	
         
     }
 }

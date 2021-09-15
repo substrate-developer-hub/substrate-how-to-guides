@@ -70,13 +70,13 @@ pub mod pallet {
         
         // TODO Part III: create_kitty
         
-        // TODO Part III: set_price
+        // TODO Part IV: set_price
         
-        // TODO Part III: transfer
+        // TODO Part IV: transfer
 
-        // TODO Part III: buy_kitty
+        // TODO Part IV: buy_kitty
         
-        // TODO Part III: breed_kitty
+        // TODO Part IV: breed_kitty
     }
 
     impl<T: Config> Pallet<T> {
@@ -87,7 +87,9 @@ pub mod pallet {
         
         // ACTION #7: funtion to randomly generate DNA
 
-        // TODO: mint, transfer_from
+        // TODO Part III: mint
+        
+        // TODO Part IV: transfer_kitty_to
         
     }
 }

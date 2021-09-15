@@ -273,7 +273,8 @@ Self::deposit_event(Event::Bought(buyer, seller, kitty_id, bid_price));
 ### 4. Breed Kitties
 
 The logic behind breeding two Kitties is to multiply each corresponding DNA segment from two Kitties,
-which will produce a new DNA sequence. Then, that DNA is used when minting a new Kitty. 
+which will produce a new DNA sequence. Then, that DNA is used when minting a new Kitty. This helper function is already 
+provided for you in the template file for this section.
 
 Paste in the following to complete the `breed_kitty` function, replacing line ACTION #10:
 
