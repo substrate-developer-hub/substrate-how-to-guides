@@ -145,91 +145,74 @@ pub mod pallet {
             Ok(().into())
         }
         
-        // set_price
-        #[pallet::weight(100)]
-        pub fn set_price(
-            origin: OriginFor<T>,
-            kitty_id: T::Hash,
-            new_price: T::Balance,
-        ) -> DispatchResultWithPostInfo {
-            let sender = ensure_signed(origin)?;
+        /// Set the price for a Kitty.
+		///
+		/// Updates Kitty price and updates storage.
+		#[pallet::weight(100)]
+		pub fn set_price(
+			origin: OriginFor<T>, 
+			kitty_id: T::Hash, 
+			new_price: Option<BalanceOf<T>>
+		) -> DispatchResult {
+			let sender = ensure_signed(origin)?;
 
-            // Make sure the Kitty exists.
-            ensure!(
-                <Kitties<T>>::contains_key(kitty_id),
-                "This cat does not exist"
-            );
-            // ACTION #1: Checking Kitty owner
+             // ACTION #1: Checking Kitty owner
 
-            // ACTION #2: Set the Kitty price and update new Kitty infomation to storage.
+			// Get the kitty object from storage
+			let mut kitty = Self::kitties(&kitty_id).ok_or(<Error<T>>::KittyNotExist)?;
 
-            // ACTION #3: Deposit a "PriceSet" event.
+			// ACTION #2: Set the Kitty price and update new Kitty infomation to storage.
 
-            Ok(().into())
-        }
+			// ACTION #3: Deposit a "PriceSet" event.
+
+			Ok(())
+		}
 
         // ACTION #5: transfer
 
         // buy_kitty
-        #[pallet::weight(100)]
-        pub fn buy_kitty(
-            origin: OriginFor<T>,
-            kitty_id: T::Hash,
-            ask_price: T::Balance,
-        ) -> DispatchResultWithPostInfo {
-            let sender = ensure_signed(origin)?;
+        #[transactional]
+		#[pallet::weight(100)]
+		pub fn buy_kitty(
+			origin: OriginFor<T>, 
+			kitty_id: T::Hash, 
+			bid_price: BalanceOf<T>
+		) -> DispatchResult {
+			let buyer = ensure_signed(origin)?;
 
-            // Check if the Kitty exists.
-            ensure!(
-                <Kitties<T>>::contains_key(kitty_id),
-                "This cat does not exist"
-            );
-
-            // Check that the Kitty has an owner.
-            let owner = Self::owner_of(kitty_id).ok_or("No owner for this kitty")?;
-
-            // Check that account buying the Kitty doesn't already own it.
-            ensure!(owner != sender, "You can't buy your own cat");
-
-            // Get the price of the Kitty.
-            let mut kitty = Self::kitty(kitty_id);
-            let kitty_price = kitty.price;
+			// Check the kitty exists and buyer is not the current kitty owner
+			let kitty = Self::kitties(&kitty_id).ok_or(<Error<T>>::KittyNotExist)?;
+			ensure!(kitty.owner != buyer, <Error<T>>::BuyerIsKittyOwner);
 
             // ACTION #7: Check if the Kitty is for sale.
             
             // ACTION #8: Update Balances using the Currency trait.
 
-            // ACTION #9: Transfer ownership of Kitty and set new price.
-
-            Self::deposit_event(Event::Bought(sender, owner, kitty_id, kitty_price));
-
-            Ok(().into())
+            Ok(()
         }
         
-        // breed_kitty
-        #[pallet::weight(100)]
-        pub fn breed_kitty(
-            origin: OriginFor<T>,
-            kitty_id_1: T::Hash,
-            kitty_id_2: T::Hash,
-        ) -> DispatchResultWithPostInfo {
-            let sender = ensure_signed(origin)?;
+		/// Breed a Kitty.
+		///
+		/// Breed two kitties to create a new generation
+		/// of Kitties.
+		#[pallet::weight(100)]
+		pub fn breed_kitty(
+			origin: OriginFor<T>, 
+			kid1: T::Hash, 
+			kid2: T::Hash
+		) -> DispatchResult {
+			let sender = ensure_signed(origin)?;
 
-            ensure!(
-                <Kitties<T>>::contains_key(kitty_id_1),
-                "This cat 1 does not exist"
-            );
-            ensure!(
-                <Kitties<T>>::contains_key(kitty_id_2),
-                "This cat 2 does not exist"
-            );
+			// Check: Verify `sender` owns both kitties (and both kitties exist).
+			ensure!(Self::is_kitty_owner(&kid1, &sender)?, <Error<T>>::NotKittyOwner);
+			ensure!(Self::is_kitty_owner(&kid2, &sender)?, <Error<T>>::NotKittyOwner);
 
             // ACTION #10: Breed two Kitties using unique DNA
 
-            // ACTION #11: Mint new Kitty using new DNA and increment nonce
-
-            Ok(().into())
-        }
+            // ACTION #11: Mint new Kitty using new DNA 
+            
+			Ok(())
+		}
     }
 
     // Helper function for Kitty struct

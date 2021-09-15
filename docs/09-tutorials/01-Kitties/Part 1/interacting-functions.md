@@ -37,16 +37,6 @@ Your job is to replace ACTION lines #1, #2 and #3 lines with what you'll learn i
 As we create functions which modify objects in storage, we
 should always check that only the appropriate users are successful when calling those dispatchable functions.
 
-For modifying a Kitty object, we'll first need to get the `Hash` value of the owner of the
-Kitty to ensure that it's the same as the sender.
-
-> `KittyOwner` stores a mapping to an `Option<T::AccountId>` but that
-> given `Hash` may not point to a generated and owned Kitty yet.
-> This means, whenever we fetch the owner of a Kitty, we need to
-> resolve the possibility that it returns `None`. This could be
-> caused by bad user input or even some sort of problem with our
-> runtime. Checking will help prevent these kinds of problems.
-
 The general pattern for an ownership check will look something like this:
 
 ```rust
@@ -58,33 +48,26 @@ ensure!(owner == sender, "You are not the owner");
 **Your turn!** Paste in this code snippet to replace ACTION #1:
 
 ```rust
-// Check that the Kitty has an owner (i.e. if it exists).
-let owner = Self::owner_of(kitty_id).ok_or("No owner for this kitty")?;
-// Make sure the owner matches the corresponding owner.
-ensure!(owner == sender, "You do not own this cat");
+ensure!(Self::is_kitty_owner(&kitty_id, &sender)?, <Error<T>>::NotKittyOwner);
 ```
 #### B. Updating the price of our Kitty object
 
-Every Kitty object has a price attribute that we've set to [`0u8`][rust-u8] as a default value inside the
-`create_kitty` function in [Part II](/docs/tutorials/Kitties/Part%201/dispatchables-and-events#2-write-the-create_kitty-dispatchable):
+Every Kitty object has a price attribute that we've set to [`None`] as a default value inside the
+`mint` function in [Part II](/docs/tutorials/Kitties/Part%201/dispatchables-and-events#3-write-the-mint-function):
 
 ```rust
-let new_kitty = Kitty {
-    id: random_hash,
-    dna: random_hash,
-    price: 0u8.into(), // <-- here 
-    gender: Kitty::<T, T>::gender(random_hash),
-};
+let kitty = Kitty::<T> {
+				dna: dna.unwrap_or_else(Self::gen_dna),
+				price: None,                           //<-- 👀 here
+				gender: gender.unwrap_or_else(Self::gen_gender),
+				owner: owner.clone(),
+			};
 ```
-
-:::note
-We'll use this default value to check if the Kitty is for sale when we write the `buy_kitty` dispatchable in the next section.
-:::
 
 To update the price of a Kitty, we'll need to:
 
-- Get the Kitty object.
-- Update the price.
+- Get the Kitty object in storage.
+- Update the object with the new price.
 - Push it back into storage.
 
 Changing a value in an existing object in storage would be written in the following way:
@@ -103,34 +86,15 @@ Rust expects you to declare a variable as mutable (using the `mut` keyword) when
 **Your turn!** Paste in the following snippet to replace the ACTION #2 line: 
 
 ```rust
-// Set the Kitty price.
-let mut kitty = Self::kitty(kitty_id);
-kitty.price = new_price;
-
-// Update new Kitty infomation to storage.
-<Kitties<T>>::insert(kitty_id, kitty);
+kitty.price = new_price.clone();
+<Kitties<T>>::insert(&kitty_id, kitty);
 ```
-
-#### C. Sanity checks
-
-In a similar vain of checking permissions, we also need to ensure that our runtime performs regular sanity
-checks to mitigate any risk that things go wrong &mdash; such as users flooding the chain with heavy transactions or anything that could break the chain.
-
-If we're creating a function geared to update the value of an object in storage,
-the first thing we better do is make sure the object exists at all.
-By using `ensure!`, we can create a safeguard against poor user input, whether malicious or unintentional. For example:
-
-```rust
-ensure!(<MyObject<T>>::exists(object_id));
-```
-
-This is already declared in the template helper code, but it's an important check to remind ourselves about.
 
 #### D. Deposit an event
 
 Once all checks are passed and the new price is written to storage, we can deposit an event 
 [just like we did in Part III](/docs/tutorials/Kitties/Part%201/dispatchables-and-events#4-implement-pallet-events). 
-Replace the line marked as ACTION #3x with:
+Replace the line marked as ACTION #3 with:
 
  ```rust
  Self::deposit_event(Event::PriceSet(sender, kitty_id, new_price));
@@ -140,12 +104,12 @@ Replace the line marked as ACTION #3x with:
 
 ### 2. Transfer a Kitty
 
-You already have the tools and knowledge you'll need to create the transfer functionality from [step 1](#1-set-a-price-for-each-kitty). The main difference with this function is that it will have **two parts**:
+You already have the tools and knowledge you'll need to create the transfer functionality from [step 1](#1-set-a-price-for-each-kitty). The main difference is that there are **two parts** to achieving this:
 
 1. A **dispatchable function** called `transfer()`: this is a publicly callable dispatchable exposed by your pallet.
-2. A **private function** called `transfer_from()`: this will be a private helper function called by `transfer()` to handle all storage updates when transferring a Kitty.
+2. A **private function** called `transfer_kitty_to()`: this will be a private helper function called by `transfer()` to handle all storage updates when transferring a Kitty.
 
-Separating the logic this way makes the private `transfer_from()` function reusable
+Separating the logic this way makes the private `transfer_kitty_to()` function reusable
 by other dispatchable functions of our pallet, without needing to duplicate code. In our case, we're going to reuse it for
 the `buy_kitty` dispatchable we're creating in the next section.
 
@@ -156,86 +120,23 @@ Paste in the following snippet to replace ACTION #5 in the template code:
 ```rust
 #[pallet::weight(100)]
 pub fn transfer(
-    origin: OriginFor<T>,
-    to: T::AccountId,
-    kitty_id: T::Hash,
-) -> DispatchResultWithPostInfo {
-    let sender = ensure_signed(origin)?;
-
-    // Verify Kitty owner: must be the account invoking this transaction.
-    let owner = Self::owner_of(kitty_id).ok_or("No owner for this kitty")?;
-    ensure!(owner == sender, "You do not own this kitty");
-
-    // Transfer.
-    Self::transfer_from(sender, to, kitty_id)?;
-
-    Ok(().into())
-}
-```
-
-By now the above pattern should be familiar. We always check that the transaction is signed; then we verify that the Kitty 
-being transfer is owned by the sender of this transaction; and last we call the `transfer_from` helper to update 
-all storage items appropriately.
-
-#### `transfer_from` 
-
-Now, the `transfer_from` function will be a helper to perform all storage updates once a Kitty has been bought and sold.
-All it needs to do is perform safety checks and update the following storage items:
-
-- `KittyOwner`: to update the owner of the Kitty.
-- `OwnedKittiesArray`: to update the owned Kitty map for each account.
-- `OwnedKittiesIndex`: to update the owned Kitty index for each owner.
-- `OwnedKittiesCount`: to update the amount of Kitties an account has.
-
-Copy the following to replace ACTION #6:
-
-```rust
-// Helper to handle transferring a Kitty from one account to another.
-fn transfer_from(
-    from: T::AccountId,
-    to: T::AccountId,
-    kitty_id: T::Hash,
+    origin: OriginFor<T>, 
+    to: T::AccountId, 
+    kitty_id: T::Hash
 ) -> DispatchResult {
-    // Verify that the owner is the rightful owner of this Kitty.
-    let owner = Self::owner_of(kitty_id).ok_or("No owner for this kitty")?;
-    ensure!(owner == from, "'from' account does not own this kitty");
+    let from = ensure_signed(origin)?;
 
-    // Address to send from.
-    let owned_kitty_count_from = Self::owned_kitty_count(&from);
+    // Ensure the kitty exists and is called by the kitty owner
+    ensure!(Self::is_kitty_owner(&kitty_id, &from)?, <Error<T>>::NotKittyOwner);
 
-    // Address to send to.
-    let owned_kitty_count_to = Self::owned_kitty_count(&to);
+    // Verify the kitty is not transferring back to its owner.
+    ensure!(from != to, <Error<T>>::TransferToSelf);
 
-    // Increment the amount of owned Kitties by 1.
-    let new_owned_kitty_count_to = owned_kitty_count_to
-        .checked_add(1)
-        .ok_or("Transfer causes overflow of 'to' kitty balance")?;
+    // Verify the recipient has the capacity to receive one more kitty
+    let to_owned = <KittiesOwned<T>>::get(&to);
+    ensure!((to_owned.len() as u32) < T::MaxKittyOwned::get(), <Error<T>>::ExceedMaxKittyOwned);
 
-    // Increment the amount of owned Kitties by 1.
-    let new_owned_kitty_count_from = owned_kitty_count_from
-        .checked_sub(1)
-        .ok_or("Transfer causes underflow of 'from' kitty balance")?;
-
-    // Get current Kitty index.
-    let kitty_index = <OwnedKittiesIndex<T>>::get(kitty_id);
-
-    // Update storage items that require updated index.
-    if kitty_index != new_owned_kitty_count_from {
-        let last_kitty_id =
-            <OwnedKittiesArray<T>>::get((from.clone(), new_owned_kitty_count_from));
-        <OwnedKittiesArray<T>>::insert((from.clone(), kitty_index), last_kitty_id);
-        <OwnedKittiesIndex<T>>::insert(last_kitty_id, kitty_index);
-    }
-
-    // Write new Kitty ownership to storage items.
-    <KittyOwner<T>>::insert(&kitty_id, Some(&to));
-    <OwnedKittiesIndex<T>>::insert(kitty_id, owned_kitty_count_to);
-
-    <OwnedKittiesArray<T>>::remove((from.clone(), new_owned_kitty_count_from));
-    <OwnedKittiesArray<T>>::insert((to.clone(), owned_kitty_count_to), kitty_id);
-
-    <OwnedKittiesCount<T>>::insert(&from, new_owned_kitty_count_from);
-    <OwnedKittiesCount<T>>::insert(&to, new_owned_kitty_count_to);
+    Self::transfer_kitty_to(&kitty_id, &to)?;
 
     Self::deposit_event(Event::Transferred(from, to, kitty_id));
 
@@ -243,30 +144,97 @@ fn transfer_from(
 }
 ```
 
+By now the above pattern should be familiar. We always check that the transaction is signed; then we verify that the Kitty 
+being transfer is owned by the sender of this transaction; and last we call the `transfer_kitty_to` helper to update 
+all storage items appropriately.
+
+#### `transfer_kitty_to` 
+
+Now, the `transfer_kitty_to` function will be a helper to perform all storage updates once a Kitty has been bought and sold.
+All it needs to do is perform safety checks and update the following storage items:
+
+- `KittiesOwned`: to update the owner of the Kitty.
+- `Kitties`: to reset the price in the Kitty object to None.
+
+Copy the following to replace ACTION #6:
+
+```rust
+#[transactional]
+pub fn transfer_kitty_to(
+    kitty_id: &T::Hash,
+    to: &T::AccountId,
+) -> Result<(), Error<T>> {
+    let mut kitty = Self::kitties(&kitty_id).ok_or(<Error<T>>::KittyNotExist)?;
+
+    let prev_owner = kitty.owner.clone();
+
+    // Remove `kitty_id` from the KittyOwned vector of `prev_kitty_owner`
+    <KittiesOwned<T>>::try_mutate(&prev_owner, |owned| {
+        if let Some(ind) = owned.iter().position(|&id| id == *kitty_id) {
+            owned.swap_remove(ind);
+            return Ok(());
+        }
+        Err(())
+    }).map_err(|_| <Error<T>>::KittyNotExist)?;
+
+    // Update the kitty owner
+    kitty.owner = to.clone();
+    // Reset the ask price so the kitty is not for sale until `set_price()` is called
+    // by the current owner.
+    kitty.price = None;
+
+    <Kitties<T>>::insert(kitty_id, kitty);
+
+    <KittiesOwned<T>>::try_mutate(to, |vec| {
+        vec.try_push(*kitty_id)
+    }).map_err(|_| <Error<T>>::ExceedMaxKittyOwned)?;
+
+    Ok(())
+}
+```
+
+Notice the use of [`[#transactional]`](https://substrate.dev/rustdocs/latest/frame_support/attr.transactional.html) which we imported at the very beginning of this tutorial. It allows us to write helper functions that can write to storage. 
+
 ### 3. Buy a Kitty
 
 #### A. Check a Kitty is for Sale
 
 We'll need to ensure 2 things before we can allow the user of this function to purchase a Kitty: first, check that the 
-Kitty is for sale; and second, check whether the Kitty's current price is within the user's budget.
+Kitty is for sale; and second, check whether the Kitty's current price is within the user's budget and whether the user has 
+enough free balance.
 
-We can use the `set_price()` function to check if the Kitty is for sale. Remember that we said a Kitty with the
-price of `0` means it's not for sale? Easy enough then: write these checks by simply using `ensure!()` &mdash; replacing line ACTION #7:
+Replace line ACTION #7:
 
 ```rust
-// Check if the Kitty is for sale.
-ensure!(!kitty_price.is_zero(), "This Kitty is not for sale!");
-// Check that the Kitty's current price is within buyers budget.
-ensure!(
-    kitty_price <= ask_price,
-    "This Kitty is out of your budget!"
-);
+// Check the kitty is for sale and the kitty ask price <= bid_price
+if let Some(ask_price) = kitty.price {
+    ensure!(ask_price <= bid_price, <Error<T>>::KittyBidPriceTooLow);
+} else {
+    Err(<Error<T>>::KittyNotForSale)?;
+}
+
+// Check the buyer has enough free balance
+ensure!(T::Currency::free_balance(&buyer) >= bid_price, <Error<T>>::NotEnoughBalance);
+```
+
+In a similar vain, we have to verify whether the user has the capacity to receive a Kitty &mdash; remember we're using 
+a [`BoundedVec`](https://substrate.dev/rustdocs/latest/frame_support/storage/bounded_vec/struct.BoundedVec.html) that can 
+only hold a fixed number of Kitties, defined in our pallet's `MaxKittyOwned` constant.
+
+One last check before we can allow this user to call this dispatchable (paste this in following the last snippet):
+
+```rust
+// Verify the buyer has the capacity to receive one more kitty
+let to_owned = <KittiesOwned<T>>::get(&buyer);
+ensure!((to_owned.len() as u32) < T::MaxKittyOwned::get(), <Error<T>>::ExceedMaxKittyOwned);
+
+let seller = kitty.owner.clone();
 ```
 
 #### B. Making a Payment
 
 In [Step 2](#2-transfer-a-kitty), we added the functions necessary to transfer the _ownership_ of our
-Kitties. But we never actually specified a currrency associated to our pallet.
+Kitties. But we haven't yet touched on the currrency associated to our pallet.
 
 In this step we'll learn how to use [FRAME's Currency trait][currency-frame-rustdocs] to adjust account balances
 using its very own [`transfer` method][transfer-currency-rustdocs]. It's useful to understand why it's important to use the `transfer` method in particular and how we'll be accessing it:
@@ -276,8 +244,7 @@ using its very own [`transfer` method][transfer-currency-rustdocs]. It's useful 
   from `frame_support`.
 
 - Conveniently, it handles a
-  [`Balance`][currency-balances-rustdocs] type, making it compatible with [`pallet_balances`][balances-frame] which we've been
-  using in our pallet's configuration trait. Take a look at how the `transfer`
+  [`Balance`][currency-balances-rustdocs] type, making it compatible with `BalanceOf` type we created for `kitty.price`. Take a look at how the `transfer`
   function we'll be using is structured (from the [Rust docs][currency-transfer-rustdocs]):
 
 ```rust
@@ -289,63 +256,20 @@ fn transfer(
 ) -> DispatchResult
 ```
 
-Now we can finally make use of the  `frame_support` imports &ndash; `Currency` and `ExistenceRequirement` &ndash; that we 
+Now we can make use of the `Currency` type in our pallet's `Config` trait and `ExistenceRequirement` &ndash; that we 
 [initially started with in Part I](/docs/tutorials/Kitties/Part%201/basic-setup#2-write-out-pallet_kitties-scaffold).
 
-:::tip Feeling confident?
-
-Here's how you would write `buy_Kitty` from scratch.
-
-**Perform basic sanity checks**:
-
-- it will take 3 arguments: `origin`, `Kitty_id` and `max_price`
-- check that `Kitty_id` corresponds to a Kitty in storage
-- check that the Kitty has an owner
-
-**Check if purchasing a Kitty is authorized**:
-
-- check that the account buying the Kitty doesn't already own it
-- check that the price of the Kitty is not zero (if it is, throw an error)
-- check that the Kitty price is not greater than `ask_price`
-
-**Update storage items**:
-
-- use the `transfer` method from the `Currency` trait to update
-  account balances
-- use our pallet's `transfer_from` function to change the ownership
-  of the Kitty from `owner` to `sender`
-- update the price of the Kitty to the price it was sold at
-:::
-
-**Your turn!** Paste in the following code snippet, replacing ACTION #8:
+Update the balances of both the caller of this function and the receiver, replacing ACTION #8:
 
 ```rust
-<pallet_balances::Pallet<T> as Currency<_>>::transfer(
-      &sender,
-      &owner,
-      kitty_price,
-      ExistenceRequirement::KeepAlive,
-  )?;
-```
+// Transfer the amount from buyer to seller
+T::Currency::transfer(&buyer, &seller, bid_price, ExistenceRequirement::KeepAlive)?;
 
-Now that that the `transfer` method from FRAME's Currency trait has been called, we can call a private helper function 
-called `transfer_from` (which we'll write later) to write the new changes in ownership to storage. Replace this with what's on 
-line ACTION #9:
+// Transfer the kitty from seller to buyer
+Self::transfer_kitty_to(&kitty_id, &buyer)?;
 
-```rust
-// Transfer ownership of Kitty.
-Self::transfer_from(owner.clone(), sender.clone(), kitty_id).expect(
-    "`owner` is shown to own the kitty; \
-    `owner` must have greater than 0 kitties, so transfer cannot cause underflow; \
-    `all_kitty_count` shares the same type as `owned_kitty_count` \
-    and minting ensure there won't ever be more than `max()` kitties, \
-    which means transfer cannot cause an overflow; \
-    qed",
-);
-
-// Set the price of the Kitty to the new price it was sold at.
-kitty.price = ask_price.into();
-<Kitties<T>>::insert(kitty_id, kitty);
+// Deposit relevant Event
+Self::deposit_event(Event::Bought(buyer, seller, kitty_id, bid_price));
 ```
 
 ### 4. Breed Kitties
@@ -356,40 +280,15 @@ which will produce a new DNA sequence. Then, that DNA is used when minting a new
 Paste in the following to complete the `breed_kitty` function, replacing line ACTION #10:
 
 ```rust
-    let random_hash = Self::random_hash(&sender);
-    let kitty_1 = Self::kitty(kitty_id_1);
-    let kitty_2 = Self::kitty(kitty_id_2);
-
-    let mut final_dna = kitty_1.dna;
-    for (i, (dna_2_element, r)) in kitty_2
-        .dna
-        .as_ref()
-        .iter()
-        .zip(random_hash.as_ref().iter())
-        .enumerate()
-    {
-        if r % 2 == 0 {
-            final_dna.as_mut()[i] = *dna_2_element;
-        }
-    }
+let new_dna = Self::breed_dna(&kid1, &kid2)?;
 ```
 
 Now that we've used the user inputs of Kitty IDs and combined them to create a new unique Kitty ID, we can
 use the `mint()` function to write that new Kitty to storage. Replace line ACTION #11:
 
 ```rust
-let new_kitty = Kitty {
-    id: random_hash,
-    dna: final_dna,
-    price: 0u8.into(),
-    gender: Kitty::<T, T>::gender(final_dna),
-};
-
-Self::mint(sender, random_hash, new_kitty)?;
-Self::increment_nonce()?;
+Self::mint(&sender, Some(new_dna), None)?;
 ```
-And of course, after calling the `mint` function, we call `increment_nonce()` to maintain maximum entropy as described in [Part II](/docs/tutorials/Kitties/Part%201/create-kitties#nonce).
-
 
 ### 5. Genesis configuration
 
@@ -401,7 +300,7 @@ in the genesis block. Copy the following code to replace ACTION #12:
 // Our pallet's genesis configuration.
 #[pallet::genesis_config]
 pub struct GenesisConfig<T: Config> {
-    pub kitties: Vec<(T::AccountId, T::Hash, T::Balance)>,
+    pub kitties: Vec<(T::AccountId, [u8; 16], Gender)>,
 }
 
 // Required to implement default for GenesisConfig.
@@ -415,20 +314,24 @@ impl<T: Config> Default for GenesisConfig<T> {
 #[pallet::genesis_build]
 impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
     fn build(&self) {
-        for &(ref acct, hash, balance) in &self.kitties {
-            let k = Kitty {
-                id: hash,
-                dna: hash,
-                price: balance,
-                gender: Gender::Male,
-            };
-
-            let _ = <Pallet<T>>::mint(acct.clone(), hash, k);
+        // When building a kitty from genesis config, we require the dna and gender to be supplied.
+        for (acct, dna, gender) in &self.kitties {
+            let _ = <Pallet<T>>::mint(acct, Some(dna.clone()), Some(gender.clone()));
         }
     }
 }
 ```
-### 6. Update `runtime/lib.rs` and interact with your Kitties
+
+To let our chain know about our pallet's genesis configuration, we need to modify the `chain_spec.rs` file in our project's `node` folder. Go to `/node/src/chain_spec.rs` and add the following inside the `testnet_genesis` function:
+
+```rust
+//-- snip
+		kitties: KittiesConfig {
+			kitties: vec![],
+		},
+//-- snip
+```
+### 6. Update `runtime/src/lib.rs` and interact with your Kitties
 
 If you've completed all of the preceding parts and steps of this tutorial, you're
 all geared up to run your chain and start interacting with all the new capabilities of your Kitties pallet.
@@ -460,9 +363,11 @@ You've successfully created the backend of a fully functional Substrate chain ca
 
 ## Next steps
 
+Complete the second part of this tutorial to:
+
 - Connect your chain to the front-end template
 - Customize the template using PolkadotJS API
-- Interact with your chain
+- Interact with kitty avatars using a custom front-end React app
 
 [transfer-currency-rustdocs]: https://crates.parity.io/frame_support/traits/tokens/currency/trait.Currency.html#tymethod.transfer
 [frame-balances-rustdocs]: https://crates.parity.io/frame_support/traits/tokens/currency/trait.Currency.html
