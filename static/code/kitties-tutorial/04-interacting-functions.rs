@@ -156,7 +156,7 @@ pub mod pallet {
 		) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 
-             // ACTION #1: Checking Kitty owner
+      // ACTION #1: Checking Kitty owner
 
 			// Get the kitty object from storage
 			let mut kitty = Self::kitties(&kitty_id).ok_or(<Error<T>>::KittyNotExist)?;
@@ -191,7 +191,7 @@ pub mod pallet {
             Ok(()
         }
         
-		/// Breed a Kitty.
+    /// Breed a Kitty.
 		///
 		/// Breed two kitties to create a new generation
 		/// of Kitties.
@@ -212,8 +212,8 @@ pub mod pallet {
             // ACTION #11: Mint new Kitty using new DNA 
             
 			Ok(())
-		}
-    }
+		 }
+   }
 
     // Helper function for Kitty struct
     impl<T: Config> Kitty<T, T> {

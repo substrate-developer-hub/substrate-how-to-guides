@@ -265,7 +265,7 @@ All that means for our purposes is that for any storage item we want to declare,
 In `mykitties/src/lib.rs`, replace the ACTION line with: 
 
 ```rust
-    #[pallet::storage]
+  #[pallet::storage]
 	#[pallet::getter(fn kitty_cnt)]
 	/// Keeps track of the number of Kitties in existence.
 	pub(super) type KittyCnt<T: Config> = StorageValue<_, u64, ValueQuery>;
@@ -275,6 +275,7 @@ This creates a storage item for our pallet to keep track of the total count of K
 in existence.
 
 ### 4. Build pallet
+
 
 From the previous step, your pallet should contain a storage item called `KittyCnt` which keeps track of a
 single `u64` value. As part of the basic setup, we're doing great!

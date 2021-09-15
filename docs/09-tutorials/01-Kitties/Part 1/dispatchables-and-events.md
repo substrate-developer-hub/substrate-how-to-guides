@@ -153,7 +153,6 @@ Next, we increment the `KittyCnt` using its gett function, checking for overflow
 Once we've done the check, we proceed with updating our storage items, making use of
 the [`try_mutate`](https://substrate.dev/rustdocs/latest/frame_support/storage/trait.StorageMap.html#tymethod.try_mutate) and [`insert`][insert-rustdocs] methods from Substrate's StorageMap API and [`put`](https://substrate.dev/rustdocs/latest/frame_support/storage/trait.StorageValue.html#tymethod.put) from `StorageValue`.
 
-
 :::note A quick recap of our storage items
 
 - **`<Kitties<T>>`**: Stores a Kitty's unique traits and price, by storing the Kitty object.
