@@ -19,7 +19,7 @@ This guide outlines steps to schedule non-core storage or other runtime migratio
 ## Steps
 
 ### 1. Define extrinsics in the runtime 
-Ensure the extrinsics can only be called via root.
+Define extrinsics that you want to be scheduled. Ensure the extrinsics can only be called via root or a pallet origin. When scheduling the extrinsics from your pallet, use this origin.
 
 ```rust
 
@@ -35,17 +35,21 @@ impl<T: Config> Pallet<T> {
 }
 
 ```
-### 2. Add the Scheduler trait to the Config trait.
+### 2. Add the Scheduler type to the Configuration trait.
+You need to define the Scheduler trait in your Config trait to access the Scheduler pallet from your pallet. 
+Traits in the Scheduler pallet require a defined Call type as a parameter. You can also define the Call type in your Config trait to match your on-chain Scheduler pallet. 
+
 ```rust
 #[pallet::config]
 pub trait Config: frame_system::Config {
+    /// The Call type that is scheduled.
     type ScheduledCall: Parameter + Dispatchable<Origin = Self::Origin> + From<Call<Self>>;
     /// The Scheduler.
     type Scheduler: ScheduleNamed<Self::BlockNumber, Self::ScheduledCall, Self::Origin>;
 }
 ```
 ### 3. Schedule the calls within  the  `on_runtime_upgrade` hook  
-- use the [```schedule_named```](https://github.com/paritytech/substrate/blob/master/frame/scheduler/src/lib.rs#L404)  function.
+- use the [```schedule_named```](https://github.com/paritytech/substrate/blob/master/frame/scheduler/src/lib.rs#L404) method from the Scheduler pallet to trigger your migration extrinsic.
 ```rust
 #[pallet::hooks]
 impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
@@ -74,7 +78,9 @@ impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
  Schedule the extrinsic  for the blocks after the migration executes. If it takes an unknown length of time to execute, set up a counter within the extrinsic to make sure that it stops once it hits a certain weight and then schedules itself again for the next block.
 :::
 
+### 4. Trigger the migrations.
 
+Once you have defined the calls and the `on_runtime_upgrade` hook you can trigger the migrations by upgrading the runtime as described [here](https://substrate.dev/substrate-how-to-guides/docs/storage-migrations/migration-steps-polkadotjs)
 ## Examples
  - Calls scheduling in  the [democracy pallet](https://github.com/paritytech/substrate/blob/0f934e970501136c7370a3bbd234b96c81f59cba/frame/democracy/src/lib.rs#L1711)
 
