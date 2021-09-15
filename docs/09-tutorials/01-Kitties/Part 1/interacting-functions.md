@@ -193,7 +193,7 @@ pub fn transfer_kitty_to(
 }
 ```
 
-Notice the use of [`[#transactional]`](https://substrate.dev/rustdocs/latest/frame_support/attr.transactional.html) which we imported at the very beginning of this tutorial. It allows us to write helper functions that can write to storage. 
+Notice the use of [`[#transactional]`](https://substrate.dev/rustdocs/latest/frame_support/attr.transactional.html) which we imported at the very beginning of this tutorial. It allows us to write dispatchable functions that will only write to storage at the same time as the helper functions it calls, making sure all storage writes happen together.
 
 ### 3. Buy a Kitty
 
@@ -363,7 +363,7 @@ You've successfully created the backend of a fully functional Substrate chain ca
 
 ## Next steps
 
-Complete the second part of this tutorial to:
+Complete Part II of this tutorial to:
 
 - Connect your chain to the front-end template
 - Customize the template using PolkadotJS API
