@@ -235,7 +235,6 @@ let seller = kitty.owner.clone();
 
 In [Step 2](#2-transfer-a-kitty), we added the functions necessary to transfer the _ownership_ of our
 Kitties. But we haven't yet touched on the currrency associated to our pallet.
-
 In this step we'll learn how to use [FRAME's Currency trait][currency-frame-rustdocs] to adjust account balances
 using its very own [`transfer` method][transfer-currency-rustdocs]. It's useful to understand why it's important to use the `transfer` method in particular and how we'll be accessing it:
 
@@ -255,7 +254,6 @@ fn transfer(
     existence_requirement: ExistenceRequirement
 ) -> DispatchResult
 ```
-
 Now we can make use of the `Currency` type in our pallet's `Config` trait and `ExistenceRequirement` &ndash; that we 
 [initially started with in Part I](/docs/tutorials/Kitties/Part%201/basic-setup#2-write-out-pallet_kitties-scaffold).
 
