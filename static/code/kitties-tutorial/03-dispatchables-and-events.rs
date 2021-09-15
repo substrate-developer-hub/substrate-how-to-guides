@@ -152,6 +152,14 @@ pub mod pallet {
 			Ok(())
         }
 
+        // Helper to check correct kitty owner
+        pub fn is_kitty_owner(kitty_id: &T::Hash, acct: &T::AccountId) -> Result<bool, Error<T>> {
+			match Self::kitties(kitty_id) {
+				Some(kitty) => Ok(kitty.owner == *acct),
+				None => Err(<Error<T>>::KittyNotExist)
+			}
+		}
+
 		// TODO Part IV: Write transfer_from	
         
     }

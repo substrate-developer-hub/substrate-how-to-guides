@@ -210,7 +210,7 @@ pub mod pallet {
             // ACTION #10: Breed two Kitties using unique DNA
 
             // ACTION #11: Mint new Kitty using new DNA 
-            
+
 			Ok(())
 		}
     }
@@ -246,47 +246,40 @@ pub mod pallet {
         }
 
 		// Helper to mint a Kitty.
-        fn mint(
-            to: T::AccountId,
-            kitty_id: T::Hash,
-            new_kitty: Kitty<T::Hash, T::Balance>,
-        ) -> DispatchResult {
-            ensure!(
-                !<KittyOwner<T>>::contains_key(kitty_id),
-                "Kitty already contains_key"
-            );
+		pub fn mint(
+			owner: &T::AccountId,
+			dna: Option<[u8; 16]>,
+			gender: Option<Gender>,
+		) -> Result<T::Hash, Error<T>> {
+			let kitty = Kitty::<T> {
+				dna: dna.unwrap_or_else(Self::gen_dna),
+				price: None,
+				gender: gender.unwrap_or_else(Self::gen_gender),
+				owner: owner.clone(),
+			};
 
-            // Write mint function
-            // Update total Kitty counts.
-            let owned_kitty_count = Self::owned_kitty_count(&to);
-            let new_owned_kitty_count = owned_kitty_count
-                .checked_add(1)
-                .ok_or("Overflow adding a new kitty to account balance")?;
+			let kitty_id = T::Hashing::hash_of(&kitty);
 
-            let all_kitties_count = Self::all_kitties_count();
-            let new_all_kitties_count = all_kitties_count
-                .checked_add(1)
-                .ok_or("Overflow adding a new kitty to total supply")?;
+			// Performs this operation first as it may fail
+			let new_cnt = Self::kitty_cnt().checked_add(1)
+				.ok_or(<Error<T>>::KittyCntOverflow)?;
 
-            // Update storage with new Kitty.
-            <Kitties<T>>::insert(kitty_id, new_kitty);
-            <KittyOwner<T>>::insert(kitty_id, Some(&to));
+			// Performs this operation first because as it may fail
+			<KittiesOwned<T>>::try_mutate(&owner, |kitty_vec| {
+				kitty_vec.try_push(kitty_id)
+			}).map_err(|_| <Error<T>>::ExceedMaxKittyOwned)?;
 
-            // Write Kitty counting information to storage.
-            <AllKittiesArray<T>>::insert(new_all_kitties_count, kitty_id);
-            <AllKittiesCount<T>>::put(new_all_kitties_count);
-            <AllKittiesIndex<T>>::insert(kitty_id, new_all_kitties_count);
+			<Kitties<T>>::insert(kitty_id, kitty);
+			<KittyCnt<T>>::put(new_cnt);
+			Ok(kitty_id)
+		}
 
-            // Write Kitty counting information to storage.
-            <OwnedKittiesArray<T>>::insert((to.clone(), new_owned_kitty_count), kitty_id);
-            <OwnedKittiesCount<T>>::insert(&to, new_owned_kitty_count);
-            <OwnedKittiesIndex<T>>::insert(kitty_id, new_owned_kitty_count);
-
-            // Write `mint` event
-            Self::deposit_event(Event::Created(to, kitty_id));
-
-			Ok(())
-        }
+		pub fn is_kitty_owner(kitty_id: &T::Hash, acct: &T::AccountId) -> Result<bool, Error<T>> {
+			match Self::kitties(kitty_id) {
+				Some(kitty) => Ok(kitty.owner == *acct),
+				None => Err(<Error<T>>::KittyNotExist)
+			}
+		}
 
 		// ACTION #6: Write transfer_from
         
