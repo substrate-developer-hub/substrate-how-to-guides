@@ -16,11 +16,11 @@ Before we can start making Kitties, we first need to do a little groundwork. Thi
 
 ## Learning outcomes
 
-:arrow_right: Renaming a Substrate Node Template using the Kickstart tool.
+:arrow_right: &nbsp; Renaming a Substrate Node Template using the Kickstart tool.
 
-:arrow_right: Basic patterns for building and running a Substrate node.
+:arrow_right: &nbsp; Basic patterns for building and running a Substrate node.
 
-:arrow_right: Create a storage item to keep track of a single `u64` value.
+:arrow_right: &nbsp; Create a storage item to keep track of a single `u64` value.
 
 ## Steps
 
@@ -28,7 +28,7 @@ Before we can start making Kitties, we first need to do a little groundwork. Thi
 
 The [Substrate Node Template][substrate-node-template] provides us with an "out-of-the-box" blockchain node. Our biggest advantage
 in using it are that both networking and consensus layers are already built and all we need to focus on is building out
-our [runtime][runtime-kb] and [pallet][pallets-kb] logic. Before we get there, we need to set-up our project in terms of naming and dependencies.
+our [runtime][runtime-kb] and [pallet][pallets-kb] logics. Before we get there, we need to set-up our project in terms of naming and dependencies.
 
 We'll use a CLI tool called [kickstart][kickstart-tool] to easily rename our node template.
 
@@ -38,7 +38,7 @@ In the root directory of your local workspace, run the following command:
 kickstart https://github.com/sacha-l/kickstart-substrate
 ```
 
-This command will clone a copy of the most recent Node Template and ask you would like to call your node and pallet. Type in:
+This command will clone a copy of the most recent Node Template and ask how you would like to call your node and pallet. Type in:
 
 - `kitties` - as the name of our node
 - `mykitties` - as the name of your pallet
@@ -73,7 +73,7 @@ construct_runtime!(
 We can already build the node as is by navigating to directory `kitties` in terminal and running this command:
 
 ```bash
-cargo +nightly build --release
+cargo build --release
 ```
 
 It's normal if this command takes a little while depending on your machine &mdash; it's building 
@@ -93,7 +93,7 @@ You should see blocks being created in your terminal. The `--tmp` and `--dev` fl
 We'll be spending most of this tutorial in the `pallets` directory of our template node.
 Let's take a glance at the folder structure in our workspace:
 
-```bash
+```
 kitties-tutorial           <--  The name of our project directory
 |
 +-- node
@@ -134,12 +134,10 @@ Every FRAME pallet has:
 - Required [attribute macros][macros-kb] (i.e. configuration traits, storage items and function calls).
 
 :::note
-We'll be updating additional dependencies as we progress through the next parts of this tutorial.
+We'll be updating additional dependencies as we progress through the coming parts of this tutorial.
 :::
 
-Here's the most bare-bones version of the Kitties pallet we will be building in this tutorial. It contains the starting point for 
-adding code for the next sections of this tutorial, with comments marked with "TODO" to indicate code we will be writing later, and 
-"ACTION" to indicate code that will be written in the current part of the tutorial.
+Here is the most bare-bones version of the Kitties pallet we will be building in this tutorial. It contains the starting point for adding code for coming sections of this tutorial, with comments marked with **TODO** to indicate code we will be writing later, and **ACTION** to indicate code that will be written in the current part of the tutorial.
 
 Paste the following code in `/pallets/mykitties/src/lib.rs`: 
 
@@ -241,17 +239,16 @@ version = '4.0.0-dev'
 
 :::warning 
 Check that you're using the correct `monthly-*` tag and version otherwise you will get a dependency error.
-Here, we're using the most up-to-date tag as of the writing of this tutorial.
+Here, we're using `monthly-2021-08` tag of Substrate.
 :::
 
 Now run `cargo +nightly build --release` again to make sure it builds without errors.
 
 :::note
-You'll notice the Rust compiler giving you warnings about unused imports. That's fine! Just ignore them &mdash; we're going to
-be using those imports in the later parts of the tutorial.
+You will notice the Rust compiler giving you warnings about unused imports. That's fine! Just ignore them &mdash; we're going to use those imports later in this tutorial.
 :::
 
-In the next step we will include the first storage item our Kitty application will require.
+In the next step we will include the first storage item our Kitty application require.
 
 ### 3. Include a storage item to track all Kitties
 
@@ -265,7 +262,7 @@ All that means for our purposes is that for any storage item we want to declare,
 In `mykitties/src/lib.rs`, replace the ACTION line with: 
 
 ```rust
-  #[pallet::storage]
+	#[pallet::storage]
 	#[pallet::getter(fn kitty_cnt)]
 	/// Keeps track of the number of Kitties in existence.
 	pub(super) type KittyCnt<T: Config> = StorageValue<_, u64, ValueQuery>;
@@ -275,7 +272,6 @@ This creates a storage item for our pallet to keep track of the total count of K
 in existence.
 
 ### 4. Build pallet
-
 
 From the previous step, your pallet should contain a storage item called `KittyCnt` which keeps track of a
 single `u64` value. As part of the basic setup, we're doing great!
@@ -290,13 +286,13 @@ Before we move on, let's make sure everything compiles. We don't need to rebuild
 Instead, we can use a command that only builds our pallet. From inside your pallet directory, run the following:
 
 ```bash
-cargo build -p pallet-mykitties
+cargo build --release -p pallet-mykitties
 ```
 
 Does your pallet compile without error? Well done if it does! If not, go back and check that all the macros are in place and that 
 you've included the FRAME dependencies.
 
-:::note Congratulations!
+:::info Congratulations!
 You've completed the first part of this series. At this stage, you've learnt the various patterns for:
 
 - Customizing the Substrate node template and including a custom pallet.
@@ -314,8 +310,8 @@ You've completed the first part of this series. At this stage, you've learnt the
 [substrate-node-template]: https://github.com/substrate-developer-hub/substrate-node-template
 [pallets-kb]: https://substrate.dev/docs/en/knowledgebase/runtime/pallets
 [macros-kb]: https://substrate.dev/docs/en/knowledgebase/runtime/macros#frame-v2-macros-and-attributes
-[storagevalue-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/storage/trait.StorageValue.html
-[storage-api-rustdocs]: https://substrate.dev/rustdocs/v3.0.0/frame_support/storage/index.html
+[storagevalue-rustdocs]: https://substrate.dev/rustdocs/latest/frame_support/storage/trait.StorageValue.html
+[storage-api-rustdocs]: https://substrate.dev/rustdocs/latest/frame_support/storage/index.html
 [template-code]: https://github.com/substrate-developer-hub/substrate-how-to-guides/tree/main/static/code/kitties-tutorial
 [runtime-kb]: https://substrate.dev/docs/en/knowledgebase/runtime/
 [kickstart-tool]: https://github.com/Keats/kickstart
