@@ -52,7 +52,6 @@ proof-of-existence = { default-features = false, path = '../pallets/proof-of-exi
 pallet-reward-coin = { path = '../pallets/reward-coin', default-features = false, version = '3.0.0' }
 simple-crowdfund = { path = '../pallets/simple-crowdfund', default-features = false, version = '3.0.0' }
 configurable-constant = { path = '../pallets/configurable-constant', default-features = false, version = '3.0.0' }
-pallet-kitties = { path = '../pallets/kitties', default-features = false, version = '3.0.0' }
 
 [features]
 default = ['std']
@@ -98,5 +97,4 @@ std = [
     'proof-of-existence/std',
     'simple-crowdfund/std',
     'configurable-constant/std',
-    'pallet-kitties/std',
 ]

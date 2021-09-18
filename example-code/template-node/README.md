@@ -1,8 +1,28 @@
+📢 This `template-node` is meant to host the various pallet that some how-to guides refer to. It is not designed to work out of the box. Users experimenting with these pallets must
+integrate them themselves. The following pallets are already integrated, but commented out, and can be used by uncommenting relevant parts of `runtime/src/lib.rs`:
+
+- `pallet_template`
+- `mint_token`
+- `configurable_constant`
+
+To learn how to integrate a pallet into your runtime, [follow this guide](https://substrate.dev/substrate-how-to-guides/docs/basics/basic-pallet-integration).
+
+Without integrating any of these pallets, this node works as is by running:
+
+```bash
+cargo build --release
+```
+following by:
+
+```bash
+./target/release/node-template --dev --tmp
+```
+
 # Substrate Node Template
 
-[![Try on playground](https://img.shields.io/badge/Playground-Node_Template-brightgreen?logo=Parity%20Substrate)](https://playground.substrate.dev/?deploy=node-template)
+This node was built with the Substrate Node Template, a fresh FRAME-based [Substrate](https://www.substrate.io/) node, ready for hacking. :rocket:
 
-A fresh FRAME-based [Substrate](https://www.substrate.io/) node, ready for hacking :rocket:
+[![Try on playground](https://img.shields.io/badge/Playground-Node_Template-brightgreen?logo=Parity%20Substrate)](https://playground.substrate.dev/?deploy=node-template)
 
 ## Getting Started
 
