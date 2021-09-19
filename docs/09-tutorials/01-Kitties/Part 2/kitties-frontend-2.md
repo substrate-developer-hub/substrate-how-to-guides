@@ -10,23 +10,25 @@ In this section, we are going to build the custom components of our Kitty applic
 
 To recap, these are:
 
-- **the `Kitties.js` component:** this renders KittyCards.js 
+- **the `Kitties.js` component:** this renders KittyCards.js.
 - **the `KittyAvatar.js` component:** this handles the logic that creates an avatar for a Kitty in storage
-- **the `KittyCards.js` component:** this creates a React  `<Card/>` component to hold Kitty ID, gender, DNA, owner and price
+- **the `KittyCards.js` component:** this creates a React  card component to hold Kitty ID, gender,
+DNA, owner and price
 
 ## Learning outcomes
 
-:arrow_right: Use PolkadotJS API to create custom React components.
+:arrow_right: &nbsp; Use Polkadot-JS API to create custom React components.
 
 ## Steps
 
 ### 1. Create the `Kitties.js` component
 
-This is the component that will get rendered by Apps.js. So it does the heavy lifting, with the help of KittyAvatar.js and KittCards.js.
+This is the component that will get rendered by `Apps.js`, the top-most level component. So it does
+the heavy lifting, with the help of `KittyAvatar.js` and `KittCards.js`.
 
-Start by creating a file called `Kitties.js` and paste the following imports:
+Start by creating a file called `src/Kitties.js` and paste the following imports:
 
-```js
+```javascript
 import React, { useEffect, useState } from 'react';
 import { Form, Grid } from 'semantic-ui-react';
 
@@ -36,17 +38,22 @@ import { TxButton } from './substrate-lib/components';
 import KittyCards from './KittyCards';
 ```
 
-The way our custom components will make use of PolkadotJS API is by using `substrate-lib`, which is a wrapper around [Polkadot JS API instance](https://polkadot.js.org/docs/api/start/create/) and allows us to retrieve the API from the [PolkadotJS keyring](https://polkadot.js.org/docs/api/start/keyring). This is why we use `useSubstrate` which is exported by `src/substrate-lib/SubstrateContext.js` and used to create the wrapper.
+The way our custom components make use of Polkadot-JS API is by using `substrate-lib`, which is a
+wrapper around [Polkadot JS API instance](https://polkadot.js.org/docs/api/start/create/) and
+allows us to retrieve account keys from the [Polkadot-JS keyring](https://polkadot.js.org/docs/api/start/keyring).
+This is why we use `useSubstrate` which is exported by `src/substrate-lib/SubstrateContext.js` and
+used to create the wrapper.
 
 Then, there's a couple things to set up:
 
 - we'll need a function to help construct the Kitty ID from a storage key
-- we'll need a function to hold a Kitty object 
-- we'll rely on `useEffect` from `import React, { useEffect, useState } from 'react';` to listen for changes in our node's storage using React hooks
+- we'll need a function to hold all Kitty objects
+- we'll subscribe to the chain storage item changes and rely on React hook `useEffect` to update our
+component states.
 
 Proceed by pasting in the following code snippet:
 
-```js
+```javascript
 // Construct a Kitty ID from storage key
 const convertToKittyHash = entry =>
   `0x${entry[0].toJSON().slice(-64)}`;
@@ -70,99 +77,108 @@ export default function Kitties (props) {
   const [status, setStatus] = useState('');
 // snip
 ```
-There are two things our app needs to listen for: changes in the amount of Kitties and changes in the Kitty object. To do this we'll create a subscription function for each.
+There are two things our app needs to listen (subscribe) for: changes in the amount of Kitties and
+changes in Kitty objects. To do this we'll create a subscription function for each.
 
-The way we're going to listen for a change in the amount of Kitties is by querying our node using `api.query.kitties.kittyCnt`, which
-queries `KittyCnt` from our Kitties pallet storage item. Then, we'll use the `entries()` method from PolkadotJS API to construct a Kitty
-ID using the `convertToKittyHash` function.
+The way we're going to listen for a change in the amount of Kitties is by querying our node using
+`api.query.kitties.kittyCnt`, which queries `KittyCnt` from our Kitties pallet storage item. Then,
+we'll use the `entries()` method from Polkadot-JS API to get Kitty IDs and transform them to be
+more display-friendly with `convertToKittyHash` function.
 
 Paste the following snippet:
 
-```js
+```javascript
 // Subscription function for setting Kitty IDs
-  const subscribeKittyCnt = () => {
-    let unsub = null;
+const subscribeKittyCnt = () => {
+  let unsub = null;
 
-    const asyncFetch = async () => {
-        // Query KittyCnt from runtime
-      unsub = await api.query.kitties.kittyCnt(async cnt => {
-        // Fetch all Kitty objects using entries()
-        const entries = await api.query.kitties.kitties.entries();
-        // Retrieve only the Kitty ID and set to state
-        const hashes = entries.map(convertToKittyHash);
-        setKittyHashes(hashes);
-      });
-    };
-
-    asyncFetch();
-
-    // return the unsubscription cleanup function
-    return () => {
-      unsub && unsub();
-    };
+  const asyncFetch = async () => {
+      // Query KittyCnt from runtime
+    unsub = await api.query.kitties.kittyCnt(async cnt => {
+      // Fetch all Kitty objects using entries()
+      const entries = await api.query.kitties.kitties.entries();
+      // Retrieve only the Kitty ID and set to state
+      const hashes = entries.map(convertToKittyHash);
+      setKittyHashes(hashes);
+    });
   };
+
+  asyncFetch();
+
+  // return the unsubscription cleanup function
+  return () => {
+    unsub && unsub();
+  };
+};
 ```
 
 :::tip Further Learning 
-`entries()` is a Polkadot JS API function that gives us the entire storage map. If there's nothing in storage, it passes in `None` which acts
-as a _promise_ to React hooks. With `entries()` we get a key and a kitty object.
+`entries()` is a Polkadot-JS API function that gives us the entire storage map of `Kitties` that we
+defined in Part 1. If there's nothing in the storage, it returns `None`. All functions that interact
+with a chain will always return a **Promise** in Polkadot-JS API. So we wait for it to be resolved,
+and return us all the map keys and objects.
 
-You can see this in action if you go to the console of your browser running a node Front-end and entering `entries`. Or get the first Kitty object in storage by doing: `entries[0][1].toJSON()`. 
+You can see this in action if you go to the console of your browser running a node Front-end and
+entering `entries`, or get the first Kitty object in storage by doing: `entries[0][1].toJSON()`.
 :::
-
 
 Similarly for `subscribeKitties`, paste the following code snippet:
 
-```js
-  // Subscription function to construct a Kitty object
-  const subscribeKitties = () => {
-    let unsub = null;
+```javascript
+// Subscription function to construct a Kitty object
+const subscribeKitties = () => {
+  let unsub = null;
 
-    const asyncFetch = async () => {
-        // Get Kitty objects from storage 
-      unsub = await api.query.kitties.kitties.multi(kittyHashes, kitties => {
-        // Create an array of Kitty objects from `constructKitty`
-        const kittyArr = kitties
-          .map((kitty, ind) => constructKitty(kittyHashes[ind], kitty.value));
-        // Set the array of Kitty objects to state
-        setKitties(kittyArr);
-      });
-    };
-
-    asyncFetch();
-
-    // return the unsubscription cleanup function
-    return () => {
-      unsub && unsub();
-    };
+  const asyncFetch = async () => {
+    // Get Kitty objects from storage
+    unsub = await api.query.kitties.kitties.multi(kittyHashes, kitties => {
+      // Create an array of Kitty objects from `constructKitty`
+      const kittyArr = kitties
+        .map((kitty, ind) => constructKitty(kittyHashes[ind], kitty.value));
+      // Set the array of Kitty objects to state
+      setKitties(kittyArr);
+    });
   };
+
+  asyncFetch();
+
+  // return the unsubscription cleanup function
+  return () => {
+    unsub && unsub();
+  };
+};
 ```
 
 #### Understanding how we retrieve the Kitty Hash
 
-The PolkadotJS API uses the pallet name and storgae item for the first 64 bits and the unique storage item hash for the remaining 64 bits. We want to get rid of those and only keep the remaining bits which will be our kitty Hash, which is why we use:
+Substrate storage item key is composed of a concatenation of the hash of the pallet name, the hash
+of the storage item name, and finally the hash of the key used in the map. Now we want to extract
+only the key for the map, so we extract the last 64 bytes out in our `convertToKittyHash` function.
 
 ```js
 const convertToKittyHash = entry =>
   `0x${entry[0].toJSON().slice(-64)}`;
 ```
 
-And then we use it in the subscription function to get all Kitty IDs:
+And then we use it in the subscription function to transform an entry to its display hash:
 
 ```js
-   const asyncFetch = async () => {
-      unsub = await api.query.kitties.kittyCnt(async cnt => {
-        // Fetch all kitty keys
-        const entries = await api.query.kitties.kitties.entries();
-        const hashes = entries.map(convertToKittyHash);
-        setKittyHashes(hashes);
-      });
-    };
+const asyncFetch = async () => {
+  unsub = await api.query.kitties.kittyCnt(async cnt => {
+    // Fetch all kitty keys
+    const entries = await api.query.kitties.kitties.entries();
+    const hashes = entries.map(convertToKittyHash);
+    setKittyHashes(hashes);
+  });
+};
 ```
 
 #### Clean up functions
 
-In `asyncFetch` we're constantly listening to the Kitties storage. This is in relation to using Effects with Cleanup (see [React docs])https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup)). When the component is teared down, it will make sure that all remaining subscription functions are cleaned up:
+In `asyncFetch` we have subscribed to the Kitties storage. When the component is teared down, we
+want to make sure the subscription is cleaned up (unsubscribed). So we return a clean up function
+for the effect hook. Refer to
+[Effects with Cleanup](https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup):
 
 ```js
   // return the unsubscription cleanup function
@@ -171,8 +187,8 @@ In `asyncFetch` we're constantly listening to the Kitties storage. This is in re
     };
   };
 ```
-Now all that's left to do for our component to listen for changes in our node's runtime storgae is to pass in `subscribeKittyCnt` and 
-`subscribeKitties` to React's `useEffect` function. Hence: 
+Now all that's left to do for our component to listen for changes in our node's runtime storgae is
+to pass in `subscribeKittyCnt` and `subscribeKitties` to React's `useEffect` function. Hence:
 
 ```js
   useEffect(subscribeKittyCnt, [api, keyring]);
@@ -181,14 +197,15 @@ Now all that's left to do for our component to listen for changes in our node's 
 
 Learn more about how "Effect Hooks" work in [React's documentation](https://reactjs.org/docs/hooks-effect.html).
 
-Congratulations! What we've done up until here prepares how the Kitty object and other storage items will be accessible to our React components.
+Congratulations! We have setup the ground work of accessing the chain and save all kitty information
+internally in React. We will then access and display them in the following sections.
 
 ### 2. Create the `KittyAvatar.js` component
 
-In this component, all we're doing is mapping a library of PNG images to the bytes of our Kitty DNA. Since it's mostly all Javascript, 
-we won't be going into much detail. 
+In this component, all we're doing is mapping a library of PNG images to the bytes of our Kitty DNA.
+Since it's mostly all Javascript, we won't be going into much details.
 
-Create a file in `src/` called `KittyAvatar.js` and paste in the following code:
+Create a file `src/KittyAvatar.js` and paste in the following code:
 
 ```js
 import React from 'react';
@@ -242,9 +259,11 @@ const KittyAvatar = props => {
 export default KittyAvatar;
 ```
 
-Notice that the only properties being passed is `dna`, which will be passed in from `KittyCards.js`.
-The logic in this component is based on a specific ["cat avatar generator" library](https://framagit.org/Deevad/cat-avatar-generator/-/tree/master/avatars/cat) by David Revoy. Download it and paste its contents inside a new folder called
-"KittyAvatar" in `public/assets/KittyAvatar`.
+Notice that the only properties being passed in is `dna`, which will be passed from `KittyCards.js`.
+The logic in this component is based on a specific
+["cat avatar generator" library](https://framagit.org/Deevad/cat-avatar-generator/-/tree/master/avatars/cat)
+by David Revoy. Download it and paste its contents inside a new folder called "KittyAvatar" in
+`public/assets/KittyAvatar`.
 
 ### 3. Create the `TransferModal` in `KittyCards.js`
 
@@ -252,7 +271,8 @@ Our `KittyCards.js` component will have three sections to it:
 
 i. `TransferModal`: a modal that uses the `TxButton` component. 
 
-ii. `KittyCard`: a card that renders the Kitty avatar using the `KittyAvatar.js` component as well as all other Kitty information (id, dna, owner, gender and price).
+ii. `KittyCard`: a card that renders the Kitty avatar using the `KittyAvatar` component as well
+as all other Kitty information (id, dna, owner, gender and price).
 
 iii. `KittyCards`: a component that renders a grid for `KittyCard` (yes, singular!) described above. 
 
@@ -268,15 +288,17 @@ import { TxButton } from './substrate-lib/components';
 
 #### i. Outlining the TransferModal
 
-Let's outline what the `TransferModal` will do. Conveniently, the Substrate Front-end Template comes with a component called `TxButton` which is a useful way to include a transfer button 
-that interacts with a node. This component will allow us to make an RPC call
-into our node and trigger a signed extrinsic for the Kitties pallet. 
+Let's outline what the `TransferModal` will do. Conveniently, the Substrate Front-end Template comes
+with a component called `TxButton` which is a useful way to include a transfer button that interacts
+with a node. This component will allow us to send a transaction into our node and trigger a
+signed extrinsic for the Kitties pallet.
 
 The way it is built can be broken down into the following pieces:
 
-- A "transfer" button exists, which upon being clicked opens up a modal
-- This modal, we'll call "Kitty Transfer" is a `Form` containing (1) the Kitty ID and (2) an input field for a receiving adress
-- It also contains a "transfer" and "cancel" button 
+- A "transfer" button exists, which opens up a modal upon being clicked.
+- This modal, we'll call "Kitty Transfer" is a `Form` containing (1) the Kitty ID and (2) an input
+field for a receiving address.
+- It also contains a "transfer" and "cancel" button.
 
 See the screenshot taken below for reference: 
 
@@ -284,7 +306,8 @@ See the screenshot taken below for reference:
 
 #### ii. Setting up React hooks
 
-The first thing we'll do is pass in the properties (or "props") we need from `kitty`, `accountPair` and `setStatus` using React hooks. Do this by pasting in the following code snippet:
+The first thing we'll do is to extract properties (or "props") we need, `kitty`, `accountPair`, and
+`setStatus`. Do this by pasting in the following code snippet:
 
 ```js
 const TransferModal = props => {
@@ -296,7 +319,11 @@ const TransferModal = props => {
     setFormValue({ ...formValue, [key]: el.value });
   };
 ```
-And now, close the React hook subscription function:
+
+We also create a `confirmAndClose` function to be passed in to `TxButton` component, being called
+when a confirmation action is triggered. This function will receive a unsubscription function from
+`TxButton`. In addition to call this function for clean up, we will just close the modal dialog box.
+Paste the following snippet:
 
 ```js
   const confirmAndClose = (unsub) => {
@@ -309,34 +336,36 @@ And now, close the React hook subscription function:
 
 To recap: our Kitty Card has a "transfer" button that opens up a 
 modal where a user can choose an address to send their Kitty to. That modal will have:
+
 - a Title
-- an input field for a Kitty ID
+- an read-only field for a Kitty ID
 - an input field for an Account ID
 
 In addition, it will have:
-- a "cancel" button which closes the Transfer modal
+
+- a "Cancel" button which closes the Transfer modal
 - the `TxButton` React component to trigger the transaction
 
-Here's what this looks like in code &mdash; paste this in to complete `TransferModal` and read the comments to follow what each
-chunk of code is doing:
+Here's what this looks like in code &mdash; paste this in to complete `TransferModal` and read the
+comments to follow what each chunk of code is doing:
 
 ```js
 return <Modal onClose={() => setOpen(false)} onOpen={() => setOpen(true)} open={open}
     trigger={<Button basic color='blue'>Transfer</Button>}>
 
-    // The title of the modal
+    {/* The title of the modal */}
     <Modal.Header>Kitty Transfer</Modal.Header>
 
     <Modal.Content><Form>
-    // The modal's inputs fields
+      {/* The modal's inputs fields */}
       <Form.Input fluid label='Kitty ID' readOnly value={kitty.id}/>
       <Form.Input fluid label='Receiver' placeholder='Receiver Address' onChange={formChange('target')}/>
     </Form></Modal.Content>
 
     <Modal.Actions>
-      // The cancel button
+      {/* The cancel button */}
       <Button basic color='grey' onClick={() => setOpen(false)}>Cancel</Button>
-      // The TxButton component
+      {/* The TxButton component */}
       <TxButton
         accountPair={accountPair} label='Transfer' type='SIGNED-TX' setStatus={setStatus}
         onClick={confirmAndClose}
@@ -351,13 +380,16 @@ return <Modal onClose={() => setOpen(false)} onOpen={() => setOpen(true)} open={
   </Modal>;
 ```
 
-The next part of our `KittyCards.js` component is to create the part that renders the `KittyAvatar.js` component and the data passed in from the `kitties` props in `Kitty.js`.
+The next part of our `KittyCards.js` component is to create the part that renders the
+`KittyAvatar.js` component and the data passed in from the `kitties` props in `Kitty.js`.
 
 ### 4. Create the `KittyCard` in `KittyCards.js`
 
-We'll use React's `Card` component to create a card that render the Kitty avatar as well as the Kitty ID, DNA, gender, owner and price.
+We'll use React's `Card` component to create a card that render the Kitty avatar as well as the
+Kitty ID, DNA, gender, owner and price.
 
-As you might have guessed, we'll use React props to pass in data to our KittyCard. Paste the following code snippet, reading through the comments to understand each code snippet:
+As you might have guessed, we'll use React props to pass in data to our KittyCard. Paste the
+following code snippet, reading through the comments to understand what it does:
 
 ```js
 // Use props
@@ -372,49 +404,55 @@ Now let's make use of the previously imported `Card` component:
 
 ```js
 return <Card>
-    { isSelf && <Label as='a' floating color='teal'>Mine</Label> }
-    // Render the Kitty Avatar
-    <KittyAvatar dna={dna.toU8a()} />
-    <Card.Content>
-    // Display the Kitty ID
-      <Card.Header style={{ fontSize: '1em', overflowWrap: 'break-word' }}>
-        ID: {id}
-      </Card.Header>
-      // Display the Kitty DNA
-      <Card.Meta style={{ fontSize: '.9em', overflowWrap: 'break-word' }}>
-        DNA: {displayDna}
-      </Card.Meta>
-      // Display the Kitty ID, Gender, Owner and Price
-      <Card.Description>
-        <p style={{ overflowWrap: 'break-word' }}>
-          Gender: {gender}
-        </p>
-        <p style={{ overflowWrap: 'break-word' }}>
-          Owner: {owner}
-        </p>
-        <p style={{ overflowWrap: 'break-word' }}>
-          Price: {price}
-        </p>
-      </Card.Description>
-    </Card.Content>
+  { isSelf && <Label as='a' floating color='teal'>Mine</Label> }
+  {/* Render the Kitty Avatar */}
+  <KittyAvatar dna={dna.toU8a()} />
+  <Card.Content>
+    {/* Display the Kitty ID */}
+    <Card.Header style={{ fontSize: '1em', overflowWrap: 'break-word' }}>
+      ID: {id}
+    </Card.Header>
+    {/* Display the Kitty DNA */}
+    <Card.Meta style={{ fontSize: '.9em', overflowWrap: 'break-word' }}>
+      DNA: {displayDna}
+    </Card.Meta>
+    {/* Display the Kitty ID, Gender, Owner and Price */}
+    <Card.Description>
+      <p style={{ overflowWrap: 'break-word' }}>
+        Gender: {gender}
+      </p>
+      <p style={{ overflowWrap: 'break-word' }}>
+        Owner: {owner}
+      </p>
+      <p style={{ overflowWrap: 'break-word' }}>
+        Price: {price}
+      </p>
+    </Card.Description>
+  </Card.Content>
+  // ...
 ```
 
-Before closing the `<Card/>` component we want to render the `TransferModal` we privously built &mdash; **only if the Kitty is transferrable by the acitve user account**. Paste this code snippet to handle this functionality:
+Before closing the `<Card/>` component we want to render the `TransferModal` we privously built
+&mdash; **only if the Kitty is transferrable by its owner**. Paste this code snippet to handle this
+functionality:
 
 ```js
-    // Render the transfer button using TransferModal
-    <Card.Content extra style={{ textAlign: 'center' }}>{ owner === accountPair.address
+  {/* Render the transfer button using TransferModal */}
+  <Card.Content extra style={{ textAlign: 'center' }}>{
+    owner === accountPair.address
       ? <TransferModal kitty={kitty} accountPair={accountPair} setStatus={setStatus}/>
       : ''
-    }</Card.Content>
-  </Card>;
+  }</Card.Content>
+</Card>;
 ```
 
 #### Rendering the card
 
-It's time to put all the pieces we've built together. In this function, we'll: 
-- Check whether there's any Kitties to render and render a _"No Kitty found here... Create one now!"_ message if there aren't any
-- If there are, render them in a 3 column grid
+It's time to put all the pieces we've built together. In this function, we will:
+
+- Check whether there's any Kitties to render and render a _"No Kitty found here... Create one now!"_
+message if there aren't any.
+- If there are, render them in a 3 column grid.
 
 Have a look at the comments to understand the parts of this code snippet:
 
@@ -422,7 +460,7 @@ Have a look at the comments to understand the parts of this code snippet:
 const KittyCards = props => {
   const { kitties, accountPair, setStatus } = props;
 
-// Check the number of Kitties
+  {/* Check the number of Kitties */}
   if (kitties.length === 0) {
     return <Message info>
       <Message.Header>No Kitty found here... Create one now!&nbsp;
@@ -430,7 +468,7 @@ const KittyCards = props => {
       </Message.Header>
     </Message>;
   }
-// Render Kitties using Kitty Card in a grid
+  {/* Render Kitties using Kitty Card in a grid */}
   return <Grid columns={3}>{kitties.map((kitty, i) =>
     <Grid.Column key={`kitty-${i}`}>
       <KittyCard kitty={kitty} accountPair={accountPair} setStatus={setStatus}/>
@@ -449,12 +487,13 @@ export default KittyCards;
 
 Now that we've built all the bits for our front-end application, we can piece everything together.
 
-Go back to the incompleted `Kitties.js` file and paste this code snippet to render the `KittyCard.js` component inside a `<Grid/>`:
+Go back to the incompleted `Kitties.js` file and paste this code snippet to render the
+`KittyCard.js` component inside a `<Grid/>`:
 
 ```js
 return <Grid.Column width={16}>
-    <h1>Kitties</h1>
-    <KittyCards kitties={kitties} accountPair={accountPair} setStatus={setStatus}/>
+  <h1>Kitties</h1>
+  <KittyCards kitties={kitties} accountPair={accountPair} setStatus={setStatus}/>
 ```
 
 Now we'll use the `<Form/>` component to render our application's `TxButton` component: 
@@ -479,15 +518,24 @@ Now we'll use the `<Form/>` component to render our application's `TxButton` com
 
 ### 6. Update App.js
 
-In order to render Kitties.js, we need to as a row item to the `<Container/>` in App.js:
+Finally, to render Kitties.js, we want to add a new row to the `<Container/>` in App.js:
 
 ```js
 <Grid.Row>
-    <Kitties accountPair={accountPair} />
+  <Kitties accountPair={accountPair} />
 </Grid.Row>
 ```
 
-Congratulations! You've finsished the front-end turorial! Now run `yarn start`, refresh your browser and you should be able to start interacting with your node.
+:::info
+If you get stuck in any of the above section. You can refer back to the complete source code of:
+
+- [`src/kitties.js`](https://github.com/substrate-developer-hub/substrate-front-end-template/blob/tutorials%2Fkitties/src/Kitties.js)
+- [`src/kittyCards.js`](https://github.com/substrate-developer-hub/substrate-front-end-template/blob/tutorials%2Fkitties/src/KittyCards.js)
+- [`src/kittyAvatar.js`](https://github.com/substrate-developer-hub/substrate-front-end-template/blob/tutorials%2Fkitties/src/KittyAvatar.js)
+:::
+
+Congratulations! You have finished the front-end turorial! Now run `yarn start`, refresh your
+browser and you should be able to start interacting with your node.
 
 ## Next steps 
 
