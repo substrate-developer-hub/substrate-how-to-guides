@@ -9,48 +9,59 @@ _Write a dispatchable function that creates a Kitty capable of emitting its asso
 
 ## Overview
 
-In the previous section of this tutorial, we laid down the foundations geared to manage the ownership of our Kitties &mdash; even though they don't really exist yet! In this part of the tutorial, we'll be putting these foundations to use
-by giving our pallet the ability to create a Kitty using the storage items we declared in the previous part. Breaking things down a little, we're going to:
+In the previous section of this tutorial, we laid down the foundations geared to manage the
+ownership of our Kitties &mdash; even though they don't really exist yet! In this part of the
+tutorial, we'll be putting these foundations to use by giving our pallet the ability to create a
+Kitty using the storage items we declared in the previous part. Breaking things down a little, we're
+going to:
 
-- **Write `create_kitty`**: a dispatchable or publicly callable function allowing an account to mint a Kitty.
-- **Write `mint()`**: a helper function that updates our pallet's storage items and performs error checks, called by `create_kitty`.
+- **Write `create_kitty`**: a dispatchable or publicly callable function allowing an account to mint
+  a Kitty.
+- **Write `mint()`**: a helper function that updates our pallet's storage items and performs error
+  checks, called by `create_kitty`.
 - **Include `Events`**: using FRAME's `#[pallet::events]` macro.
 
-At the end of this part, we'll check that everything compiles without error and call our `create_kitty` extrinsic using the PolkadotJS Apps UI.
+At the end of this part, we'll check that everything compiles without error and call our
+`create_kitty` extrinsic using the PolkadotJS Apps UI.
 
 :::note
 If you're feeling confident, you can continue building on your codebase from the previous part.
-If you prefer using the "ACTION" items as a way to assist you through each step, replace the code from the
-Part II with [this part's helper code][helper-code-pt3].
+Otherwise, refer to our starting base code at [here][helper-code-pt3]. It also uses various "ACTION"
+items as a way to assist you through each step.
 :::
 
 ## Learning outcomes
 
-:arrow_right: Write a dispatchable function that updates storage items using a helper function.
+:arrow_right: &nbsp; Write a dispatchable function that updates storage items using a helper
+function.
 
-:arrow_right: Write a private helper function with error handling
+:arrow_right: &nbsp; Write a private helper function with error handling.
 
-:arrow_right: Write and use pallet Events and Errors.
+:arrow_right: &nbsp; Write and use pallet Events and Errors.
 
-:arrow_right: Use PolkadotJS Apps UI to test pallet functionality.
+:arrow_right: &nbsp; Use PolkadotJS Apps UI to test pallet functionality.
 
 ## Steps
 
 ### 1. Public and private functions
 
-Before we dive right in, it's important to understand the pallet design decisions we'll be making around coding up our Kitty pallet's minting and ownership management
-capabilities.
+Before we dive right in, it's important to understand the pallet design decisions we'll be making
+around coding up our Kitty pallet's minting and ownership management capabilities.
 
-As developers, we want to make sure the code we write is efficient and elegant. Oftentimes, optimizing for one optimizes for the other.
-The way we're going to set up our pallet to optimize for both will be to break-up the "heavy lifting" dispatchable
-functions into private helper functions. This improves code readability and reusability too. As we'll see, we can
-create private functions which can be called by multiple dispatchable functions without compromizing on security. In fact, building this way can be considered an additive security feauture.
+As developers, we want to make sure the code we write is efficient and elegant. Often times,
+optimizing for one optimizes for the other. The way we're going to set up our pallet to optimize
+for both will be to break-up the "heavy lifting" logics into private helper functions. This improves
+code readability and reusability too. As we'll see, we can create private functions which can be
+called by multiple dispatchable functions without compromizing on security. In fact, building this
+way can be considered an additive security feauture.
 
 :::info
-Check out [this how-to guide](/docs/basics/helper-functions/) about writing and using helper functions to learn more.
+Check out [this how-to guide](/docs/basics/helper-functions/) about writing and using helper
+functions to learn more.
 :::
 
-Before jumping into implementing this approach, let's first paint the big picture of what combining dispatchables and helper functions looks like:
+Before jumping into implementing this approach, let's first paint the big picture of what combining
+dispatchables and helper functions looks like:
 
 **`create_kitty`** (dispatchable function)
 

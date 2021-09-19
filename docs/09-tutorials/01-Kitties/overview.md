@@ -48,6 +48,13 @@ In Part 1 of this tutorial, we intentionally keep things simple so that you can 
 
 2. [**Enhance our UX with Polkadot JS API**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). 
 
+:::info
+In any case, if you are stuck in following the tutorial, you can always refer back to the full working source code at the following:
+
+- On Substrate side, it is under [Substrate Node Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-node-template/tree/tutorials/kitties). Most of the code changes are under `/pallets/kitties/src/lib.rs`.
+- On the front end side, it is under [Substrate Front-end Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-front-end-template/tree/tutorials/kitties). Most of the code changes are under `/src/[Kitties.js, KittyCards.js, KittyAvatar.js]` these three files.
+:::
+
 ### What we won't cover
 
 The following fall outside the scope of this tutorial:
