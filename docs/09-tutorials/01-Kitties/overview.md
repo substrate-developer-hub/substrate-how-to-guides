@@ -5,15 +5,19 @@ keywords: pallet design, intermediate, runtime
 
 # 😺 Substrate Kitties
 
-_This is a two-part tutorial series that steps you through building a pallet for managing Substrate Kitties from scratch. Each part could take between 1.5 and 3 hours to complete depending on your level of experience with Substrate._
+_This is a two-part tutorial series that steps you through building a pallet for managing Substrate
+Kitties from scratch. Each part could take between 1.5 and 3 hours to complete depending on your
+level of experience with Substrate._
 
 ![image](./kitties-tutorial.png)
 
 ## Introduction
 
-Welcome to the Substrate Kitties tutorial. This two-part tutorial designed to teach you everything you need to know to build a blockchain designed to handle the creation and ownership management of Substrate Kitties. Part 1 will cover how to build the Kitties pallet, including
-the functionality to interact with the Kitties we create, such as transfering, buying and setting prices. Part II will cover developing
-the Front-end UI to interact with the blockchain we build in Part 1.
+Welcome to the Substrate Kitties tutorial. This two-part tutorial designed to teach you everything
+you need to know to build a blockchain designed to handle the creation and ownership management of
+Substrate Kitties. Part 1 will cover how to build the Kitties pallet, including the functionality to
+interact with the Kitties we create, such as transfering, buying and setting prices. Part II will
+cover developing the Front-end UI to interact with the blockchain we build in Part 1.
 
 :::note
 You may find it useful to come back to this page
@@ -22,7 +26,9 @@ as you progress through each part &mdash; just to keep track of the bigger pictu
 
 ### What we're building
 
-In Part 1 of this tutorial, we intentionally keep things simple so that you can decide on how you would like to improve your Substrate Kitties chain later on. For the purposes of what we are building, Kitties really can only do the following things:
+In Part 1 of this tutorial, we intentionally keep things simple so that you can decide on how you
+would like to improve your Substrate Kitties chain later on. For the purposes of what we are
+building, Kitties really can only do the following things:
 
 :smiley_cat: &nbsp; Be created either by some original sources or by being bred using existing Kitties.
 
@@ -53,8 +59,8 @@ two helpers functions for our dispatchable functions: `mint` and `transfer_from`
 
 **In Part 2, we will:**
 
-1. [**Create a UI for interacting with our pallet's storage items**](/docs/Tutorials/Kitties/Part%202/kitties-frontend) - we
-will connect to Substrate Front-end Template and create the UI for each dispatchable calls.
+1. [**Create a UI for interacting with our pallet's storage items**](/docs/Tutorials/Kitties/Part%202/kitties-frontend)
+- we will connect to Substrate Front-end Template and create the UI for each dispatchable calls.
 
 2. [**Enhance our UX with Polkadot JS API**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). 
 
