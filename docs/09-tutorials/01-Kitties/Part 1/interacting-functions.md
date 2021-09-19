@@ -30,7 +30,7 @@ one user to another.
 
 ## Steps
 
-### 1. Set a price for each Kitty
+### 1. Set a Price For Each Kitty
 
 In [the helper file for this part of the tutorial](/code/kitties-tutorial/04-interacting-functions.rs),
 you'll notice that the structure of `set_price` is already laid out.
@@ -53,7 +53,7 @@ ensure!(owner == sender, "You are not the owner");
 
 The first line checks if `Self::owner_of(object_id)` return a `Result::Ok(val)`. If not, it
 transforms the returned error to `Result::Err("No owner for this object")` error object. With `?`,
-it either extracts the value `val` out from `Result::Ok(val)`, or exit the function early with the
+it either extracts the value `val` out from `Result::Ok(val)`, or exits the function early with the
 error object.
 
 The second line checks if `owner == sender`. If true, the program execution flows to the next line.
@@ -152,7 +152,7 @@ by your pallet.
 called by `transfer()` to handle all storage updates when transferring a Kitty.
 
 Separating the logic this way makes the private `transfer_kitty_to()` function reusable by other
-dispatchable functions of our pallet, without needing to duplicate code. In our case, we're going to
+dispatchable functions of our pallet without needing to duplicate code. In our case, we're going to
 reuse it for the `buy_kitty` dispatchable we're creating in the next section.
 
 #### `transfer` 
@@ -190,7 +190,7 @@ By now the above pattern should be familiar. We always check that the transactio
 we verify that:
 
 1. The Kitty being transferred is owned by the sender of this transaction;
-2. The Kitty is not transferred to its owner itself (a redundant operation);
+2. The Kitty is not transferred to its owner (a redundant operation);
 3. The recipient has the capacity to receive one more kitty;
 
 Lastly we call the `transfer_kitty_to` helper to update all storage items appropriately.
@@ -349,7 +349,7 @@ we can use the `mint()` function to write that new Kitty to storage. Replace lin
 Self::mint(&sender, Some(new_dna), None)?;
 ```
 
-### 5. Genesis configuration
+### 5. Genesis Configuration
 
 The final step before our pallet is ready to be used is to set the genesis state of our storage
 items. We'll make use of FRAME's `[pallet::genesis_config]` to do this. Essentially, we're declaring
@@ -394,7 +394,7 @@ following inside the `testnet_genesis` function:
 //-- snip
 ```
 
-### 6. Update `runtime/src/lib.rs` and interact with your Kitties
+### 6. Update `runtime/src/lib.rs` And Interact With Your Kitties
 
 If you've completed all of the preceding parts and steps of this tutorial, you're all geared up to
 run your chain and start interacting with all the new capabilities of your Kitties pallet.

@@ -27,11 +27,11 @@ include a simple storage item.
 
 ## Steps
 
-### 1. Set-up your template node
+### 1. Set-up Your Template Node
 
 The [Substrate Node Template][substrate-node-template] provides us with an "out-of-the-box"
 blockchain node. Our biggest advantage in using it are that both networking and consensus layers
-are already built and all we need to focus on is building out our [runtime][runtime-kb] and[pallet]
+are already built and all we need to focus on is building out our [runtime][runtime-kb] and [pallet]
 [pallets-kb] logics. Before we get there, we need to set-up our project in terms of naming and
 dependencies.
 
@@ -46,8 +46,8 @@ kickstart https://github.com/sacha-l/kickstart-substrate
 This command will clone a copy of the most recent Node Template and ask how you would like to call
 your node and pallet. Type in:
 
-- `kitties` - as the name of our node
-- `mykitties` - as the name of your pallet
+- `kitties` - as the name of our node. The node will be named as `node-kitties`.
+- `kitties` - as the name of your pallet. The pallet will be named as `pallet-kitties`.
 
 This will create a directory called `kitties` with a copy of the [Substrate Node Template]
 [substrate-node-template] containing the name changes that correspond our template node, runtime
@@ -78,7 +78,7 @@ construct_runtime!(
     UncheckedExtrinsic = UncheckedExtrinsic
     {
         // --snip
-        SubstrateKitties: pallet_mykitties::{Pallet, Call, Storage, Event<T>},
+        SubstrateKitties: pallet_kitties::{Pallet, Call, Storage, Event<T>},
     }
 );
 ```
@@ -104,7 +104,7 @@ Assuming that your node builds successfully, launch it in development mode to ma
 You should see blocks being created in your terminal. The `--tmp` and `--dev` flags mean we're
 running a temporary node in development mode.
 
-### 2. Write out `pallet_kitties` scaffold
+### 2. Write Out `pallet_kitties` Scaffold
 
 We'll be spending most of this tutorial in the `pallets` directory of our template node. Let's take
 a glance at the folder structure in our workspace:
@@ -116,7 +116,7 @@ kitties-tutorial           <--  The name of our project directory
 |
 +-- pallets
 |   |
-|   +-- mykitties
+|   +-- kitties
 |       |
 |       +-- Cargo.toml
 |       |
@@ -139,11 +139,11 @@ kitties-tutorial           <--  The name of our project directory
 a single pallet that manages all of the logic of our Substrate Kitties application.
 
 Let's lay out the basic structure of our pallet by outlining the parts inside the
-`pallets/mykitties/src/lib.rs`.
+`pallets/kitties/src/lib.rs`.
 
 :::note
-Our pallet's directory `pallets/mykitties/` is not the same as our pallet's name. The name
-   of our pallet as Cargo understands it is `pallet-mykitties`.
+Our pallet's directory `pallets/kitties/` is not the same as our pallet's name. The name
+   of our pallet as Cargo understands it is `pallet-kitties`.
 :::
 
 Every FRAME pallet has:
@@ -162,7 +162,7 @@ contains the starting point for adding code for coming sections of this tutorial
 marked with **TODO** to indicate code we will be writing later, and **ACTION** to indicate code
 that will be written in the current part of the tutorial.
 
-Paste the following code in `/pallets/mykitties/src/lib.rs`:
+Paste the following code in `/pallets/kitties/src/lib.rs`:
 
 ```rust
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -188,7 +188,7 @@ pub mod pallet {
 
     /// Configure the pallet by specifying the parameters and types it depends on.
     #[pallet::config]
-    pub trait Config: pallet_balances::Config + frame_system::Config {
+    pub trait Config: frame_system::Config {
         /// Because this pallet emits events, it depends on the runtime's definition of an event.
         type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 
@@ -246,11 +246,11 @@ pub mod pallet {
 Now try running the following command to rebuild your chain:
 
 ```bash
-cargo +nightly build --release
+cargo build --release
 ```
 
 Get an error about dependencies? That's normal! Our pallet is using `sp-io` which isn't part of the
-node template so we must specify it ourselves. In `pallets/mykitties/Cargo.toml`, add the
+node template so we must specify it ourselves. In `pallets/kitties/Cargo.toml`, add the
 following:
 
 ```TOML
@@ -266,16 +266,16 @@ Check that you're using the correct `monthly-*` tag and version otherwise you wi
    dependency error. Here, we're using `monthly-2021-08` tag of Substrate.
 :::
 
-Now run `cargo +nightly build --release` again to make sure it builds without errors.
+Now run `cargo build --release` again to make sure it builds without errors.
 
 :::note
 You will notice the Rust compiler giving you warnings about unused imports. That's fine!
    Just ignore them &mdash; we're going to use those imports later in this tutorial.
 :::
 
-In the next step we will include the first storage item our Kitty application require.
+In the next step we will include the first storage item for our Kitty application.
 
-### 3. Include a storage item to track all Kitties
+### 3. Include a Storage Item to Track All Kitties
 
 Let's start by adding the most simple logic we can to our runtime: a function which stores a
 variable in runtime.
@@ -284,10 +284,9 @@ To do this we'll use [`StorageValue`][storagevalue-rustdocs] from Substrate's [s
 [storage-api-rustdocs] which is a trait that depends on the [storage macro][storage-macro-kb].
 
 All that means for our purposes is that for any storage item we want to declare, we must include the
-`#[pallet::storage]`  macro beforehand. Learn more about declaring storage items [here]
-(https://substrate.dev/docs/en/knowledgebase/runtime/storage#declaring-storage-items).
+`#[pallet::storage]`  macro beforehand. Learn more about declaring storage items [here](https://substrate.dev/docs/en/knowledgebase/runtime/storage#declaring-storage-items).
 
-In `mykitties/src/lib.rs`, replace the ACTION line with:
+In `pallets/kitties/src/lib.rs`, replace the ACTION line with:
 
 ```rust
     #[pallet::storage]
@@ -299,13 +298,13 @@ In `mykitties/src/lib.rs`, replace the ACTION line with:
 This creates a storage item for our pallet to keep track of the total count of Kitties in
 existence.
 
-### 4. Build pallet
+### 4. Build Pallet
 
 From the previous step, your pallet should contain a storage item called `KittyCnt` which keeps
 track of a single `u64` value. As part of the basic setup, we're doing great!
 
 :::info
-As mentioned in the [overview of this tutorial series](./overview), you'll be implementing 3
+As mentioned in the [overview of this tutorial series](../overview), you'll be implementing 3
    storage items in total which you'll discover as you write out your pallet's logic in the next
    parts.
 :::
@@ -314,7 +313,9 @@ Before we move on, let's make sure everything compiles. We don't need to rebuild
 each time we update our pallet. Instead, we can use a command that only builds our pallet. From
 inside your pallet directory, run the following:
 
-```bash cargo build --release -p pallet-mykitties ```
+```bash
+cargo build --release -p pallet-kitties
+```
 
 Does your pallet compile without error? Well done if it does! If not, go back and check that all the
 macros are in place and that you've included the FRAME dependencies.
@@ -328,7 +329,7 @@ Congratulations! You've completed the first part of this series. At this stage, 
 - Declaring a single value `u64` storage item.
 :::
 
-## Next steps
+## Next Steps
 
 - Writing a struct in a `StorageMap` to store details about our Kitties
 - Using the Randomness trait to create unique Kitties

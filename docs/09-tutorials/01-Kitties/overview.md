@@ -5,13 +5,13 @@ keywords: pallet design, intermediate, runtime
 
 # 😺 Substrate Kitties
 
-_This is a 2 part tutorial series that steps you through building a pallet for managing Substrate Kitties from scratch. Each part could take between 1.5 and 3 hours to complete depending on your level of experience with Substrate._
+_This is a two-part tutorial series that steps you through building a pallet for managing Substrate Kitties from scratch. Each part could take between 1.5 and 3 hours to complete depending on your level of experience with Substrate._
 
 ![image](./kitties-tutorial.png)
 
 ## Introduction
 
-Welcome to the Substrate Kitties tutorial. This 2 part tutorial designed to teach you everything you need to know to build a blockchain designed to handle the creation and ownership management of Substrate Kitties. Part 1 will cover how to build the Kitties pallet, including 
+Welcome to the Substrate Kitties tutorial. This two-part tutorial designed to teach you everything you need to know to build a blockchain designed to handle the creation and ownership management of Substrate Kitties. Part 1 will cover how to build the Kitties pallet, including
 the functionality to interact with the Kitties we create, such as transfering, buying and setting prices. Part II will cover developing
 the Front-end UI to interact with the blockchain we build in Part 1.
 
@@ -32,43 +32,61 @@ In Part 1 of this tutorial, we intentionally keep things simple so that you can 
 
 **In Part 1, we'll go over:**
 
-1. [**Basic setup**](/docs/Tutorials/Kitties/Part%201/basic-setup). We will need to spin up a Substrate node and create a custom pallet
+TK!!
 
-2. [**Runtime storage**](/docs/Tutorials/Kitties/Part%201/basic-setup). We will need a total of 3 storage items in our pallet to keep track of the amount of Kitties; their owners and a Kitty object containing a single Kitty's information.
+1. [**Basic setup**](/docs/Tutorials/Kitties/Part%201/basic-setup) - we will need to spin up a
+Substrate node and create a custom pallet.
 
-3. [**Dispatchable functions**](/docs/Tutorials/Kitties/Part%201/dispatchables-and-events). We will need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `buy_kitty` and `breed_kitty`
+2. [**Runtime storage**](/docs/Tutorials/Kitties/Part%201/basic-setup) - we will need a total of
+three storage items in our pallet to keep track of the amount of Kitties, their owners, and a `Kitty`
+object containing a single Kitty's information.
 
-4. [**Private functions**](/docs/Tutorials/Kitties/Part%201/create-kitties). We will write 2 helper functions to handle randomness: `increment_nonce` and `random_hash`
+3. [**Dispatchable functions**](/docs/Tutorials/Kitties/Part%201/dispatchables-and-events) - we will
+need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `buy_kitty`, and
+`breed_kitty`.
 
-5. [**Helper functions**](/docs/Tutorials/Kitties/Part%201/interacting-functions). We will write 2 helper functions for our dispatchable functions: `mint` and `transfer_from`.
+4. [**Private functions**](/docs/Tutorials/Kitties/Part%201/create-kitties) - we will write a few
+helper functions to handle the heavy lifting logics, amd
+
+5. [**Helper functions**](/docs/Tutorials/Kitties/Part%201/interacting-functions) - we will write
+two helpers functions for our dispatchable functions: `mint` and `transfer_from`.
 
 **In Part 2, we will:**
 
-1. [**Create a UI for interacting with our pallet's storage items**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). We will connect to Substrate front-end Template and create the UI for each dispatchable call.
+1. [**Create a UI for interacting with our pallet's storage items**](/docs/Tutorials/Kitties/Part%202/kitties-frontend) - we
+will connect to Substrate Front-end Template and create the UI for each dispatchable calls.
 
 2. [**Enhance our UX with Polkadot JS API**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). 
 
 :::info
-In any case, if you are stuck in following the tutorial, you can always refer back to the full working source code at the following:
+In any case, if you are stuck in following the tutorial, you can always refer back to the full
+working source code at the following:
 
-- On Substrate side, it is under [Substrate Node Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-node-template/tree/tutorials/kitties). Most of the code changes are under `/pallets/kitties/src/lib.rs`.
-- On the front end side, it is under [Substrate Front-end Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-front-end-template/tree/tutorials/kitties). Most of the code changes are under `/src/[Kitties.js, KittyCards.js, KittyAvatar.js]` these three files.
+- On Substrate side, it is under [Substrate Node Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-node-template/tree/tutorials/kitties).
+Most of the code changes are under `/pallets/kitties/src/lib.rs`.
+
+- On the front end side, it is under [Substrate Front-end Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-front-end-template/tree/tutorials/kitties).
+Most of the code changes are within these three files:
+`/src/[Kitties.js, KittyCards.js, KittyAvatar.js]`.
 :::
 
 ### What we won't cover
 
 The following fall outside the scope of this tutorial:
 
- - Writing tests for our pallet.
- - Declaring a configuration for the genesis of our chain.
+- Writing tests for our pallet.
 
- You can refer to the [how-to guides](/docs/intro) on how to do this once you've completed this tutorial series.
+You can refer to the [how-to guides](/docs/intro) on how to do this once you've completed this
+tutorial series.
 
 ---
 
 :::tip
-Follow each step at your own pace &mdash; the goal is for you to learn and the best way to do that is to try it yourself!
-Use the side panel to write your code as you follow along (coming soon). Before moving on from one section to the next, make sure your pallet builds without any error.
+Follow each step at your own pace &mdash; the goal is for you to learn and the best way to do that
+is to try it yourself!
+
+Use the side panel to write your code as you follow along (coming soon). Before moving on from one
+section to the next, make sure your pallet builds without any error.
 
 You'll be writing most of the code yourself! Use the template files [here](https://github.com/substrate-developer-hub/substrate-how-to-guides/tree/main/static/code/kitties-tutorial)
 to help you complete each part.

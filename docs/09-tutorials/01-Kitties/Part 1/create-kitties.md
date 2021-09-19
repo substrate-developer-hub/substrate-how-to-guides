@@ -13,11 +13,11 @@ _In this part of the tutorial, we'll build out the components of our pallet need
 This part of the tutorial dives into some pillar concepts for developing pallets with FRAME
 (stands for **Framework for Runtime Aggregation of Modularized Entities**). On top of learning how
 to use existing types and traits, you'll learn how create your own types like providing your pallet
-with a `Gender` type. At the end of this part, you will have implemented the 2 remaining storage
+with a `Gender` type. At the end of this part, you will have implemented the remaining two storage
 items according to the logic outlined for the Substrate Kitty application [in the overview of this
 tutorial](../overview#what-were-building).
 
-## Learning outcomes
+## Learning Outcomes
 
 :arrow_right: &nbsp; Writing a custom struct and using it in storage.
 
@@ -29,9 +29,9 @@ tutorial](../overview#what-were-building).
 
 ## Steps
 
-### 1. Kitty struct scaffolding
+### 1. Scaffold Kitty Struct
 
-We added additional comments to the code from Part I (in the `/pallets/mykitties/src/lib.rs` file)
+We added additional comments to the code from Part I (in the `/pallets/kitties/src/lib.rs` file)
 to better assist you with the action items in this part of the tutorial. To follow each step with
 ease, you can just replace your code with the [helper code][helper-code-pt2] provided below:
 
@@ -135,9 +135,9 @@ pub mod pallet {
 
 #### A. What information to include
 
-**Struct** in Rust is a useful construct to help store data that have things in common. For our
-  purposes, our Kitty will carry multiple traits which we can store in a single struct instead of
-  using separate storage items. This comes in handy when trying to optimize for storage reads and
+**Struct** in Rust is a useful construct to help storing data that have things in common. For our
+  purposes, our Kitty will carry multiple properties which we can store in a single struct instead
+  of using separate storage items. This comes in handy when trying to optimize for storage reads and
   writes so our runtime can perform less read/writes to update multiple values. Read more about
   storage best practices [here][storage-best-practice-kb].
 
@@ -156,10 +156,10 @@ Looking at the items of our struct from
 [Step 1A](/docs/Tutorials/Kitties/Part%201/create-kitties#a-what-information-to-include), we can
 deduce the following types:
 
-- **`[u8; 16]`** for `dna` (to use 16 bytes to represent a Kitty's DNA)
-- **`BalanceOf`** for `price` (this is a custom type using FRAME's [`Currency` trait]
-    [currency-frame])
-- **`Gender`** for `gender` (we will create this!)
+- **`[u8; 16]`** for `dna` - to use 16 bytes to represent a Kitty's DNA.
+- **`BalanceOf`** for `price` - this is a custom type using FRAME's [`Currency` trait]
+    [currency-frame].
+- **`Gender`** for `gender` - we will create this!
 
 First, we will need to add in our custom types for `BalanceOf` and `AccountOf` before we declare our
 struct. Replace ACTION #1 with the following snippet:
@@ -168,22 +168,9 @@ struct. Replace ACTION #1 with the following snippet:
 type AccountOf<T> = <T as frame_system::Config>::AccountId;
 type BalanceOf<T> =
 	<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
-```
 
-:::note
-If you wonder what the above mean in Rust, the first line is to define a type alias
-   `AccountOf<T>` which is just a shorthand pointing to the associated type `AccountId` of trait
-   `frame_system::Config` that the generic type `T` is required to be bound of.
-
-More about this type of syntax is covered in
-[the Rust book](https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#specifying-placeholder-types-in-trait-definitions-with-associated-types).
-:::
-
-Now, paste in the our Kitty struct:
-
-```rust
 // Struct for holding Kitty information.
-#[derive(Clone, Encode, Decode, PartialEq)]
+#[derive(Clone, Encode, Decode, Default, PartialEq)]
 pub struct Kitty<T: Config> {
 	pub dna: [u8; 16],
 	pub price: Option<BalanceOf<T>>,
@@ -191,6 +178,16 @@ pub struct Kitty<T: Config> {
 	pub owner: AccountOf<T>,
 }
 ```
+
+:::note
+We define `<BalanceOf<T>>` and `AccountOf<T>` types, and use them in the `Kitty`. If you wonder what
+the first line means in Rust, it is to define a type alias `AccountOf<T>` which is just a shorthand
+pointing to the associated type `AccountId` of trait `frame_system::Config` that generic type `T`
+is required to be bound of.
+
+More about this type of syntax is covered in
+[the Rust book](https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#specifying-placeholder-types-in-trait-definitions-with-associated-types).
+:::
 
 Notice how we use the derive macro to include [various helper traits][prelude-traits-rustdocs] for
 using our struct. For type `Gender`, we will need to build out our own custom enum and helper
@@ -201,7 +198,7 @@ We use `Option<BalanceOf<T>>` instead of `BalanceOf<T>` for `price` field, so a 
 	set to `None` to indicate the Kitty is not for sale.
 :::
 
-### 2. Writing a custom type for `Gender`
+### 2. Write a Custom Type For `Gender`
 
 We have just created a struct that requires a custom type called `Gender`. This type will handle an
 enum defining our Kitty's gender. To create it, you'll build out the following parts:
@@ -229,7 +226,7 @@ Great, we now know how to create a custom struct and specify its default value. 
 providing a way for a Kitty struct to be _assigned_ a gender value? For that we need to learn one
 more thing.
 
-#### B. Configuring functions for our Kitty struct
+#### B. Configuring Functions For Our Kitty Struct
 
 Configuring a struct is useful in order to pre-define a value in our struct. For example, when
 setting a value in relation to what another function returns. In our case we have a similar
@@ -237,13 +234,9 @@ situation where we need to configure our Kitty struct in such a way that sets `G
 a Kitty's DNA.
 
 We'll only be using this function when we get to [creating Kitties](/docs/tutorials/Kitties/Part%201/dispatchables-and-events#2-write-the-create_kitty-dispatchable).
-Regardless, let us learn how to write it now and get it out of the way.
-
-When you're implementing the configuration trait for a struct inside a FRAME pallet, you're doing
-the same type of thing as implementing some traits for an enum except you're implementing the
-generic configuration trait, `Config`. In our case we'll create a public function called
-`gen_gender` that returns the `Gender` type and uses a random function to choose between `Gender`
-enum values.
+Regardless, let us learn how to write it now and get it out of the way. We'll create a public
+function called `gen_gender` that returns the `Gender` type and uses a random function to choose
+between `Gender` enum values.
 
 Replace ACTION #4 with the following code snippet:
 
@@ -260,7 +253,7 @@ fn gen_gender() -> Gender {
 Now whenever `gen_gender()` is called inside our pallet, it will return a pseudo random enum value
 for `Gender`.
 
-### 3. Implement on-chain randomness
+### 3. Implement On-chain Randomness
 
 If we want to be able to tell these Kitties apart, we need to start giving them unique properties!
 In the previous step, we've made use of `KittyRandomness` which we haven't actually defined yet.
@@ -272,7 +265,7 @@ ones.
 
 In order to use the `Randomness` trait for our pallet, we must:
 
-**A. Define a new type that is bound by `Randomness` trait in our pallet's configuration trait.**
+**A. Define a new type bound by `Randomness` trait in our pallet's configuration trait.**
 
 The `Randomness` trait from `frame_support` requires specifying it with a paramater to replace the
 `Output` and `BlockNumber` generics. Take a look at [the documentation][randomness-rustdocs] and
@@ -283,23 +276,19 @@ declared at the top of your working codebase.
 Replace the ACTION #5 line with:
 
 ```rust
-#[pallet::config]
-pub trait Config: frame_system::Config {
-	//...
-	type KittyRandomness: Randomness<Self::H256, Self::BlockNumber>;
-}
+type KittyRandomness: Randomness<Self::H256, Self::BlockNumber>;
 ```
 
-**B. Specify it for our runtime.**
+**B. Specify the actual type in our runtime.**
 
-Given that we're adding a new type for the configuration of our pallet, we need to tell our runtime
-about its implementation. This could come in handy if ever we want to change the algorithm that
-`KittyRandomness` is using, without needing to modify where it's used inside our pallet.
+Given that we have added a new type in the configuration of our pallet, we need to config our
+runtime to set its concrete type. This could come in handy if ever we want to change the algorithm
+that `KittyRandomness` is using, without needing to modify where it's used inside our pallet.
 
-To showcase this point, we're going to implement `KittyRandomness` by assigning it to an instance
-of [FRAME's `RandomnessCollectiveFlip`][randomness-collective-flip-frame]. Conveniently, the Node
+To showcase this point, we're going to set the `KittyRandomness` type to an instance of
+[FRAME's `RandomnessCollectiveFlip`][randomness-collective-flip-frame]. Conveniently, the Node
 Template already has an instance of the `RandomnessCollectiveFlip` pallet. All you need to do
-is **include the `KittyRandomness` type for your runtime inside `runtime/src/lib.rs`**:
+is **set the `KittyRandomness` type in your runtime, inside `runtime/src/lib.rs`**:
 
 ```rust
 impl pallet_kitties::Config for Runtime {
@@ -308,12 +297,13 @@ impl pallet_kitties::Config for Runtime {
 }
 ```
 
-Programming is about abstraction. Here we have abstracted out the implementation of randomness
-generation (`RandomnessCollectiveFlip`) from its interface (ie bound by `Randomness<Self::H256,
-Self::BlockNumber>`).
+Programming is about abstraction. Here we have abstracted out the randomness generation
+implementation (`RandomnessCollectiveFlip`) from its interface (
+`Randomness<Self::H256, Self::BlockNumber>` trait).
 
 :::tip
-Check out this [how-to guide](/docs/pallet-design/randomness) on implementing randomness in case you get stuck.
+Check out this [how-to guide](/docs/pallet-design/randomness) on implementing randomness in case
+you get stuck.
 :::
 
 #### Generating random DNA
@@ -332,7 +322,7 @@ fn gen_dna() -> [u8; 16] {
 }
 ```
 
-### 4. Write remaining storage items
+### 4. Write Remaining Storage Items
 
 #### A. Understanding storage item logic
 
@@ -352,23 +342,15 @@ we could check using:
 ensure!(!<Kitties<T>>::exists(new_id), "This new id already exists");
 ```
 
-:::tip
-Actually one way to understand what a pallet is about is by going through each of the storage
-   items defined, gain an idea of what these storage relationship are (i.e how the data relate to
-   each others), and then check the pallet extrinsics to see the logic how they act on these
-   storage items.
-:::
-
-We care about state transitions and persistance around two main concepts our runtime needs to be
-made aware of:
+Our runtime needs to be made aware of:
 
 1. Unique assets, like currency or Kitties (this will be held by a storgae map called `Kitties`)
-2. Ownership of those assets, like account IDs (this will be handled by `KittyCnt` and a new storage
-map called `KittiesOwned`)
+2. Ownership of those assets, like account IDs (this will be handled a new storage map called
+`KittiesOwned`)
 
 #### B. Using a `StorageMap`
 
-To create a storage instance for the Kitty struct, we'll be using[`StorageMap`][storage-map-kb]
+To create a storage instance for the `Kitty` struct, we'll be using[`StorageMap`][storage-map-kb]
 &mdash; a hash-map provided to us by FRAME.
 
 Here's what the `Kitties` storage item looks like:

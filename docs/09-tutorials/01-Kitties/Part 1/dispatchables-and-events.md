@@ -117,7 +117,7 @@ section):
 
 :::note Why "DispatchResult" and not "DispatchResultWithPostInfo" ?
 In `create_kitty` our return was of type `DispatchResult`. Since `mint()` is a helper for
-`create_kitty`, we don't need to overwrite `PostDispatchInfo`, so we can use a return type of
+`create_kitty`, we don't need to overwrite `PostDispatchInfo`, we can use a return type of
 [`DispatchResult`][dispatchresult-rustdocs] &mdash; its unaugmented version.
 :::
 
@@ -179,22 +179,23 @@ Next, we increment the `KittyCnt` using the storage getter function `Self::kitty
 checking for overflow with `check_add()` function.
 
 Once we've done with the check, we proceed with updating our storage items by:
+
 1. Making use of the [`try_mutate`](https://substrate.dev/rustdocs/latest/frame_support/storage/trait.StorageMap.html#tymethod.try_mutate)
-to update the kitty owner vector.
+to update the kitty's owner vector.
 2. Using [`insert`][insert-rustdocs] method provided by Substrate's StorageMap API to store the
 actually Kitty object and associate it with its `kitty_id`.
 3. Using [`put`](https://substrate.dev/rustdocs/latest/frame_support/storage/trait.StorageValue.html#tymethod.put)
-provided by `StorageValue` to save the latest kitty count.
+provided by StorageValue API to save the latest kitty count.
 
 :::note A quick recap of our storage items
 
-- **`<Kitties<T>>`**: Stores a Kitty's unique traits and price, by storing the Kitty object, and
-  associate it with its Kitty ID.
-- **`<KittyOwned<T>>`**: Keeps track of what accounts own what Kitty.
+- **`<Kitties<T>>`**: Stores a Kitty's unique traits and price, by storing the Kitty object and
+  associating it with its Kitty ID.
+- **`<KittyOwned<T>>`**: Keeps track of what accounts own what Kitties.
 - **`<KittyCnt<T>>`**: A count of all Kitties in existence.
 :::
 
-### 4. Implement pallet Events
+### 4. Implement Pallet Events
 
 Our pallet can also emit [Events][events-kb] at the end of the function. This not only reports the
 success of a function's execution, but also tells the "off-chain world" that some particular state
@@ -222,7 +223,7 @@ This allows us to deposit a specifc event using the pattern below:
 Self::deposit_event(Event::Success(var_time, var_day));
 ```
 
-In order to use events inside our pallet, we need to define a new associated type `Event` inside our
+In order to use events inside our pallet, we need to add a new associated type `Event` inside our
 pallet's configuration trait `Config`. Additionally &mdash; just as when adding any type to our
 pallet's `Config` trait &mdash; we also need to define it in our runtime `/runtime/src/lib.rs`.
 
@@ -342,7 +343,7 @@ By doing this, we're specifying to run a temporary chain in developer mode, so a
 purge storage each time we want to start a fresh chain.
 
 Assuming that blocks are being finalized (which you should be able to see from your terminal in
-which you ran the above command), head over to [Polkadot.js Apps][polkadotjsapps].
+which you ran the above command), head over to [Polkadot.js Apps UI][polkadotjsapps].
 
 **Follow these steps:**
 

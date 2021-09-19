@@ -58,8 +58,6 @@ pub mod pallet {
 	#[pallet::getter(fn all_kitties_count)]
 	pub(super) type KittyCnt<T: Config> = StorageValue<_, u64, ValueQuery>;
 
-	// ACTION #6: Add Nonce storage item.
-
 	// ACTION #8: Remaining storage items.
 
 	// TODO Part IV: Our pallet's genesis configuration.
