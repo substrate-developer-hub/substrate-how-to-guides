@@ -38,7 +38,6 @@ building, Kitties really can only do the following things:
 
 **In Part 1, we'll go over:**
 
-TK!!
 
 1. [**Basic setup**](/docs/Tutorials/Kitties/Part%201/basic-setup) - we will need to spin up a
 Substrate node and create a custom pallet.
@@ -52,7 +51,7 @@ need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `bu
 `breed_kitty`.
 
 4. [**Private functions**](/docs/Tutorials/Kitties/Part%201/create-kitties) - we will write a few
-helper functions to handle the heavy lifting logics, and
+helper functions to handle the heavy lifting logic, and
 
 5. [**Helper functions**](/docs/Tutorials/Kitties/Part%201/interacting-functions) - we will write
 two helpers functions for our dispatchable functions: `mint` and `transfer_from`.
@@ -60,18 +59,18 @@ two helpers functions for our dispatchable functions: `mint` and `transfer_from`
 **In Part 2, we will:**
 
 1. [**Create a UI for interacting with our pallet's storage items**](/docs/Tutorials/Kitties/Part%202/kitties-frontend)
-- we will connect to Substrate Front-end Template and create the UI for each dispatchable calls.
+- we will connect to the Substrate Front-end Template and create UI components for each dispatchable call.
 
 2. [**Enhance our UX with Polkadot JS API**](/docs/Tutorials/Kitties/Part%202/kitties-frontend). 
 
 :::info
 In any case, if you are stuck in following the tutorial, you can always refer back to the full
-working source code at the following:
+working source code in the following locations:
 
 - On Substrate side, it is under [Substrate Node Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-node-template/tree/tutorials/kitties).
 Most of the code changes are under `/pallets/kitties/src/lib.rs`.
 
-- On the front end side, it is under [Substrate Front-end Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-front-end-template/tree/tutorials/kitties).
+- On the front end side, it is under the [Substrate Front-end Template repository `tutorials/kitties` branch](https://github.com/substrate-developer-hub/substrate-front-end-template/tree/tutorials/kitties).
 Most of the code changes are within these three files:
 `/src/[Kitties.js, KittyCards.js, KittyAvatar.js]`.
 :::
