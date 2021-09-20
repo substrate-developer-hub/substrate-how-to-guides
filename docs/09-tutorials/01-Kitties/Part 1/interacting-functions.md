@@ -38,7 +38,7 @@ you'll notice that the structure of `set_price` is already laid out.
 Your job is to replace ACTION lines #1, #2 and #3 lines with what you'll learn in sections A-D
 below.
 
-#### A. Checking Kitty owner
+#### A. Checking Kitty Owner
 
 As we create functions which modify objects in storage, we should always check first that only the
 appropriate users can successfully execute the logics in these dispatchable functions.
@@ -308,7 +308,8 @@ fn transfer(
 ) -> DispatchResult
 ```
 
-Now we can make use of the `Currency` type in our pallet's `Config` trait and `ExistenceRequirement` &ndash; that we [initially started with in Part I](/docs/tutorials/Kitties/Part%201/basic-setup#2-write-out-pallet_kitties-scaffold).
+Now we can make use of the `Currency` type in our pallet's `Config` trait and `ExistenceRequirement`
+&ndash; that we [initially started with in Part I](/docs/tutorials/Kitties/Part%201/basic-setup#2-write-out-pallet_kitties-scaffold).
 
 Update the balances of both the caller of this function and the receiver, replacing ACTION #8:
 

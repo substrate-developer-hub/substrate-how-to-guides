@@ -241,7 +241,7 @@ and has already been included from the initial scaffolding of our codebase:
 ```
 
 :::note
-Notice that each event deposit is meant to be informative which is why it carries the  various types
+Notice that each event deposit is meant to be informative which is why it carries the various types
 associated with it.
 
 It's good practice to get in the habit of documenting your event declarations so that your code is
@@ -279,7 +279,7 @@ If you're building your codebase from the previous part (and haven't been using 
 this part) you'll need to add `Ok(())` and properly close the `create_kitty` dispatchable.
 :::
 
-### 5. Error handling 
+### 5. Error Handling
 
 FRAME provides us with an error handling system using [`[#pallet::errors]`][errors-kb] which allows
 us to specify errors for our pallet and use them across our pallet's functions.
@@ -328,7 +328,7 @@ check your code!
 Did that build fine? Congratulations! That's the core functionality of our Kitties pallet. In the
 next step you'll be able to see everything you've built so far in action.
 
-### 6. Testing with PolkadotJS Apps
+### 6. Testing with Polkadot-JS Apps UI
 
 Assuming that you successfully built your chain, let's run it and use the [PolkadotJS Apps UI](https://polkadot.js.org/apps/#/explorer)
 to interact with it.
@@ -347,8 +347,8 @@ which you ran the above command), head over to [Polkadot.js Apps UI][polkadotjsa
 
 **Follow these steps:**
 
-1. Check that you're connected to the Local Node. Click on the top left circular icon, open the
-"Development" section, and choose "Local Node". Your node is default to be `127.0.0.1.:9944`.
+1. Check that you're connected to the Local Node. Click on the top left circular network icon, open
+the "Development" section, and choose "Local Node". Your node is default to be `127.0.0.1.:9944`.
 
 2. Tell the Apps about your custom types. This requires you to navigate to the "_Settings_" ->
 "_Developer_" section, and then paste in the editor the following custom types (in JSON format):
@@ -402,7 +402,7 @@ kitties.kitties: Option<Kitty>
 ]
 ```
 
-5. Check that other storage items correctly reflect the creation of additional Kitties.
+6. Check that other storage items correctly reflect the creation of additional Kitties.
 
 :::note Congratulations!
 You're pretty much able to take it from here at this point! We've learnt how to implement the key
