@@ -44,7 +44,8 @@ cd substrate-front-end-template
 yarn install
 ```
 
-You'll notice the following structure (we've only including the directories we care about for this tutorial):
+You'll notice the following structure (we've only including the directories we care about for this
+tutorial):
 
 ```
 substrate-front-end-template
@@ -131,7 +132,7 @@ information, avatar and buttons to interact with it.
 3. `KittyAvatar.js`: this will handle the logic to map Kitty DNA to the library of PNGs we're using
 to create unique Kitty avatars.
 
-### 4. Polkadot-JS API basics
+### 4. Polkadot-JS API Basics
 
 Before moving on to the next section, we reccommend you read a little Polkadot JS API documentation
 to understand the basics of how we will be querying storage and triggering transactions. Here are
