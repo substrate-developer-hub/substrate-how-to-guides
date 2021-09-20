@@ -3,7 +3,7 @@ sidebar_position: 3
 keywords: pallet design, intermediate, runtime
 ---
 
-# Uniqueness, custom types and storage maps
+# Uniqueness, Custom Types, and Storage Maps
 
 _In this part of the tutorial, we'll build out the components of our pallet needed to manage the
  creation and ownership of our Kitties._
@@ -133,7 +133,7 @@ pub mod pallet {
 ```
 
 
-#### A. What information to include
+#### A. What Information to Include
 
 **Struct** in Rust is a useful construct to help storing data that have things in common. For our
   purposes, our Kitty will carry multiple properties which we can store in a single struct instead
@@ -306,7 +306,7 @@ Check out this [how-to guide](/docs/pallet-design/randomness) on implementing ra
 you get stuck.
 :::
 
-#### Generating random DNA
+#### Generating Random DNA
 
 Generating DNA is similar to using randomness to randomly assign a gender type. The difference is
 that we'll be making use of `blake2_128` we imported in the previous part. Replace the ACTION #7
@@ -324,7 +324,7 @@ fn gen_dna() -> [u8; 16] {
 
 ### 4. Write Remaining Storage Items
 
-#### A. Understanding storage item logic
+#### A. Understanding Storage Item Logics
 
 To easily track all of our kitties, we're going to standardize our logic to use a unique ID as the
 global key for our storage items. This means that a single unique key will point to our Kitty

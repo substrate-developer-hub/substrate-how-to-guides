@@ -43,7 +43,7 @@ function.
 
 ## Steps
 
-### 1. Public and private functions
+### 1. Public and Private Functions
 
 Before we dive right in, it's important to understand the pallet design decisions we'll be making
 around coding up our Kitty pallet's minting and ownership management capabilities.
@@ -121,7 +121,7 @@ In `create_kitty` our return was of type `DispatchResult`. Since `mint()` is a h
 [`DispatchResult`][dispatchresult-rustdocs] &mdash; its unaugmented version.
 :::
 
-### 3. Write the `mint()` function
+### 3. Write the `mint()` Function
 
 As seen when we wrote `create_kitty` in the previous section, we'll need to create `mint()` for
 writing our new unique Kitty object to the various storage items declared in Part II of this

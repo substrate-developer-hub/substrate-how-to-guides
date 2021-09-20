@@ -50,7 +50,7 @@ your node and pallet. Type in:
 - `kitties` - as the name of your pallet. The pallet will be named as `pallet-kitties`.
 
 This will create a directory called `kitties` with a copy of the [Substrate Node Template]
-[substrate-node-template] containing the name changes that correspond our template node, runtime
+[substrate-node-template] containing the name changes that correspond our template node, runtime,
 and pallet.
 
 Open the `kitties` directory in your favorite code editor and rename it to `kitties-tutorial`.
@@ -298,7 +298,7 @@ In `pallets/kitties/src/lib.rs`, replace the ACTION line with:
 This creates a storage item for our pallet to keep track of the total count of Kitties in
 existence.
 
-### 4. Build Pallet
+### 4. Build a Pallet
 
 From the previous step, your pallet should contain a storage item called `KittyCnt` which keeps
 track of a single `u64` value. As part of the basic setup, we're doing great!

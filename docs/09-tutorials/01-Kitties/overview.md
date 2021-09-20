@@ -16,12 +16,12 @@ level of experience with Substrate._
 Welcome to the Substrate Kitties tutorial. This two-part tutorial designed to teach you everything
 you need to know to build a blockchain designed to handle the creation and ownership management of
 Substrate Kitties. Part 1 will cover how to build the Kitties pallet, including the functionality to
-interact with the Kitties we create, such as transfering, buying and setting prices. Part II will
+interact with the Kitties we create, such as transfering, buying and setting prices. Part 2 will
 cover developing the Front-end UI to interact with the blockchain we build in Part 1.
 
 :::note
-You may find it useful to come back to this page
-as you progress through each part &mdash; just to keep track of the bigger picture.
+You may find it useful to come back to this page as you progress through each part &mdash; just to
+keep track of the bigger picture.
 :::
 
 ### What we're building
@@ -52,7 +52,7 @@ need a total of 5 dispatchable functions: `create`, `set_price`, `transfer`, `bu
 `breed_kitty`.
 
 4. [**Private functions**](/docs/Tutorials/Kitties/Part%201/create-kitties) - we will write a few
-helper functions to handle the heavy lifting logics, amd
+helper functions to handle the heavy lifting logics, and
 
 5. [**Helper functions**](/docs/Tutorials/Kitties/Part%201/interacting-functions) - we will write
 two helpers functions for our dispatchable functions: `mint` and `transfer_from`.
