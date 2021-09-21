@@ -203,7 +203,7 @@ internally in React. We will then access and display them in the following secti
 ### 2. Create the `KittyAvatar.js` component
 
 In this component, all we're doing is mapping a library of PNG images to the bytes of our Kitty DNA.
-Since it's mostly all Javascript, we won't be going into much details.
+Since it's mostly all Javascript, we won't be going into too much detail on how it is built.
 
 Create a file `src/KittyAvatar.js` and paste in the following code:
 
