@@ -338,7 +338,7 @@ To recap: our Kitty Card has a "transfer" button that opens up a
 modal where a user can choose an address to send their Kitty to. That modal will have:
 
 - a Title
-- an read-only field for a Kitty ID
+- a read-only field for a Kitty ID
 - an input field for an Account ID
 
 In addition, it will have:
